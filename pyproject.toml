@@ -1,0 +1,32 @@
+[project]
+name = "rag1"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "quangnt03", email = "55090045+quangnt03@users.noreply.github.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "docling>=2.133.0",
+    "paddleocr==3.7.0",
+    "paddlepaddle==3.3.0",
+    "pillow>=10.0.0",
+    "pypdfium2>=5.0.0,<6.0.0",
+    "pydantic>=2.0,<3.0",
+]
+
+[project.scripts]
+rag1 = "rag1:main"
+
+[build-system]
+requires = ["uv_build>=0.12.7,<0.13.0"]
+build-backend = "uv_build"
+
+[[tool.uv.index]]
+name = "paddle-cpu"
+url = "https://www.paddlepaddle.org.cn/packages/stable/cpu/"
+explicit = true
+
+[tool.uv.sources]
+paddlepaddle = { index = "paddle-cpu" }

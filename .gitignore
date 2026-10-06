@@ -19,3 +19,4 @@ AGENTS.md
 .codegraph
 data/raw/*
 /data/extraction/
+/data/ocr/

@@ -28,13 +28,14 @@ class OcrModel(BaseModel):
 
 
 class OcrCrop(OcrModel):
+    proposal_bbox: list[float] = Field(min_length=4, max_length=4)
     page_bbox: list[float] = Field(min_length=4, max_length=4)
     page_origin: list[float] = Field(min_length=2, max_length=2)
     width: int = Field(gt=0)
     height: int = Field(gt=0)
     path: str | None
 
-    @field_validator("page_bbox", "page_origin")
+    @field_validator("proposal_bbox", "page_bbox", "page_origin")
     @classmethod
     def finite_coordinates(cls, value: list[float]) -> list[float]:
         if not all(math.isfinite(item) for item in value):
@@ -43,9 +44,22 @@ class OcrCrop(OcrModel):
 
     @model_validator(mode="after")
     def validate_dimensions(self) -> OcrCrop:
+        proposal_x0, proposal_y0, proposal_x1, proposal_y1 = self.proposal_bbox
         x0, y0, x1, y1 = self.page_bbox
+        if proposal_x0 < 0 or proposal_y0 < 0 or proposal_x0 >= proposal_x1 or proposal_y0 >= proposal_y1:
+            raise ValueError("proposal bounds must have non-negative origin and positive area")
         if x0 < 0 or y0 < 0 or x0 >= x1 or y0 >= y1:
             raise ValueError("crop bounds must have non-negative origin and positive area")
+        expected_bounds = [
+            math.floor(proposal_x0),
+            math.floor(proposal_y0),
+            math.ceil(proposal_x1),
+            math.ceil(proposal_y1),
+        ]
+        if self.page_bbox != expected_bounds:
+            raise ValueError("crop bounds must floor the proposal origin and ceil its end")
+        if any(not coordinate.is_integer() for coordinate in self.page_bbox):
+            raise ValueError("effective crop bounds must be integers")
         if self.page_origin != [x0, y0]:
             raise ValueError("crop origin must match the crop bounds origin")
         if self.width != x1 - x0 or self.height != y1 - y0:
@@ -57,6 +71,7 @@ class OcrLine(OcrModel):
     id: str = Field(min_length=1)
     region_id: str = Field(min_length=1)
     detector_index: int = Field(ge=0)
+    crop_path: str | None = None
     text: str
     detection_confidence: float = Field(ge=0, le=1)
     recognition_confidence: float = Field(ge=0, le=1)
@@ -85,6 +100,16 @@ class TableMetadata(OcrModel):
     structure: None = None
 
 
+class OcrPageMetadata(OcrModel):
+    page_number: int = Field(ge=1)
+    rotation_degrees: int | None = None
+    pixel_width: int | None = Field(default=None, gt=0)
+    pixel_height: int | None = Field(default=None, gt=0)
+    image: str | None = None
+    bbox_image: str | None = None
+    region_ids: list[str] | None = None
+
+
 class OcrRegion(OcrModel):
     proposal: Region
     status: Literal["complete", "failed"]
@@ -102,9 +127,11 @@ class OcrRegion(OcrModel):
             raise ValueError("table metadata is only valid for table proposals")
         if self.crop.path is None and self.status != "failed":
             raise ValueError("regions without a crop must have failed status")
-        if isinstance(self.proposal.location, VisualLocation):
+        if isinstance(self.proposal.location, VisualLocation) and self.crop.path is not None:
             proposal_box = self.proposal.location.bbox
             crop_box = self.crop.page_bbox
+            if self.crop.proposal_bbox != proposal_box:
+                raise ValueError("crop must retain the original proposal bounds")
             if (
                 crop_box[0] < 0
                 or crop_box[1] < 0
@@ -155,9 +182,12 @@ class OcrDocument(OcrModel):
     upstream_schema_version: Literal[CURRENT_SCHEMA_VERSION] = CURRENT_SCHEMA_VERSION
     upstream_status: DocumentStatus
     upstream_errors: list[PageFailure] = Field(default_factory=list)
+    dpi: int | None = Field(default=None, gt=0)
+    pages: list[OcrPageMetadata] = Field(default_factory=list)
     status: DocumentStatus
     regions: list[OcrRegion] = Field(default_factory=list)
     errors: list[OcrError] = Field(default_factory=list)
+    page_failures: list[PageFailure] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def validate_identifiers_and_status(self) -> OcrDocument:
@@ -167,6 +197,26 @@ class OcrDocument(OcrModel):
         line_ids = [line.id for region in self.regions for line in region.lines]
         if len(line_ids) != len(set(line_ids)):
             raise ValueError("OCR line IDs must be unique")
-        if self.errors and self.status is DocumentStatus.COMPLETE:
+        page_numbers = [page.page_number for page in self.pages]
+        if len(page_numbers) != len(set(page_numbers)):
+            raise ValueError("OCR page metadata numbers must be unique")
+        failure_pages = [failure.page_number for failure in self.page_failures]
+        if len(failure_pages) != len(set(failure_pages)):
+            raise ValueError("OCR page failures must be unique per page")
+        regions_by_id = {region.proposal.id: region for region in self.regions}
+        for page in self.pages:
+            if page.region_ids is None:
+                continue
+            if len(page.region_ids) != len(set(page.region_ids)):
+                raise ValueError("page metadata region IDs must be unique")
+            for region_id in page.region_ids:
+                region = regions_by_id.get(region_id)
+                if region is None:
+                    raise ValueError("page metadata references an unknown region ID")
+                if not isinstance(region.proposal.location, VisualLocation):
+                    raise ValueError("page metadata region references must be visual")
+                if region.proposal.location.page_number != page.page_number:
+                    raise ValueError("page metadata region reference has a mismatched page")
+        if (self.errors or self.page_failures) and self.status is DocumentStatus.COMPLETE:
             raise ValueError("documents with OCR errors cannot have complete status")
         return self

@@ -26,6 +26,48 @@ Do not feed bbox images to OCR or table parsers because their pixels include deb
 The annotated images remain in the `bbox/` folder.
 The image directory must stay inside the document output directory and cannot use the reserved `bbox/` name.
 
+## OCR enrichment
+
+Run OCR after layout extraction by passing its `layout.json` to the independent OCR command:
+
+```powershell
+uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/layout.json" --device cpu
+```
+
+You can pass a layout JSON file or a `region/` artifact directory containing `layout.json`, `manifest.json`, and the clean page images:
+
+```powershell
+uv run rag1 ocr "data/extraction/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/region"
+```
+
+For a layout file, the command searches its directory, then sibling `pages/`, then sibling `region/` for clean `page-NNNN.png` images.
+When given an artifact directory, it uses that directory's images and automatically reads its `manifest.json` when present.
+`_bbox.png` debug images are ignored.
+`--image-dir` selects another page image directory, `--manifest` supplies the optional upstream `manifest.json`, `--output-dir` selects the artifact root and defaults to `data/ocr`, and `--device` selects the Paddle device.
+Each source document gets a deterministic output directory containing `ocr.json` and the crop images referenced by that JSON.
+When supplied, the manifest source must match `layout.json`, and its page region references must resolve to proposals on the same page.
+Available DPI, rotation, dimensions, image paths, and region references are retained in OCR page metadata; missing metadata fields remain null.
+
+For each visual proposal, the OCR module floors the left/top and ceils the right/bottom bbox edges to obtain the effective integer crop bounds.
+`crop.proposal_bbox` retains the original fractional proposal coordinates, and `crop.page_bbox` records the effective integer bounds used to crop the image.
+PP-OCRv6_small_det detects text polygons inside that proposal crop, each detected polygon is cropped, and PP-OCRv6_small_rec recognizes the resulting line image.
+Line records retain the detector and recognizer confidence separately, polygon coordinates relative to the proposal crop, corresponding page coordinates, and a relative line crop path.
+Text proposal `text` is the recognized lines joined in detector order with newline separators, while every line's recognized text is retained verbatim.
+Table proposals retain their image crop and any recognized lines, have `text: null`, and carry `table.structure_status: "pending"` with `table.structure: null` for a later table reconstruction stage.
+
+The OCR output has `schema_version: "1.0"`, source metadata, optional DPI and page metadata, upstream layout status and page errors, proposal-linked OCR regions, OCR errors, and image page failures.
+Region proposals remain embedded unchanged so `proposal.id` is the join key back to the layout JSON.
+Coordinates use rendered page pixels and a top-left origin, and all crop/image references are relative to the OCR output directory.
+The loader rejects unsupported layout schema versions and duplicate proposal IDs before inference.
+
+PaddleOCR initializes each named model once per run and downloads model files on cache misses using PaddleX's configured model source and cache.
+The default PaddleX model source is Hugging Face; set `PADDLE_PDX_MODEL_SOURCE=BOS` when that source is unreachable.
+OCR artifact paths do not control the model cache location.
+The module verifies that each clean page image is readable and has the exact pixel dimensions declared by its layout proposals.
+Missing, unreadable, or dimension-mismatched images are recorded as page failures; the pipeline does not rescale images or proposal coordinates.
+The module does not qualify Vietnamese recognition accuracy, deskew rotated lines, or reconstruct table rows, columns, cells, `rowspan`, or `colspan`.
+Treat recognition accuracy as a separate checkpoint qualification gate and table structure as pending until a table reconstruction phase consumes the retained table crop and OCR lines.
+
 ## CLI
 
 Run the layout phase directly with `uv`:
@@ -145,12 +187,11 @@ Use the proposals as routing and alignment hints for selecting pages or regions 
 Convert between Docling's geometry and this contract's rendered-pixel coordinates before comparing boxes.
 This repository does not yet implement a Docling adapter or a conversion between the two coordinate systems.
 
-PP-OCRv6 should consume clean page images and region proposals as OCR work hints.
-Run text detection and recognition on text regions or on the full clean page, then associate OCR boxes with proposals using page number and overlap.
-If OCR runs on a cropped region, translate its crop-relative boxes back to page pixels by adding the crop origin.
-Route table regions to a table structure stage such as SLANet_plus after cropping.
-Keep the region ID on OCR and table outputs so they can be joined to the original proposal.
-This repository currently performs layout detection only and does not run PP-OCRv6 or SLANet_plus.
+PP-OCRv6 consumes clean page images and the layout proposals as OCR work hints.
+The implemented `rag1 ocr` command detects and recognizes line crops within each visual proposal and stores both crop-relative and page-relative geometry.
+Docling can continue to parse the original PDF for semantic reading order and richer document structures, then use proposal IDs and converted geometry to align its results with the OCR output.
+Route table proposals and their crops to a later table structure stage such as SLANet_plus.
+Keep the proposal ID on OCR and table outputs so they can be joined to the original layout proposal.
 
 ## Known limits
 

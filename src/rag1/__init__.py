@@ -49,14 +49,67 @@ def _build_parser() -> argparse.ArgumentParser:
         default="cpu",
         help="Paddle device such as cpu or gpu:0 (default: cpu)",
     )
+    ocr = commands.add_parser(
+        "ocr",
+        help="recognize text inside a layout proposal JSON",
+        description="Run PP-OCRv6 text detection and recognition for layout proposals.",
+    )
+    ocr.add_argument(
+        "layout_json",
+        type=Path,
+        help="version 1.0 layout JSON or its region artifact directory",
+    )
+    ocr.add_argument(
+        "--manifest",
+        type=Path,
+        help="optional upstream manifest.json with source and page metadata",
+    )
+    ocr.add_argument(
+        "--image-dir",
+        type=Path,
+        help="directory containing page-NNNN.png images (default: infer from layout artifacts)",
+    )
+    ocr.add_argument(
+        "--output-dir",
+        type=Path,
+        default=Path("data/ocr"),
+        help="root directory for OCR JSON and crop artifacts (default: data/ocr)",
+    )
+    ocr.add_argument(
+        "--device",
+        default="cpu",
+        help="Paddle device such as cpu or gpu:0 (default: cpu)",
+    )
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> None:
     parser = _build_parser()
     arguments = parser.parse_args(argv)
-    if arguments.command != "layout":
+    if arguments.command not in {"layout", "ocr"}:
         parser.print_help()
+        return
+
+    if arguments.command == "ocr":
+        from rag1.extractions.ocr_text.contracts import OcrDocument
+        from rag1.extractions.ocr_text.pipeline import run_ocr
+
+        try:
+            output_path = run_ocr(
+                arguments.layout_json,
+                image_dir=arguments.image_dir,
+                manifest_path=arguments.manifest,
+                output_dir=arguments.output_dir,
+                device=arguments.device,
+            )
+        except (LookupError, OSError, RuntimeError, ValueError) as error:
+            parser.error(str(error))
+        print(f"OCR JSON: {output_path}")
+        output_document = OcrDocument.model_validate_json(
+            output_path.read_text(encoding="utf-8")
+        )
+        if output_document.status.value == "failed":
+            raise SystemExit(1)
         return
 
     from rag1.extractions.layouts.pipeline import run_pdf_layout

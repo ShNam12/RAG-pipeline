@@ -42,6 +42,7 @@ def proposal(region_id, kind=RegionKind.TEXT, confidence=0.94):
 
 def crop(path=None):
     return OcrCrop(
+        proposal_bbox=[10.25, 20.75, 90.5, 120.25],
         page_bbox=[10, 20, 91, 121],
         page_origin=[10, 20],
         width=81,
@@ -147,6 +148,7 @@ class OcrGeometryContractTests(unittest.TestCase):
         region = result.regions[0]
 
         self.assertEqual(region.proposal.location.bbox, [10.25, 20.75, 90.5, 120.25])
+        self.assertEqual(region.crop.proposal_bbox, [10.25, 20.75, 90.5, 120.25])
         self.assertEqual(region.crop.page_bbox, [10, 20, 91, 121])
         self.assertEqual(region.crop.page_origin, [10, 20])
         self.assertEqual((region.crop.width, region.crop.height), (81, 101))
@@ -170,11 +172,24 @@ class OcrGeometryContractTests(unittest.TestCase):
 
     def test_crop_rejects_inconsistent_origin_or_dimensions(self):
         with self.assertRaises(ValueError):
-            OcrCrop(page_bbox=[10, 20, 91, 121], page_origin=[11, 20],
+            OcrCrop(proposal_bbox=[10.25, 20.75, 90.5, 120.25],
+                    page_bbox=[10, 20, 91, 121], page_origin=[11, 20],
                     width=81, height=101, path=None)
         with self.assertRaises(ValueError):
-            OcrCrop(page_bbox=[10, 20, 91, 121], page_origin=[10, 20],
+            OcrCrop(proposal_bbox=[10.25, 20.75, 90.5, 120.25],
+                    page_bbox=[10, 20, 91, 121], page_origin=[10, 20],
                     width=80, height=101, path=None)
+
+    def test_crop_bounds_must_floor_starts_and_ceil_ends(self):
+        with self.assertRaises(ValueError):
+            OcrCrop(
+                proposal_bbox=[10.25, 20.75, 90.5, 120.25],
+                page_bbox=[10, 20, 90, 120],
+                page_origin=[10, 20],
+                width=80,
+                height=100,
+                path=None,
+            )
 
     def test_line_quad_must_fit_crop_and_page_coordinates_must_match(self):
         out_of_crop = line(

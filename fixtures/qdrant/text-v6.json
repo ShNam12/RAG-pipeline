@@ -1,0 +1,232 @@
+{
+  "schema_version": "1.0",
+  "fixture_kind": "extracted",
+  "description": "Full page 3 from the saved paddleocr-v6 direct OCR run.",
+  "embedding_status": "pending",
+  "points": [
+    {
+      "id": "5deb8d51-614e-579d-ae2f-d78b75bf7951",
+      "payload": {
+        "schema_version": "1.0",
+        "document_id": "c0546b0f-7827-5f14-b353-83cd86b124ce",
+        "record_type": "text",
+        "source": {
+          "path": "data/raw/Bao+cao+tai+chinh+hop+nhat+Q3.2025.pdf",
+          "format": "pdf",
+          "sha256": "9b1835cd486444b1a220a9133a04d6bf041a2df23bf955ea9e0f8733ba7f15e5"
+        },
+        "page_number": 3,
+        "dpi": 200,
+        "proposal": {
+          "id": "p0003-full-page",
+          "kind": "text",
+          "role": "body",
+          "raw_label": "full_page",
+          "confidence": null,
+          "location": {
+            "type": "visual",
+            "page_number": 3,
+            "bbox": [
+              0,
+              0,
+              1642,
+              2339
+            ],
+            "page_width": 1642,
+            "page_height": 2339,
+            "coordinate_origin": "top_left"
+          }
+        },
+        "text": "TPBank\nNgân hàng Thương mại cổ phần tiên phong\nBáo cáo Tài chính Hợp nhất Quý III năm 2025",
+        "text_source": "ocr_region",
+        "provenance": {
+          "layout": {
+            "path": "data/layouts/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/layout.json",
+            "manifest_path": "data/layouts/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/manifest.json",
+            "schema_version": "1.0",
+            "status": "complete",
+            "proposal_pointer": null
+          },
+          "ocr": {
+            "path": "data/ocr/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/ocr-v6/pages-79e9d28f078f/ocr.json",
+            "schema_version": "1.0",
+            "status": "complete",
+            "input_mode": "direct",
+            "model": "paddleocr-v6",
+            "region_id": "p0003-full-page",
+            "region_pointer": "/regions/2"
+          },
+          "association": "ocr_scope"
+        },
+        "artifacts": {
+          "page_image": "data/layouts/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/pages/page-0003.png",
+          "region_crop": "data/ocr/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/ocr-v6/pages-79e9d28f078f/crops/regions/region-00003.png"
+        },
+        "evidence": {
+          "ocr_region_status": "complete",
+          "ocr_crop": {
+            "proposal_bbox": [
+              0,
+              0,
+              1642,
+              2339
+            ],
+            "page_bbox": [
+              0,
+              0,
+              1642,
+              2339
+            ],
+            "page_origin": [
+              0,
+              0
+            ],
+            "width": 1642,
+            "height": 2339,
+            "path": "crops/regions/region-00003.png"
+          },
+          "lines": [
+            {
+              "id": "p0003-full-page-line-0003",
+              "region_id": "p0003-full-page",
+              "detector_index": 2,
+              "crop_path": "crops/lines/region-00003-line-00002.png",
+              "text": "TPBank",
+              "detection_confidence": 0.8861031618190806,
+              "recognition_confidence": 0.8223664263884226,
+              "region_quad": [
+                [
+                  329,
+                  211
+                ],
+                [
+                  731,
+                  220
+                ],
+                [
+                  729,
+                  325
+                ],
+                [
+                  327,
+                  316
+                ]
+              ],
+              "page_quad": [
+                [
+                  329,
+                  211
+                ],
+                [
+                  731,
+                  220
+                ],
+                [
+                  729,
+                  325
+                ],
+                [
+                  327,
+                  316
+                ]
+              ]
+            },
+            {
+              "id": "p0003-full-page-line-0002",
+              "region_id": "p0003-full-page",
+              "detector_index": 1,
+              "crop_path": "crops/lines/region-00003-line-00001.png",
+              "text": "Ngân hàng Thương mại cổ phần tiên phong",
+              "detection_confidence": 0.807417769570502,
+              "recognition_confidence": 0.8993996228927221,
+              "region_quad": [
+                [
+                  276,
+                  916
+                ],
+                [
+                  1469,
+                  916
+                ],
+                [
+                  1469,
+                  999
+                ],
+                [
+                  276,
+                  999
+                ]
+              ],
+              "page_quad": [
+                [
+                  276,
+                  916
+                ],
+                [
+                  1469,
+                  916
+                ],
+                [
+                  1469,
+                  999
+                ],
+                [
+                  276,
+                  999
+                ]
+              ]
+            },
+            {
+              "id": "p0003-full-page-line-0001",
+              "region_id": "p0003-full-page",
+              "detector_index": 0,
+              "crop_path": "crops/lines/region-00003-line-00000.png",
+              "text": "Báo cáo Tài chính Hợp nhất Quý III năm 2025",
+              "detection_confidence": 0.8099514419833126,
+              "recognition_confidence": 0.9221991411475248,
+              "region_quad": [
+                [
+                  398,
+                  1031
+                ],
+                [
+                  1344,
+                  1026
+                ],
+                [
+                  1344,
+                  1087
+                ],
+                [
+                  399,
+                  1092
+                ]
+              ],
+              "page_quad": [
+                [
+                  398,
+                  1031
+                ],
+                [
+                  1344,
+                  1026
+                ],
+                [
+                  1344,
+                  1087
+                ],
+                [
+                  399,
+                  1092
+                ]
+              ]
+            }
+          ],
+          "blocks": []
+        },
+        "table": null,
+        "needs_review": true
+      }
+    }
+  ]
+}

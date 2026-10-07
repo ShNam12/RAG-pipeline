@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "fixture_kind": "illustrative",
+  "description": "Actual p0004-r0005 cells from tables.json with header keys aligned to separate OCR header lines. This mapping is an example and is not currently indexed.",
+  "embedding_status": "not_applicable",
+  "points": [
+    {
+      "id": "de674fe0-2068-5d96-b7ce-2a8441e89298",
+      "payload": {
+        "schema_version": "1.2",
+        "record_type": "table",
+        "source": "data/raw/Bao+cao+tai+chinh+hop+nhat+Q3.2025.pdf",
+        "ocr_path": "data/ocr/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/pp-ocrv6-vietnamese/pages-79e9d28f078f/ocr.json",
+        "table_artifact": "data/tables/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/tables.json",
+        "table_artifact_sha256": "abdfde3dd25721df5825166ad88cdcc41d1c8754f386f94059d172c80a11b407",
+        "table_id": "p0004-r0005",
+        "page_number": 4,
+        "bbox": [174.40733337402344, 1144.927734375, 1504.0753173828125, 1335.4801025390625],
+        "extraction_status": "complete",
+        "method": "slanet_ocr",
+        "column_count": 2,
+        "header_mapping": "ocr_aligned",
+        "raw_header_cell": {
+          "text": "Họ tên Chức vụ",
+          "column_index": 0,
+          "rowspan": 1,
+          "colspan": 2,
+          "ocr_refs": ["p0004-full-page-line-0040", "p0004-full-page-line-0039"]
+        },
+        "headers": {
+          "Họ tên": {"column_index": 0, "ocr_line_id": "p0004-full-page-line-0040"},
+          "Chức vụ": {"column_index": 1, "ocr_line_id": "p0004-full-page-line-0039"}
+        },
+        "records": [
+          {
+            "row_index": 1,
+            "values": {
+              "Họ tên": "Bà Nguyễn Thị Thu Hương",
+              "Chức vụ": "Trưởng ban kiểm soát"
+            },
+            "cell_ocr_refs": {
+              "Họ tên": ["p0004-full-page-line-0037"],
+              "Chức vụ": ["p0004-full-page-line-0038"]
+            }
+          },
+          {
+            "row_index": 2,
+            "values": {
+              "Họ tên": "Ông Thái Duy Nghĩa",
+              "Chức vụ": "Thành viên chuyên trách"
+            },
+            "cell_ocr_refs": {
+              "Họ tên": ["p0004-full-page-line-0036"],
+              "Chức vụ": ["p0004-full-page-line-0035"]
+            }
+          },
+          {
+            "row_index": 3,
+            "values": {
+              "Họ tên": "Bà Nguyễn Thị Thu Nguyệt",
+              "Chức vụ": "Thành viên không chuyên trách"
+            },
+            "cell_ocr_refs": {
+              "Họ tên": ["p0004-full-page-line-0033"],
+              "Chức vụ": ["p0004-full-page-line-0034"]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "fixture_kind": "illustrative",
+  "description": "Contract example for a section root, its immediate parent, and one child. The text and pending table are illustrative; no vectors or verified table rows are included.",
+  "embedding_status": "pending",
+  "points": [
+    {
+      "id": "319b5a32-1788-5197-8ec4-5c92c06b4c2d",
+      "payload": {
+        "schema_version": "1.1",
+        "record_type": "chunk",
+        "source": "example.pdf",
+        "source_id": "bcb51f7e-f8a5-59d8-ad69-a761a2f6fa47",
+        "ocr_path": "data/ocr/example/ocr.json",
+        "ocr_sha256": "0dfcc6002ca235301d4d97f9f72855fa3a1d6aee3689536277efbe9b0b119ec0",
+        "ocr_model": "paddleocr-v6",
+        "ocr_status": "complete",
+        "embedding_model": "thanhtantran/Vietnamese_Embedding",
+        "section_id": "64d2df50-8dcb-55e9-a85f-3d97b2f362ea",
+        "section_heading": "Assets",
+        "level": 0,
+        "parent_id": null,
+        "text": "Assets\n\nCash 100",
+        "page_numbers": [1],
+        "region_ids": ["p0001-r0001", "p0001-r0002"],
+        "tables": [
+          {
+            "region_id": "p0001-r0002",
+            "table": {"structure_status": "pending", "structure": null}
+          }
+        ]
+      }
+    },
+    {
+      "id": "25c6ff7e-e08b-5d85-8125-45b5cf40c2ae",
+      "payload": {
+        "schema_version": "1.1",
+        "record_type": "chunk",
+        "source": "example.pdf",
+        "source_id": "bcb51f7e-f8a5-59d8-ad69-a761a2f6fa47",
+        "ocr_path": "data/ocr/example/ocr.json",
+        "ocr_sha256": "0dfcc6002ca235301d4d97f9f72855fa3a1d6aee3689536277efbe9b0b119ec0",
+        "ocr_model": "paddleocr-v6",
+        "ocr_status": "complete",
+        "embedding_model": "thanhtantran/Vietnamese_Embedding",
+        "section_id": "64d2df50-8dcb-55e9-a85f-3d97b2f362ea",
+        "section_heading": "Assets",
+        "level": 1,
+        "parent_id": "319b5a32-1788-5197-8ec4-5c92c06b4c2d",
+        "text": "Assets\n\nCash 100",
+        "page_numbers": [1],
+        "region_ids": ["p0001-r0001", "p0001-r0002"],
+        "tables": [
+          {
+            "region_id": "p0001-r0002",
+            "table": {"structure_status": "pending", "structure": null}
+          }
+        ]
+      }
+    },
+    {
+      "id": "9b5e7f8e-a216-5a09-ac7f-b8bc8061a9ab",
+      "payload": {
+        "schema_version": "1.1",
+        "record_type": "chunk",
+        "source": "example.pdf",
+        "source_id": "bcb51f7e-f8a5-59d8-ad69-a761a2f6fa47",
+        "ocr_path": "data/ocr/example/ocr.json",
+        "ocr_sha256": "0dfcc6002ca235301d4d97f9f72855fa3a1d6aee3689536277efbe9b0b119ec0",
+        "ocr_model": "paddleocr-v6",
+        "ocr_status": "complete",
+        "embedding_model": "thanhtantran/Vietnamese_Embedding",
+        "section_id": "64d2df50-8dcb-55e9-a85f-3d97b2f362ea",
+        "section_heading": "Assets",
+        "level": 2,
+        "parent_id": "25c6ff7e-e08b-5d85-8125-45b5cf40c2ae",
+        "text": "Cash 100",
+        "page_numbers": [1],
+        "region_ids": ["p0001-r0002"],
+        "tables": [
+          {
+            "region_id": "p0001-r0002",
+            "table": {"structure_status": "pending", "structure": null}
+          }
+        ],
+        "embedding_text": "Assets\n\nCash 100"
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+model:
+  name: PP-DocLayout_plus-L
+  device: cpu
+  batch_size: 1
+  enable_mkldnn: false
+render:
+  dpi: 200
+  output_dir: data/extraction
+  image_dir: pages
+debug:
+  output_dir: data/extraction/pdf_debug
+  overlay_colors:
+    text: [255, 196, 0]
+    table: [255, 48, 48]
+    picture: [0, 180, 255]
+    other: [255, 0, 255]
+  overlay_min_width: 2
+  overlay_dpi_divisor: 80

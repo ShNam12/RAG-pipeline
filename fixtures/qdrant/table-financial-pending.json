@@ -1,0 +1,6895 @@
+{
+  "schema_version": "1.0",
+  "fixture_kind": "extracted",
+  "description": "Layout table p0005-r0001 with all matching full-page OCR lines. Financial text is preserved verbatim; table structure and table crop extraction are pending.",
+  "embedding_status": "pending",
+  "points": [
+    {
+      "id": "06dfec20-7fc1-5877-8884-6c905106d5c7",
+      "payload": {
+        "schema_version": "1.0",
+        "document_id": "c0546b0f-7827-5f14-b353-83cd86b124ce",
+        "record_type": "table",
+        "source": {
+          "path": "data/raw/Bao+cao+tai+chinh+hop+nhat+Q3.2025.pdf",
+          "format": "pdf",
+          "sha256": "9b1835cd486444b1a220a9133a04d6bf041a2df23bf955ea9e0f8733ba7f15e5"
+        },
+        "page_number": 5,
+        "dpi": 200,
+        "proposal": {
+          "id": "p0005-r0001",
+          "kind": "table",
+          "role": "body",
+          "raw_label": "table",
+          "confidence": 0.954816460609436,
+          "location": {
+            "type": "visual",
+            "page_number": 5,
+            "bbox": [
+              177.00477600097656,
+              362.53692626953125,
+              1510.79150390625,
+              2154.18212890625
+            ],
+            "page_width": 1642,
+            "page_height": 2337,
+            "coordinate_origin": "top_left"
+          }
+        },
+        "text": "31/12/2024\nThuyết\n30/09/2025\nTriệu VND\nSTT Chỉ tiêu\nTriệu VND\nminh\n(Đã kiểm toán)\n418.028.391\n451.893.195\nA TÀI SẢNG\n1.292.735\n1.560.071\n6\nTiền mặt vàng bạc đá quý\n22.708.369\n7\n20.659.033\nTiền gửi tại NHNN\nII\nTiền vàng gửi tại các TCTD khác và cho tháng\n70.520.700\n65.344.160\n8\nIII\nvay các TCTD khác\n62.182.535\n64.423.385\nTiền vàng gửi tại các TCTD khác\n1\n8.338.165\n920.775\nCho vay các tổ chức tín dụng khác thánh\n2\nTrong Dự phòng rúi ro cho vay các TCTD khác thánh\n3\n57.321\n1\nIV\nChứng khoán kinh doanh\n9\n58.183\n1\nChứng khoán kính doanh\n1\n(862)\n2\nDự phòng rúi ro chứng khoán kinh doanh tháng\nTrong Các công cụ tài chính phái sinh và các tài thế trị\n112.651\n10\nv\nsản tài chính khác\n247.238.856\nCho vay khách hàng\n292.020.111\nVI\n250.331.368\n296.054.927\n11\n1\nCho vay khách hàng\n(3.092.512)\n12\n(4.034.816)\n2\nDự phòng rủi ro cho vay khách hàng\n766.739\n628.010\n13\nVII\nHoạt động mua nợ\n772.533\n632.756\nMua nợ\n1\n(5.794)\n(4.746)\nDự phòng rúi ro hoạt động mua nợ thuật\n2\n59.472.044\n57.166.207\n14\nVIII\nChứng khoán đầu tư\n59.549.367\n57.216.163\nChứng khoán đầu tư sẫn sàng để bán\n1\n44.700\n44.700\n2\nChứng khoán đầu tư giữ đến ngày đáo hạn thuật\n(122.023)\nDự phòng rúi ro chứng khoán đầu tư\n(94.656)\n3\n1.221.874\n1.253.386\nIX\nTài sản cố định\n796.929\n856.699\n15\nTài sản cố định hữu hình\n1\n2.134.077\n2.239.827\nNguyên giá TSCĐ\na\n(1.277.378)\n(1.442.898)\n- Hao mòn TSCĐ\nb\n365.175\n456.457\nTài sản cố định vô hình\n16\n2\n1.027.747\nNguyên giá TSCĐ\n1.198.273\na\n(662.572)\n(741.816)\nb\n- Hao mòn TSCĐ\n14.807.073\n13.092.245\n17\nTài sản Có khác\nx\n7.033.567\n3.256.268\nCác khoản phải thu\n1\n3.285.020\n4.233.668\nCác khoản lãi phí phải thu trị\n2\nTài sản thuế TNDN hoãn lại\n3\n4.518.359\n5.602.338\n4\nTài sản Có khác\nCác khoản dự phòng rủi ro cho các tài sản\n(29.873)\n(29)\n5\nCó nội bảng khác",
+        "text_source": "associated_lines",
+        "provenance": {
+          "layout": {
+            "path": "data/layouts/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/layout.json",
+            "manifest_path": "data/layouts/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/manifest.json",
+            "schema_version": "1.0",
+            "status": "complete",
+            "proposal_pointer": "/regions/53"
+          },
+          "ocr": {
+            "path": "data/ocr/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/ocr-v6/pages-79e9d28f078f/ocr.json",
+            "schema_version": "1.0",
+            "status": "complete",
+            "input_mode": "direct",
+            "model": "paddleocr-v6",
+            "region_id": "p0005-full-page",
+            "region_pointer": "/regions/4"
+          },
+          "association": "line_center_in_layout_bbox"
+        },
+        "artifacts": {
+          "page_image": "data/layouts/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/pages/page-0005.png",
+          "region_crop": null
+        },
+        "evidence": {
+          "ocr_region_status": "complete",
+          "ocr_crop": {
+            "proposal_bbox": [
+              0,
+              0,
+              1642,
+              2337
+            ],
+            "page_bbox": [
+              0,
+              0,
+              1642,
+              2337
+            ],
+            "page_origin": [
+              0,
+              0
+            ],
+            "width": 1642,
+            "height": 2337,
+            "path": "crops/regions/region-00005.png"
+          },
+          "lines": [
+            {
+              "id": "p0005-full-page-line-0153",
+              "region_id": "p0005-full-page",
+              "detector_index": 152,
+              "crop_path": "crops/lines/region-00005-line-00152.png",
+              "text": "31/12/2024",
+              "detection_confidence": 0.922040458727669,
+              "recognition_confidence": 0.9343791782855988,
+              "region_quad": [
+                [
+                  1354,
+                  353
+                ],
+                [
+                  1498,
+                  353
+                ],
+                [
+                  1498,
+                  387
+                ],
+                [
+                  1354,
+                  387
+                ]
+              ],
+              "page_quad": [
+                [
+                  1354,
+                  353
+                ],
+                [
+                  1498,
+                  353
+                ],
+                [
+                  1498,
+                  387
+                ],
+                [
+                  1354,
+                  387
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0152",
+              "region_id": "p0005-full-page",
+              "detector_index": 151,
+              "crop_path": "crops/lines/region-00005-line-00151.png",
+              "text": "Thuyết",
+              "detection_confidence": 0.8699973109634777,
+              "recognition_confidence": 0.9280630747477213,
+              "region_quad": [
+                [
+                  814,
+                  368
+                ],
+                [
+                  919,
+                  368
+                ],
+                [
+                  919,
+                  411
+                ],
+                [
+                  814,
+                  411
+                ]
+              ],
+              "page_quad": [
+                [
+                  814,
+                  368
+                ],
+                [
+                  919,
+                  368
+                ],
+                [
+                  919,
+                  411
+                ],
+                [
+                  814,
+                  411
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0151",
+              "region_id": "p0005-full-page",
+              "detector_index": 150,
+              "crop_path": "crops/lines/region-00005-line-00150.png",
+              "text": "30/09/2025",
+              "detection_confidence": 0.8661247984401289,
+              "recognition_confidence": 0.9336182534694671,
+              "region_quad": [
+                [
+                  1043,
+                  372
+                ],
+                [
+                  1188,
+                  372
+                ],
+                [
+                  1188,
+                  407
+                ],
+                [
+                  1043,
+                  407
+                ]
+              ],
+              "page_quad": [
+                [
+                  1043,
+                  372
+                ],
+                [
+                  1188,
+                  372
+                ],
+                [
+                  1188,
+                  407
+                ],
+                [
+                  1043,
+                  407
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0150",
+              "region_id": "p0005-full-page",
+              "detector_index": 149,
+              "crop_path": "crops/lines/region-00005-line-00149.png",
+              "text": "Triệu VND",
+              "detection_confidence": 0.7966709249456528,
+              "recognition_confidence": 0.9336222211519877,
+              "region_quad": [
+                [
+                  1358,
+                  387
+                ],
+                [
+                  1499,
+                  382
+                ],
+                [
+                  1501,
+                  418
+                ],
+                [
+                  1360,
+                  424
+                ]
+              ],
+              "page_quad": [
+                [
+                  1358,
+                  387
+                ],
+                [
+                  1499,
+                  382
+                ],
+                [
+                  1501,
+                  418
+                ],
+                [
+                  1360,
+                  424
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0149",
+              "region_id": "p0005-full-page",
+              "detector_index": 148,
+              "crop_path": "crops/lines/region-00005-line-00148.png",
+              "text": "STT Chỉ tiêu",
+              "detection_confidence": 0.8827125162720451,
+              "recognition_confidence": 0.9110085119803747,
+              "region_quad": [
+                [
+                  176,
+                  394
+                ],
+                [
+                  374,
+                  394
+                ],
+                [
+                  374,
+                  428
+                ],
+                [
+                  176,
+                  428
+                ]
+              ],
+              "page_quad": [
+                [
+                  176,
+                  394
+                ],
+                [
+                  374,
+                  394
+                ],
+                [
+                  374,
+                  428
+                ],
+                [
+                  176,
+                  428
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0148",
+              "region_id": "p0005-full-page",
+              "detector_index": 147,
+              "crop_path": "crops/lines/region-00005-line-00147.png",
+              "text": "Triệu VND",
+              "detection_confidence": 0.7739622484026851,
+              "recognition_confidence": 0.933935264746348,
+              "region_quad": [
+                [
+                  1043,
+                  407
+                ],
+                [
+                  1186,
+                  401
+                ],
+                [
+                  1188,
+                  440
+                ],
+                [
+                  1044,
+                  446
+                ]
+              ],
+              "page_quad": [
+                [
+                  1043,
+                  407
+                ],
+                [
+                  1186,
+                  401
+                ],
+                [
+                  1188,
+                  440
+                ],
+                [
+                  1044,
+                  446
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0147",
+              "region_id": "p0005-full-page",
+              "detector_index": 146,
+              "crop_path": "crops/lines/region-00005-line-00146.png",
+              "text": "minh",
+              "detection_confidence": 0.8979874128820554,
+              "recognition_confidence": 0.9301596730947495,
+              "region_quad": [
+                [
+                  826,
+                  409
+                ],
+                [
+                  907,
+                  409
+                ],
+                [
+                  907,
+                  445
+                ],
+                [
+                  826,
+                  445
+                ]
+              ],
+              "page_quad": [
+                [
+                  826,
+                  409
+                ],
+                [
+                  907,
+                  409
+                ],
+                [
+                  907,
+                  445
+                ],
+                [
+                  826,
+                  445
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0146",
+              "region_id": "p0005-full-page",
+              "detector_index": 145,
+              "crop_path": "crops/lines/region-00005-line-00145.png",
+              "text": "(Đã kiểm toán)",
+              "detection_confidence": 0.875285966183078,
+              "recognition_confidence": 0.9363306590488979,
+              "region_quad": [
+                [
+                  1315,
+                  421
+                ],
+                [
+                  1503,
+                  421
+                ],
+                [
+                  1503,
+                  455
+                ],
+                [
+                  1315,
+                  455
+                ]
+              ],
+              "page_quad": [
+                [
+                  1315,
+                  421
+                ],
+                [
+                  1503,
+                  421
+                ],
+                [
+                  1503,
+                  455
+                ],
+                [
+                  1315,
+                  455
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0145",
+              "region_id": "p0005-full-page",
+              "detector_index": 144,
+              "crop_path": "crops/lines/region-00005-line-00144.png",
+              "text": "418.028.391",
+              "detection_confidence": 0.7761731778720566,
+              "recognition_confidence": 0.9289386001500216,
+              "region_quad": [
+                [
+                  1341,
+                  463
+                ],
+                [
+                  1497,
+                  457
+                ],
+                [
+                  1498,
+                  494
+                ],
+                [
+                  1342,
+                  499
+                ]
+              ],
+              "page_quad": [
+                [
+                  1341,
+                  463
+                ],
+                [
+                  1497,
+                  457
+                ],
+                [
+                  1498,
+                  494
+                ],
+                [
+                  1342,
+                  499
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0144",
+              "region_id": "p0005-full-page",
+              "detector_index": 143,
+              "crop_path": "crops/lines/region-00005-line-00143.png",
+              "text": "451.893.195",
+              "detection_confidence": 0.8960015971845547,
+              "recognition_confidence": 0.9266748916019093,
+              "region_quad": [
+                [
+                  1034,
+                  465
+                ],
+                [
+                  1188,
+                  465
+                ],
+                [
+                  1188,
+                  499
+                ],
+                [
+                  1034,
+                  499
+                ]
+              ],
+              "page_quad": [
+                [
+                  1034,
+                  465
+                ],
+                [
+                  1188,
+                  465
+                ],
+                [
+                  1188,
+                  499
+                ],
+                [
+                  1034,
+                  499
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0143",
+              "region_id": "p0005-full-page",
+              "detector_index": 142,
+              "crop_path": "crops/lines/region-00005-line-00142.png",
+              "text": "A TÀI SẢNG",
+              "detection_confidence": 0.934638932812959,
+              "recognition_confidence": 0.9101882636547088,
+              "region_quad": [
+                [
+                  181,
+                  467
+                ],
+                [
+                  330,
+                  467
+                ],
+                [
+                  330,
+                  504
+                ],
+                [
+                  181,
+                  504
+                ]
+              ],
+              "page_quad": [
+                [
+                  181,
+                  467
+                ],
+                [
+                  330,
+                  467
+                ],
+                [
+                  330,
+                  504
+                ],
+                [
+                  181,
+                  504
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0142",
+              "region_id": "p0005-full-page",
+              "detector_index": 141,
+              "crop_path": "crops/lines/region-00005-line-00141.png",
+              "text": "1.292.735",
+              "detection_confidence": 0.833973993686453,
+              "recognition_confidence": 0.9334551559554206,
+              "region_quad": [
+                [
+                  1371,
+                  509
+                ],
+                [
+                  1500,
+                  509
+                ],
+                [
+                  1500,
+                  545
+                ],
+                [
+                  1371,
+                  545
+                ]
+              ],
+              "page_quad": [
+                [
+                  1371,
+                  509
+                ],
+                [
+                  1500,
+                  509
+                ],
+                [
+                  1500,
+                  545
+                ],
+                [
+                  1371,
+                  545
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0140",
+              "region_id": "p0005-full-page",
+              "detector_index": 139,
+              "crop_path": "crops/lines/region-00005-line-00139.png",
+              "text": "1.560.071",
+              "detection_confidence": 0.8492269266681332,
+              "recognition_confidence": 0.9290216035313077,
+              "region_quad": [
+                [
+                  1058,
+                  511
+                ],
+                [
+                  1185,
+                  511
+                ],
+                [
+                  1185,
+                  548
+                ],
+                [
+                  1058,
+                  548
+                ]
+              ],
+              "page_quad": [
+                [
+                  1058,
+                  511
+                ],
+                [
+                  1185,
+                  511
+                ],
+                [
+                  1185,
+                  548
+                ],
+                [
+                  1058,
+                  548
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0141",
+              "region_id": "p0005-full-page",
+              "detector_index": 140,
+              "crop_path": "crops/lines/region-00005-line-00140.png",
+              "text": "6",
+              "detection_confidence": 0.7236157650152197,
+              "recognition_confidence": 0.9399314522743225,
+              "region_quad": [
+                [
+                  853,
+                  514
+                ],
+                [
+                  882,
+                  514
+                ],
+                [
+                  882,
+                  553
+                ],
+                [
+                  853,
+                  553
+                ]
+              ],
+              "page_quad": [
+                [
+                  853,
+                  514
+                ],
+                [
+                  882,
+                  514
+                ],
+                [
+                  882,
+                  553
+                ],
+                [
+                  853,
+                  553
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0139",
+              "region_id": "p0005-full-page",
+              "detector_index": 138,
+              "crop_path": "crops/lines/region-00005-line-00138.png",
+              "text": "Tiền mặt vàng bạc đá quý",
+              "detection_confidence": 0.9592751094887217,
+              "recognition_confidence": 0.9103186974922816,
+              "region_quad": [
+                [
+                  259,
+                  519
+                ],
+                [
+                  594,
+                  519
+                ],
+                [
+                  594,
+                  553
+                ],
+                [
+                  259,
+                  553
+                ]
+              ],
+              "page_quad": [
+                [
+                  259,
+                  519
+                ],
+                [
+                  594,
+                  519
+                ],
+                [
+                  594,
+                  553
+                ],
+                [
+                  259,
+                  553
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0137",
+              "region_id": "p0005-full-page",
+              "detector_index": 136,
+              "crop_path": "crops/lines/region-00005-line-00136.png",
+              "text": "22.708.369",
+              "detection_confidence": 0.8123342161240698,
+              "recognition_confidence": 0.9282623767852783,
+              "region_quad": [
+                [
+                  1353,
+                  560
+                ],
+                [
+                  1497,
+                  555
+                ],
+                [
+                  1498,
+                  591
+                ],
+                [
+                  1355,
+                  597
+                ]
+              ],
+              "page_quad": [
+                [
+                  1353,
+                  560
+                ],
+                [
+                  1497,
+                  555
+                ],
+                [
+                  1498,
+                  591
+                ],
+                [
+                  1355,
+                  597
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0138",
+              "region_id": "p0005-full-page",
+              "detector_index": 137,
+              "crop_path": "crops/lines/region-00005-line-00137.png",
+              "text": "7",
+              "detection_confidence": 0.7067114196146246,
+              "recognition_confidence": 0.9343096613883972,
+              "region_quad": [
+                [
+                  850,
+                  560
+                ],
+                [
+                  882,
+                  560
+                ],
+                [
+                  882,
+                  599
+                ],
+                [
+                  850,
+                  599
+                ]
+              ],
+              "page_quad": [
+                [
+                  850,
+                  560
+                ],
+                [
+                  882,
+                  560
+                ],
+                [
+                  882,
+                  599
+                ],
+                [
+                  850,
+                  599
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0136",
+              "region_id": "p0005-full-page",
+              "detector_index": 135,
+              "crop_path": "crops/lines/region-00005-line-00135.png",
+              "text": "20.659.033",
+              "detection_confidence": 0.8053770210050667,
+              "recognition_confidence": 0.9280439913272858,
+              "region_quad": [
+                [
+                  1043,
+                  560
+                ],
+                [
+                  1185,
+                  560
+                ],
+                [
+                  1185,
+                  596
+                ],
+                [
+                  1043,
+                  596
+                ]
+              ],
+              "page_quad": [
+                [
+                  1043,
+                  560
+                ],
+                [
+                  1185,
+                  560
+                ],
+                [
+                  1185,
+                  596
+                ],
+                [
+                  1043,
+                  596
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0134",
+              "region_id": "p0005-full-page",
+              "detector_index": 133,
+              "crop_path": "crops/lines/region-00005-line-00133.png",
+              "text": "Tiền gửi tại NHNN",
+              "detection_confidence": 0.8260209809451671,
+              "recognition_confidence": 0.9312765493112451,
+              "region_quad": [
+                [
+                  261,
+                  562
+                ],
+                [
+                  513,
+                  562
+                ],
+                [
+                  513,
+                  604
+                ],
+                [
+                  261,
+                  604
+                ]
+              ],
+              "page_quad": [
+                [
+                  261,
+                  562
+                ],
+                [
+                  513,
+                  562
+                ],
+                [
+                  513,
+                  604
+                ],
+                [
+                  261,
+                  604
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0135",
+              "region_id": "p0005-full-page",
+              "detector_index": 134,
+              "crop_path": "crops/lines/region-00005-line-00134.png",
+              "text": "II",
+              "detection_confidence": 0.7167665922186441,
+              "recognition_confidence": 0.9163079559803009,
+              "region_quad": [
+                [
+                  195,
+                  567
+                ],
+                [
+                  232,
+                  567
+                ],
+                [
+                  232,
+                  601
+                ],
+                [
+                  195,
+                  601
+                ]
+              ],
+              "page_quad": [
+                [
+                  195,
+                  567
+                ],
+                [
+                  232,
+                  567
+                ],
+                [
+                  232,
+                  601
+                ],
+                [
+                  195,
+                  601
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0133",
+              "region_id": "p0005-full-page",
+              "detector_index": 132,
+              "crop_path": "crops/lines/region-00005-line-00132.png",
+              "text": "Tiền vàng gửi tại các TCTD khác và cho tháng",
+              "detection_confidence": 0.8447118151081741,
+              "recognition_confidence": 0.8524871077388525,
+              "region_quad": [
+                [
+                  264,
+                  611
+                ],
+                [
+                  775,
+                  611
+                ],
+                [
+                  775,
+                  645
+                ],
+                [
+                  264,
+                  645
+                ]
+              ],
+              "page_quad": [
+                [
+                  264,
+                  611
+                ],
+                [
+                  775,
+                  611
+                ],
+                [
+                  775,
+                  645
+                ],
+                [
+                  264,
+                  645
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0132",
+              "region_id": "p0005-full-page",
+              "detector_index": 131,
+              "crop_path": "crops/lines/region-00005-line-00131.png",
+              "text": "70.520.700",
+              "detection_confidence": 0.8047557781504181,
+              "recognition_confidence": 0.9310822486877441,
+              "region_quad": [
+                [
+                  1356,
+                  618
+                ],
+                [
+                  1500,
+                  618
+                ],
+                [
+                  1500,
+                  655
+                ],
+                [
+                  1356,
+                  655
+                ]
+              ],
+              "page_quad": [
+                [
+                  1356,
+                  618
+                ],
+                [
+                  1500,
+                  618
+                ],
+                [
+                  1500,
+                  655
+                ],
+                [
+                  1356,
+                  655
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0130",
+              "region_id": "p0005-full-page",
+              "detector_index": 129,
+              "crop_path": "crops/lines/region-00005-line-00129.png",
+              "text": "65.344.160",
+              "detection_confidence": 0.8218031747919489,
+              "recognition_confidence": 0.9314876973628998,
+              "region_quad": [
+                [
+                  1046,
+                  621
+                ],
+                [
+                  1188,
+                  621
+                ],
+                [
+                  1188,
+                  657
+                ],
+                [
+                  1046,
+                  657
+                ]
+              ],
+              "page_quad": [
+                [
+                  1046,
+                  621
+                ],
+                [
+                  1188,
+                  621
+                ],
+                [
+                  1188,
+                  657
+                ],
+                [
+                  1046,
+                  657
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0131",
+              "region_id": "p0005-full-page",
+              "detector_index": 130,
+              "crop_path": "crops/lines/region-00005-line-00130.png",
+              "text": "8",
+              "detection_confidence": 0.7548370921210229,
+              "recognition_confidence": 0.9369633793830872,
+              "region_quad": [
+                [
+                  850,
+                  623
+                ],
+                [
+                  880,
+                  623
+                ],
+                [
+                  880,
+                  662
+                ],
+                [
+                  850,
+                  662
+                ]
+              ],
+              "page_quad": [
+                [
+                  850,
+                  623
+                ],
+                [
+                  880,
+                  623
+                ],
+                [
+                  880,
+                  662
+                ],
+                [
+                  850,
+                  662
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0129",
+              "region_id": "p0005-full-page",
+              "detector_index": 128,
+              "crop_path": "crops/lines/region-00005-line-00128.png",
+              "text": "III",
+              "detection_confidence": 0.8297821120576313,
+              "recognition_confidence": 0.7593639492988586,
+              "region_quad": [
+                [
+                  186,
+                  626
+                ],
+                [
+                  239,
+                  626
+                ],
+                [
+                  239,
+                  667
+                ],
+                [
+                  186,
+                  667
+                ]
+              ],
+              "page_quad": [
+                [
+                  186,
+                  626
+                ],
+                [
+                  239,
+                  626
+                ],
+                [
+                  239,
+                  667
+                ],
+                [
+                  186,
+                  667
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0128",
+              "region_id": "p0005-full-page",
+              "detector_index": 127,
+              "crop_path": "crops/lines/region-00005-line-00127.png",
+              "text": "vay các TCTD khác",
+              "detection_confidence": 0.7704600527482095,
+              "recognition_confidence": 0.9305609604891609,
+              "region_quad": [
+                [
+                  261,
+                  645
+                ],
+                [
+                  523,
+                  643
+                ],
+                [
+                  523,
+                  679
+                ],
+                [
+                  262,
+                  682
+                ]
+              ],
+              "page_quad": [
+                [
+                  261,
+                  645
+                ],
+                [
+                  523,
+                  643
+                ],
+                [
+                  523,
+                  679
+                ],
+                [
+                  262,
+                  682
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0127",
+              "region_id": "p0005-full-page",
+              "detector_index": 126,
+              "crop_path": "crops/lines/region-00005-line-00126.png",
+              "text": "62.182.535",
+              "detection_confidence": 0.9396980067151559,
+              "recognition_confidence": 0.9289903044700623,
+              "region_quad": [
+                [
+                  1359,
+                  682
+                ],
+                [
+                  1500,
+                  682
+                ],
+                [
+                  1500,
+                  716
+                ],
+                [
+                  1359,
+                  716
+                ]
+              ],
+              "page_quad": [
+                [
+                  1359,
+                  682
+                ],
+                [
+                  1500,
+                  682
+                ],
+                [
+                  1500,
+                  716
+                ],
+                [
+                  1359,
+                  716
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0126",
+              "region_id": "p0005-full-page",
+              "detector_index": 125,
+              "crop_path": "crops/lines/region-00005-line-00125.png",
+              "text": "64.423.385",
+              "detection_confidence": 0.9337933535429359,
+              "recognition_confidence": 0.9331988155841827,
+              "region_quad": [
+                [
+                  1046,
+                  684
+                ],
+                [
+                  1188,
+                  684
+                ],
+                [
+                  1188,
+                  718
+                ],
+                [
+                  1046,
+                  718
+                ]
+              ],
+              "page_quad": [
+                [
+                  1046,
+                  684
+                ],
+                [
+                  1188,
+                  684
+                ],
+                [
+                  1188,
+                  718
+                ],
+                [
+                  1046,
+                  718
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0124",
+              "region_id": "p0005-full-page",
+              "detector_index": 123,
+              "crop_path": "crops/lines/region-00005-line-00123.png",
+              "text": "Tiền vàng gửi tại các TCTD khác",
+              "detection_confidence": 0.7964474609943646,
+              "recognition_confidence": 0.9181699137533864,
+              "region_quad": [
+                [
+                  264,
+                  689
+                ],
+                [
+                  664,
+                  686
+                ],
+                [
+                  665,
+                  723
+                ],
+                [
+                  264,
+                  726
+                ]
+              ],
+              "page_quad": [
+                [
+                  264,
+                  689
+                ],
+                [
+                  664,
+                  686
+                ],
+                [
+                  665,
+                  723
+                ],
+                [
+                  264,
+                  726
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0125",
+              "region_id": "p0005-full-page",
+              "detector_index": 124,
+              "crop_path": "crops/lines/region-00005-line-00124.png",
+              "text": "1",
+              "detection_confidence": 0.7505769284309021,
+              "recognition_confidence": 0.9300541877746582,
+              "region_quad": [
+                [
+                  198,
+                  689
+                ],
+                [
+                  227,
+                  689
+                ],
+                [
+                  227,
+                  725
+                ],
+                [
+                  198,
+                  725
+                ]
+              ],
+              "page_quad": [
+                [
+                  198,
+                  689
+                ],
+                [
+                  227,
+                  689
+                ],
+                [
+                  227,
+                  725
+                ],
+                [
+                  198,
+                  725
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0123",
+              "region_id": "p0005-full-page",
+              "detector_index": 122,
+              "crop_path": "crops/lines/region-00005-line-00122.png",
+              "text": "8.338.165",
+              "detection_confidence": 0.8379381889723139,
+              "recognition_confidence": 0.9302029212315878,
+              "region_quad": [
+                [
+                  1373,
+                  728
+                ],
+                [
+                  1500,
+                  728
+                ],
+                [
+                  1500,
+                  764
+                ],
+                [
+                  1373,
+                  764
+                ]
+              ],
+              "page_quad": [
+                [
+                  1373,
+                  728
+                ],
+                [
+                  1500,
+                  728
+                ],
+                [
+                  1500,
+                  764
+                ],
+                [
+                  1373,
+                  764
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0122",
+              "region_id": "p0005-full-page",
+              "detector_index": 121,
+              "crop_path": "crops/lines/region-00005-line-00121.png",
+              "text": "920.775",
+              "detection_confidence": 0.8836232780142583,
+              "recognition_confidence": 0.932880026953561,
+              "region_quad": [
+                [
+                  1082,
+                  730
+                ],
+                [
+                  1188,
+                  730
+                ],
+                [
+                  1188,
+                  767
+                ],
+                [
+                  1082,
+                  767
+                ]
+              ],
+              "page_quad": [
+                [
+                  1082,
+                  730
+                ],
+                [
+                  1188,
+                  730
+                ],
+                [
+                  1188,
+                  767
+                ],
+                [
+                  1082,
+                  767
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0120",
+              "region_id": "p0005-full-page",
+              "detector_index": 119,
+              "crop_path": "crops/lines/region-00005-line-00119.png",
+              "text": "Cho vay các tổ chức tín dụng khác thánh",
+              "detection_confidence": 0.9192115829739193,
+              "recognition_confidence": 0.8312384090744532,
+              "region_quad": [
+                [
+                  266,
+                  738
+                ],
+                [
+                  677,
+                  738
+                ],
+                [
+                  677,
+                  772
+                ],
+                [
+                  266,
+                  772
+                ]
+              ],
+              "page_quad": [
+                [
+                  266,
+                  738
+                ],
+                [
+                  677,
+                  738
+                ],
+                [
+                  677,
+                  772
+                ],
+                [
+                  266,
+                  772
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0121",
+              "region_id": "p0005-full-page",
+              "detector_index": 120,
+              "crop_path": "crops/lines/region-00005-line-00120.png",
+              "text": "2",
+              "detection_confidence": 0.7557412672580944,
+              "recognition_confidence": 0.9329734444618225,
+              "region_quad": [
+                [
+                  200,
+                  742
+                ],
+                [
+                  225,
+                  742
+                ],
+                [
+                  225,
+                  772
+                ],
+                [
+                  200,
+                  772
+                ]
+              ],
+              "page_quad": [
+                [
+                  200,
+                  742
+                ],
+                [
+                  225,
+                  742
+                ],
+                [
+                  225,
+                  772
+                ],
+                [
+                  200,
+                  772
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0118",
+              "region_id": "p0005-full-page",
+              "detector_index": 117,
+              "crop_path": "crops/lines/region-00005-line-00117.png",
+              "text": "Trong Dự phòng rúi ro cho vay các TCTD khác thánh",
+              "detection_confidence": 0.8031729477696942,
+              "recognition_confidence": 0.8179121808129914,
+              "region_quad": [
+                [
+                  264,
+                  784
+                ],
+                [
+                  750,
+                  784
+                ],
+                [
+                  750,
+                  818
+                ],
+                [
+                  264,
+                  818
+                ]
+              ],
+              "page_quad": [
+                [
+                  264,
+                  784
+                ],
+                [
+                  750,
+                  784
+                ],
+                [
+                  750,
+                  818
+                ],
+                [
+                  264,
+                  818
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0119",
+              "region_id": "p0005-full-page",
+              "detector_index": 118,
+              "crop_path": "crops/lines/region-00005-line-00118.png",
+              "text": "3",
+              "detection_confidence": 0.875837540224431,
+              "recognition_confidence": 0.9320263266563416,
+              "region_quad": [
+                [
+                  200,
+                  789
+                ],
+                [
+                  225,
+                  789
+                ],
+                [
+                  225,
+                  818
+                ],
+                [
+                  200,
+                  818
+                ]
+              ],
+              "page_quad": [
+                [
+                  200,
+                  789
+                ],
+                [
+                  225,
+                  789
+                ],
+                [
+                  225,
+                  818
+                ],
+                [
+                  200,
+                  818
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0116",
+              "region_id": "p0005-full-page",
+              "detector_index": 115,
+              "crop_path": "crops/lines/region-00005-line-00115.png",
+              "text": "57.321",
+              "detection_confidence": 0.7831248864600504,
+              "recognition_confidence": 0.928523043791453,
+              "region_quad": [
+                [
+                  1097,
+                  825
+                ],
+                [
+                  1188,
+                  825
+                ],
+                [
+                  1188,
+                  864
+                ],
+                [
+                  1097,
+                  864
+                ]
+              ],
+              "page_quad": [
+                [
+                  1097,
+                  825
+                ],
+                [
+                  1188,
+                  825
+                ],
+                [
+                  1188,
+                  864
+                ],
+                [
+                  1097,
+                  864
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0117",
+              "region_id": "p0005-full-page",
+              "detector_index": 116,
+              "crop_path": "crops/lines/region-00005-line-00116.png",
+              "text": "1",
+              "detection_confidence": 0.7332694480126655,
+              "recognition_confidence": 0.930544376373291,
+              "region_quad": [
+                [
+                  1476,
+                  828
+                ],
+                [
+                  1498,
+                  828
+                ],
+                [
+                  1498,
+                  857
+                ],
+                [
+                  1476,
+                  857
+                ]
+              ],
+              "page_quad": [
+                [
+                  1476,
+                  828
+                ],
+                [
+                  1498,
+                  828
+                ],
+                [
+                  1498,
+                  857
+                ],
+                [
+                  1476,
+                  857
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0114",
+              "region_id": "p0005-full-page",
+              "detector_index": 113,
+              "crop_path": "crops/lines/region-00005-line-00113.png",
+              "text": "IV",
+              "detection_confidence": 0.7996794734942194,
+              "recognition_confidence": 0.8795724809169769,
+              "region_quad": [
+                [
+                  191,
+                  833
+                ],
+                [
+                  235,
+                  833
+                ],
+                [
+                  235,
+                  867
+                ],
+                [
+                  191,
+                  867
+                ]
+              ],
+              "page_quad": [
+                [
+                  191,
+                  833
+                ],
+                [
+                  235,
+                  833
+                ],
+                [
+                  235,
+                  867
+                ],
+                [
+                  191,
+                  867
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0113",
+              "region_id": "p0005-full-page",
+              "detector_index": 112,
+              "crop_path": "crops/lines/region-00005-line-00112.png",
+              "text": "Chứng khoán kinh doanh",
+              "detection_confidence": 0.8405128227770999,
+              "recognition_confidence": 0.9309996583245017,
+              "region_quad": [
+                [
+                  266,
+                  833
+                ],
+                [
+                  594,
+                  833
+                ],
+                [
+                  594,
+                  867
+                ],
+                [
+                  266,
+                  867
+                ]
+              ],
+              "page_quad": [
+                [
+                  266,
+                  833
+                ],
+                [
+                  594,
+                  833
+                ],
+                [
+                  594,
+                  867
+                ],
+                [
+                  266,
+                  867
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0115",
+              "region_id": "p0005-full-page",
+              "detector_index": 114,
+              "crop_path": "crops/lines/region-00005-line-00114.png",
+              "text": "9",
+              "detection_confidence": 0.8613949674492081,
+              "recognition_confidence": 0.9427483677864075,
+              "region_quad": [
+                [
+                  855,
+                  833
+                ],
+                [
+                  877,
+                  833
+                ],
+                [
+                  877,
+                  864
+                ],
+                [
+                  855,
+                  864
+                ]
+              ],
+              "page_quad": [
+                [
+                  855,
+                  833
+                ],
+                [
+                  877,
+                  833
+                ],
+                [
+                  877,
+                  864
+                ],
+                [
+                  855,
+                  864
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0111",
+              "region_id": "p0005-full-page",
+              "detector_index": 110,
+              "crop_path": "crops/lines/region-00005-line-00110.png",
+              "text": "58.183",
+              "detection_confidence": 0.8465894630523744,
+              "recognition_confidence": 0.9255567491054535,
+              "region_quad": [
+                [
+                  1097,
+                  872
+                ],
+                [
+                  1188,
+                  872
+                ],
+                [
+                  1188,
+                  910
+                ],
+                [
+                  1097,
+                  910
+                ]
+              ],
+              "page_quad": [
+                [
+                  1097,
+                  872
+                ],
+                [
+                  1188,
+                  872
+                ],
+                [
+                  1188,
+                  910
+                ],
+                [
+                  1097,
+                  910
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0112",
+              "region_id": "p0005-full-page",
+              "detector_index": 111,
+              "crop_path": "crops/lines/region-00005-line-00111.png",
+              "text": "1",
+              "detection_confidence": 0.7484975904226303,
+              "recognition_confidence": 0.9292590022087097,
+              "region_quad": [
+                [
+                  1478,
+                  874
+                ],
+                [
+                  1498,
+                  874
+                ],
+                [
+                  1498,
+                  906
+                ],
+                [
+                  1478,
+                  906
+                ]
+              ],
+              "page_quad": [
+                [
+                  1478,
+                  874
+                ],
+                [
+                  1498,
+                  874
+                ],
+                [
+                  1498,
+                  906
+                ],
+                [
+                  1478,
+                  906
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0109",
+              "region_id": "p0005-full-page",
+              "detector_index": 108,
+              "crop_path": "crops/lines/region-00005-line-00108.png",
+              "text": "Chứng khoán kính doanh",
+              "detection_confidence": 0.84246122240264,
+              "recognition_confidence": 0.9328402741388842,
+              "region_quad": [
+                [
+                  266,
+                  881
+                ],
+                [
+                  569,
+                  881
+                ],
+                [
+                  569,
+                  915
+                ],
+                [
+                  266,
+                  915
+                ]
+              ],
+              "page_quad": [
+                [
+                  266,
+                  881
+                ],
+                [
+                  569,
+                  881
+                ],
+                [
+                  569,
+                  915
+                ],
+                [
+                  266,
+                  915
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0110",
+              "region_id": "p0005-full-page",
+              "detector_index": 109,
+              "crop_path": "crops/lines/region-00005-line-00109.png",
+              "text": "1",
+              "detection_confidence": 0.8170589203872377,
+              "recognition_confidence": 0.9288761615753174,
+              "region_quad": [
+                [
+                  200,
+                  884
+                ],
+                [
+                  225,
+                  884
+                ],
+                [
+                  225,
+                  913
+                ],
+                [
+                  200,
+                  913
+                ]
+              ],
+              "page_quad": [
+                [
+                  200,
+                  884
+                ],
+                [
+                  225,
+                  884
+                ],
+                [
+                  225,
+                  913
+                ],
+                [
+                  200,
+                  913
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0108",
+              "region_id": "p0005-full-page",
+              "detector_index": 107,
+              "crop_path": "crops/lines/region-00005-line-00107.png",
+              "text": "(862)",
+              "detection_confidence": 0.8129771170672029,
+              "recognition_confidence": 0.9307540655136108,
+              "region_quad": [
+                [
+                  1112,
+                  918
+                ],
+                [
+                  1192,
+                  918
+                ],
+                [
+                  1192,
+                  964
+                ],
+                [
+                  1112,
+                  964
+                ]
+              ],
+              "page_quad": [
+                [
+                  1112,
+                  918
+                ],
+                [
+                  1192,
+                  918
+                ],
+                [
+                  1192,
+                  964
+                ],
+                [
+                  1112,
+                  964
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0107",
+              "region_id": "p0005-full-page",
+              "detector_index": 106,
+              "crop_path": "crops/lines/region-00005-line-00106.png",
+              "text": "2",
+              "detection_confidence": 0.7457846908830106,
+              "recognition_confidence": 0.9333266019821167,
+              "region_quad": [
+                [
+                  198,
+                  927
+                ],
+                [
+                  227,
+                  927
+                ],
+                [
+                  227,
+                  964
+                ],
+                [
+                  198,
+                  964
+                ]
+              ],
+              "page_quad": [
+                [
+                  198,
+                  927
+                ],
+                [
+                  227,
+                  927
+                ],
+                [
+                  227,
+                  964
+                ],
+                [
+                  198,
+                  964
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0106",
+              "region_id": "p0005-full-page",
+              "detector_index": 105,
+              "crop_path": "crops/lines/region-00005-line-00105.png",
+              "text": "Dự phòng rúi ro chứng khoán kinh doanh tháng",
+              "detection_confidence": 0.8302772411843762,
+              "recognition_confidence": 0.847554923966527,
+              "region_quad": [
+                [
+                  269,
+                  927
+                ],
+                [
+                  760,
+                  927
+                ],
+                [
+                  760,
+                  962
+                ],
+                [
+                  269,
+                  962
+                ]
+              ],
+              "page_quad": [
+                [
+                  269,
+                  927
+                ],
+                [
+                  760,
+                  927
+                ],
+                [
+                  760,
+                  962
+                ],
+                [
+                  269,
+                  962
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0105",
+              "region_id": "p0005-full-page",
+              "detector_index": 104,
+              "crop_path": "crops/lines/region-00005-line-00104.png",
+              "text": "Trong Các công cụ tài chính phái sinh và các tài thế trị",
+              "detection_confidence": 0.8206393474252174,
+              "recognition_confidence": 0.8124279850827796,
+              "region_quad": [
+                [
+                  269,
+                  976
+                ],
+                [
+                  787,
+                  976
+                ],
+                [
+                  787,
+                  1010
+                ],
+                [
+                  269,
+                  1010
+                ]
+              ],
+              "page_quad": [
+                [
+                  269,
+                  976
+                ],
+                [
+                  787,
+                  976
+                ],
+                [
+                  787,
+                  1010
+                ],
+                [
+                  269,
+                  1010
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0103",
+              "region_id": "p0005-full-page",
+              "detector_index": 102,
+              "crop_path": "crops/lines/region-00005-line-00102.png",
+              "text": "112.651",
+              "detection_confidence": 0.9105970356742747,
+              "recognition_confidence": 0.9292986818722316,
+              "region_quad": [
+                [
+                  1082,
+                  986
+                ],
+                [
+                  1188,
+                  986
+                ],
+                [
+                  1188,
+                  1022
+                ],
+                [
+                  1082,
+                  1022
+                ]
+              ],
+              "page_quad": [
+                [
+                  1082,
+                  986
+                ],
+                [
+                  1188,
+                  986
+                ],
+                [
+                  1188,
+                  1022
+                ],
+                [
+                  1082,
+                  1022
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0104",
+              "region_id": "p0005-full-page",
+              "detector_index": 103,
+              "crop_path": "crops/lines/region-00005-line-00103.png",
+              "text": "10",
+              "detection_confidence": 0.8645921837877143,
+              "recognition_confidence": 0.924870491027832,
+              "region_quad": [
+                [
+                  850,
+                  988
+                ],
+                [
+                  889,
+                  988
+                ],
+                [
+                  889,
+                  1025
+                ],
+                [
+                  850,
+                  1025
+                ]
+              ],
+              "page_quad": [
+                [
+                  850,
+                  988
+                ],
+                [
+                  889,
+                  988
+                ],
+                [
+                  889,
+                  1025
+                ],
+                [
+                  850,
+                  1025
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0102",
+              "region_id": "p0005-full-page",
+              "detector_index": 101,
+              "crop_path": "crops/lines/region-00005-line-00101.png",
+              "text": "v",
+              "detection_confidence": 0.7464035370516487,
+              "recognition_confidence": 0.8371967673301697,
+              "region_quad": [
+                [
+                  195,
+                  991
+                ],
+                [
+                  230,
+                  991
+                ],
+                [
+                  230,
+                  1027
+                ],
+                [
+                  195,
+                  1027
+                ]
+              ],
+              "page_quad": [
+                [
+                  195,
+                  991
+                ],
+                [
+                  230,
+                  991
+                ],
+                [
+                  230,
+                  1027
+                ],
+                [
+                  195,
+                  1027
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0101",
+              "region_id": "p0005-full-page",
+              "detector_index": 100,
+              "crop_path": "crops/lines/region-00005-line-00100.png",
+              "text": "sản tài chính khác",
+              "detection_confidence": 0.8301083449109675,
+              "recognition_confidence": 0.9313470390107896,
+              "region_quad": [
+                [
+                  266,
+                  1010
+                ],
+                [
+                  501,
+                  1010
+                ],
+                [
+                  501,
+                  1044
+                ],
+                [
+                  266,
+                  1044
+                ]
+              ],
+              "page_quad": [
+                [
+                  266,
+                  1010
+                ],
+                [
+                  501,
+                  1010
+                ],
+                [
+                  501,
+                  1044
+                ],
+                [
+                  266,
+                  1044
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0100",
+              "region_id": "p0005-full-page",
+              "detector_index": 99,
+              "crop_path": "crops/lines/region-00005-line-00099.png",
+              "text": "247.238.856",
+              "detection_confidence": 0.8469610140206091,
+              "recognition_confidence": 0.9258486899462613,
+              "region_quad": [
+                [
+                  1346,
+                  1052
+                ],
+                [
+                  1503,
+                  1052
+                ],
+                [
+                  1503,
+                  1086
+                ],
+                [
+                  1346,
+                  1086
+                ]
+              ],
+              "page_quad": [
+                [
+                  1346,
+                  1052
+                ],
+                [
+                  1503,
+                  1052
+                ],
+                [
+                  1503,
+                  1086
+                ],
+                [
+                  1346,
+                  1086
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0097",
+              "region_id": "p0005-full-page",
+              "detector_index": 96,
+              "crop_path": "crops/lines/region-00005-line-00096.png",
+              "text": "Cho vay khách hàng",
+              "detection_confidence": 0.7979606972063729,
+              "recognition_confidence": 0.9315274821387397,
+              "region_quad": [
+                [
+                  262,
+                  1054
+                ],
+                [
+                  533,
+                  1057
+                ],
+                [
+                  532,
+                  1098
+                ],
+                [
+                  261,
+                  1095
+                ]
+              ],
+              "page_quad": [
+                [
+                  262,
+                  1054
+                ],
+                [
+                  533,
+                  1057
+                ],
+                [
+                  532,
+                  1098
+                ],
+                [
+                  261,
+                  1095
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0099",
+              "region_id": "p0005-full-page",
+              "detector_index": 98,
+              "crop_path": "crops/lines/region-00005-line-00098.png",
+              "text": "292.020.111",
+              "detection_confidence": 0.912998734878338,
+              "recognition_confidence": 0.9308790727095171,
+              "region_quad": [
+                [
+                  1034,
+                  1054
+                ],
+                [
+                  1188,
+                  1054
+                ],
+                [
+                  1188,
+                  1088
+                ],
+                [
+                  1034,
+                  1088
+                ]
+              ],
+              "page_quad": [
+                [
+                  1034,
+                  1054
+                ],
+                [
+                  1188,
+                  1054
+                ],
+                [
+                  1188,
+                  1088
+                ],
+                [
+                  1034,
+                  1088
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0098",
+              "region_id": "p0005-full-page",
+              "detector_index": 97,
+              "crop_path": "crops/lines/region-00005-line-00097.png",
+              "text": "VI",
+              "detection_confidence": 0.880368320325103,
+              "recognition_confidence": 0.926848828792572,
+              "region_quad": [
+                [
+                  193,
+                  1061
+                ],
+                [
+                  237,
+                  1061
+                ],
+                [
+                  237,
+                  1093
+                ],
+                [
+                  193,
+                  1093
+                ]
+              ],
+              "page_quad": [
+                [
+                  193,
+                  1061
+                ],
+                [
+                  237,
+                  1061
+                ],
+                [
+                  237,
+                  1093
+                ],
+                [
+                  193,
+                  1093
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0096",
+              "region_id": "p0005-full-page",
+              "detector_index": 95,
+              "crop_path": "crops/lines/region-00005-line-00095.png",
+              "text": "250.331.368",
+              "detection_confidence": 0.7784447388486322,
+              "recognition_confidence": 0.9285110397772356,
+              "region_quad": [
+                [
+                  1346,
+                  1098
+                ],
+                [
+                  1503,
+                  1098
+                ],
+                [
+                  1503,
+                  1134
+                ],
+                [
+                  1346,
+                  1134
+                ]
+              ],
+              "page_quad": [
+                [
+                  1346,
+                  1098
+                ],
+                [
+                  1503,
+                  1098
+                ],
+                [
+                  1503,
+                  1134
+                ],
+                [
+                  1346,
+                  1134
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0094",
+              "region_id": "p0005-full-page",
+              "detector_index": 93,
+              "crop_path": "crops/lines/region-00005-line-00093.png",
+              "text": "296.054.927",
+              "detection_confidence": 0.7858437163177816,
+              "recognition_confidence": 0.9273243763230063,
+              "region_quad": [
+                [
+                  1034,
+                  1100
+                ],
+                [
+                  1190,
+                  1100
+                ],
+                [
+                  1190,
+                  1137
+                ],
+                [
+                  1034,
+                  1137
+                ]
+              ],
+              "page_quad": [
+                [
+                  1034,
+                  1100
+                ],
+                [
+                  1190,
+                  1100
+                ],
+                [
+                  1190,
+                  1137
+                ],
+                [
+                  1034,
+                  1137
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0095",
+              "region_id": "p0005-full-page",
+              "detector_index": 94,
+              "crop_path": "crops/lines/region-00005-line-00094.png",
+              "text": "11",
+              "detection_confidence": 0.8721033684909343,
+              "recognition_confidence": 0.9254923760890961,
+              "region_quad": [
+                [
+                  850,
+                  1103
+                ],
+                [
+                  889,
+                  1103
+                ],
+                [
+                  889,
+                  1139
+                ],
+                [
+                  850,
+                  1139
+                ]
+              ],
+              "page_quad": [
+                [
+                  850,
+                  1103
+                ],
+                [
+                  889,
+                  1103
+                ],
+                [
+                  889,
+                  1139
+                ],
+                [
+                  850,
+                  1139
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0093",
+              "region_id": "p0005-full-page",
+              "detector_index": 92,
+              "crop_path": "crops/lines/region-00005-line-00092.png",
+              "text": "1",
+              "detection_confidence": 0.7775526077279614,
+              "recognition_confidence": 0.929451584815979,
+              "region_quad": [
+                [
+                  198,
+                  1108
+                ],
+                [
+                  230,
+                  1108
+                ],
+                [
+                  230,
+                  1142
+                ],
+                [
+                  198,
+                  1142
+                ]
+              ],
+              "page_quad": [
+                [
+                  198,
+                  1108
+                ],
+                [
+                  230,
+                  1108
+                ],
+                [
+                  230,
+                  1142
+                ],
+                [
+                  198,
+                  1142
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0091",
+              "region_id": "p0005-full-page",
+              "detector_index": 90,
+              "crop_path": "crops/lines/region-00005-line-00090.png",
+              "text": "Cho vay khách hàng",
+              "detection_confidence": 0.9241442858741113,
+              "recognition_confidence": 0.9307947688632541,
+              "region_quad": [
+                [
+                  266,
+                  1108
+                ],
+                [
+                  518,
+                  1108
+                ],
+                [
+                  518,
+                  1142
+                ],
+                [
+                  266,
+                  1142
+                ]
+              ],
+              "page_quad": [
+                [
+                  266,
+                  1108
+                ],
+                [
+                  518,
+                  1108
+                ],
+                [
+                  518,
+                  1142
+                ],
+                [
+                  266,
+                  1142
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0089",
+              "region_id": "p0005-full-page",
+              "detector_index": 88,
+              "crop_path": "crops/lines/region-00005-line-00088.png",
+              "text": "(3.092.512)",
+              "detection_confidence": 0.8618958923795548,
+              "recognition_confidence": 0.9303247061642733,
+              "region_quad": [
+                [
+                  1356,
+                  1147
+                ],
+                [
+                  1500,
+                  1147
+                ],
+                [
+                  1500,
+                  1183
+                ],
+                [
+                  1356,
+                  1183
+                ]
+              ],
+              "page_quad": [
+                [
+                  1356,
+                  1147
+                ],
+                [
+                  1500,
+                  1147
+                ],
+                [
+                  1500,
+                  1183
+                ],
+                [
+                  1356,
+                  1183
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0090",
+              "region_id": "p0005-full-page",
+              "detector_index": 89,
+              "crop_path": "crops/lines/region-00005-line-00089.png",
+              "text": "12",
+              "detection_confidence": 0.8097797335117809,
+              "recognition_confidence": 0.9257605373859406,
+              "region_quad": [
+                [
+                  850,
+                  1149
+                ],
+                [
+                  892,
+                  1149
+                ],
+                [
+                  892,
+                  1190
+                ],
+                [
+                  850,
+                  1190
+                ]
+              ],
+              "page_quad": [
+                [
+                  850,
+                  1149
+                ],
+                [
+                  892,
+                  1149
+                ],
+                [
+                  892,
+                  1190
+                ],
+                [
+                  850,
+                  1190
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0088",
+              "region_id": "p0005-full-page",
+              "detector_index": 87,
+              "crop_path": "crops/lines/region-00005-line-00087.png",
+              "text": "(4.034.816)",
+              "detection_confidence": 0.8463458769524901,
+              "recognition_confidence": 0.9301344318823381,
+              "region_quad": [
+                [
+                  1043,
+                  1149
+                ],
+                [
+                  1188,
+                  1149
+                ],
+                [
+                  1188,
+                  1186
+                ],
+                [
+                  1043,
+                  1186
+                ]
+              ],
+              "page_quad": [
+                [
+                  1043,
+                  1149
+                ],
+                [
+                  1188,
+                  1149
+                ],
+                [
+                  1188,
+                  1186
+                ],
+                [
+                  1043,
+                  1186
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0087",
+              "region_id": "p0005-full-page",
+              "detector_index": 86,
+              "crop_path": "crops/lines/region-00005-line-00086.png",
+              "text": "2",
+              "detection_confidence": 0.7660585691893093,
+              "recognition_confidence": 0.9347060322761536,
+              "region_quad": [
+                [
+                  198,
+                  1154
+                ],
+                [
+                  230,
+                  1154
+                ],
+                [
+                  230,
+                  1193
+                ],
+                [
+                  198,
+                  1193
+                ]
+              ],
+              "page_quad": [
+                [
+                  198,
+                  1154
+                ],
+                [
+                  230,
+                  1154
+                ],
+                [
+                  230,
+                  1193
+                ],
+                [
+                  198,
+                  1193
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0086",
+              "region_id": "p0005-full-page",
+              "detector_index": 85,
+              "crop_path": "crops/lines/region-00005-line-00085.png",
+              "text": "Dự phòng rủi ro cho vay khách hàng",
+              "detection_confidence": 0.873564881452845,
+              "recognition_confidence": 0.9256578736445483,
+              "region_quad": [
+                [
+                  266,
+                  1156
+                ],
+                [
+                  704,
+                  1156
+                ],
+                [
+                  704,
+                  1190
+                ],
+                [
+                  266,
+                  1190
+                ]
+              ],
+              "page_quad": [
+                [
+                  266,
+                  1156
+                ],
+                [
+                  704,
+                  1156
+                ],
+                [
+                  704,
+                  1190
+                ],
+                [
+                  266,
+                  1190
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0085",
+              "region_id": "p0005-full-page",
+              "detector_index": 84,
+              "crop_path": "crops/lines/region-00005-line-00084.png",
+              "text": "766.739",
+              "detection_confidence": 0.8462386082295172,
+              "recognition_confidence": 0.9297354391642979,
+              "region_quad": [
+                [
+                  1398,
+                  1193
+                ],
+                [
+                  1503,
+                  1193
+                ],
+                [
+                  1503,
+                  1229
+                ],
+                [
+                  1398,
+                  1229
+                ]
+              ],
+              "page_quad": [
+                [
+                  1398,
+                  1193
+                ],
+                [
+                  1503,
+                  1193
+                ],
+                [
+                  1503,
+                  1229
+                ],
+                [
+                  1398,
+                  1229
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0083",
+              "region_id": "p0005-full-page",
+              "detector_index": 82,
+              "crop_path": "crops/lines/region-00005-line-00082.png",
+              "text": "628.010",
+              "detection_confidence": 0.884264557046764,
+              "recognition_confidence": 0.926750293799809,
+              "region_quad": [
+                [
+                  1085,
+                  1195
+                ],
+                [
+                  1190,
+                  1195
+                ],
+                [
+                  1190,
+                  1232
+                ],
+                [
+                  1085,
+                  1232
+                ]
+              ],
+              "page_quad": [
+                [
+                  1085,
+                  1195
+                ],
+                [
+                  1190,
+                  1195
+                ],
+                [
+                  1190,
+                  1232
+                ],
+                [
+                  1085,
+                  1232
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0084",
+              "region_id": "p0005-full-page",
+              "detector_index": 83,
+              "crop_path": "crops/lines/region-00005-line-00083.png",
+              "text": "13",
+              "detection_confidence": 0.8562343140132725,
+              "recognition_confidence": 0.926036536693573,
+              "region_quad": [
+                [
+                  848,
+                  1198
+                ],
+                [
+                  889,
+                  1198
+                ],
+                [
+                  889,
+                  1234
+                ],
+                [
+                  848,
+                  1234
+                ]
+              ],
+              "page_quad": [
+                [
+                  848,
+                  1198
+                ],
+                [
+                  889,
+                  1198
+                ],
+                [
+                  889,
+                  1234
+                ],
+                [
+                  848,
+                  1234
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0082",
+              "region_id": "p0005-full-page",
+              "detector_index": 81,
+              "crop_path": "crops/lines/region-00005-line-00081.png",
+              "text": "VII",
+              "detection_confidence": 0.7471442579392858,
+              "recognition_confidence": 0.9170312484105428,
+              "region_quad": [
+                [
+                  186,
+                  1203
+                ],
+                [
+                  249,
+                  1203
+                ],
+                [
+                  249,
+                  1239
+                ],
+                [
+                  186,
+                  1239
+                ]
+              ],
+              "page_quad": [
+                [
+                  186,
+                  1203
+                ],
+                [
+                  249,
+                  1203
+                ],
+                [
+                  249,
+                  1239
+                ],
+                [
+                  186,
+                  1239
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0081",
+              "region_id": "p0005-full-page",
+              "detector_index": 80,
+              "crop_path": "crops/lines/region-00005-line-00080.png",
+              "text": "Hoạt động mua nợ",
+              "detection_confidence": 0.8609667709143266,
+              "recognition_confidence": 0.9302756302058697,
+              "region_quad": [
+                [
+                  264,
+                  1205
+                ],
+                [
+                  511,
+                  1205
+                ],
+                [
+                  511,
+                  1239
+                ],
+                [
+                  264,
+                  1239
+                ]
+              ],
+              "page_quad": [
+                [
+                  264,
+                  1205
+                ],
+                [
+                  511,
+                  1205
+                ],
+                [
+                  511,
+                  1239
+                ],
+                [
+                  264,
+                  1239
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0080",
+              "region_id": "p0005-full-page",
+              "detector_index": 79,
+              "crop_path": "crops/lines/region-00005-line-00079.png",
+              "text": "772.533",
+              "detection_confidence": 0.8851793061993601,
+              "recognition_confidence": 0.9324732252529689,
+              "region_quad": [
+                [
+                  1398,
+                  1239
+                ],
+                [
+                  1503,
+                  1239
+                ],
+                [
+                  1503,
+                  1276
+                ],
+                [
+                  1398,
+                  1276
+                ]
+              ],
+              "page_quad": [
+                [
+                  1398,
+                  1239
+                ],
+                [
+                  1503,
+                  1239
+                ],
+                [
+                  1503,
+                  1276
+                ],
+                [
+                  1398,
+                  1276
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0079",
+              "region_id": "p0005-full-page",
+              "detector_index": 78,
+              "crop_path": "crops/lines/region-00005-line-00078.png",
+              "text": "632.756",
+              "detection_confidence": 0.8845595824374893,
+              "recognition_confidence": 0.9301527568272182,
+              "region_quad": [
+                [
+                  1085,
+                  1242
+                ],
+                [
+                  1192,
+                  1242
+                ],
+                [
+                  1192,
+                  1278
+                ],
+                [
+                  1085,
+                  1278
+                ]
+              ],
+              "page_quad": [
+                [
+                  1085,
+                  1242
+                ],
+                [
+                  1192,
+                  1242
+                ],
+                [
+                  1192,
+                  1278
+                ],
+                [
+                  1085,
+                  1278
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0077",
+              "region_id": "p0005-full-page",
+              "detector_index": 76,
+              "crop_path": "crops/lines/region-00005-line-00076.png",
+              "text": "Mua nợ",
+              "detection_confidence": 0.8575539102198996,
+              "recognition_confidence": 0.929739385843277,
+              "region_quad": [
+                [
+                  264,
+                  1251
+                ],
+                [
+                  369,
+                  1251
+                ],
+                [
+                  369,
+                  1288
+                ],
+                [
+                  264,
+                  1288
+                ]
+              ],
+              "page_quad": [
+                [
+                  264,
+                  1251
+                ],
+                [
+                  369,
+                  1251
+                ],
+                [
+                  369,
+                  1288
+                ],
+                [
+                  264,
+                  1288
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0078",
+              "region_id": "p0005-full-page",
+              "detector_index": 77,
+              "crop_path": "crops/lines/region-00005-line-00077.png",
+              "text": "1",
+              "detection_confidence": 0.7433590034155972,
+              "recognition_confidence": 0.9311165809631348,
+              "region_quad": [
+                [
+                  203,
+                  1254
+                ],
+                [
+                  227,
+                  1254
+                ],
+                [
+                  227,
+                  1280
+                ],
+                [
+                  203,
+                  1280
+                ]
+              ],
+              "page_quad": [
+                [
+                  203,
+                  1254
+                ],
+                [
+                  227,
+                  1254
+                ],
+                [
+                  227,
+                  1280
+                ],
+                [
+                  203,
+                  1280
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0076",
+              "region_id": "p0005-full-page",
+              "detector_index": 75,
+              "crop_path": "crops/lines/region-00005-line-00075.png",
+              "text": "(5.794)",
+              "detection_confidence": 0.8474716624122164,
+              "recognition_confidence": 0.9370911717414856,
+              "region_quad": [
+                [
+                  1407,
+                  1285
+                ],
+                [
+                  1503,
+                  1285
+                ],
+                [
+                  1503,
+                  1324
+                ],
+                [
+                  1407,
+                  1324
+                ]
+              ],
+              "page_quad": [
+                [
+                  1407,
+                  1285
+                ],
+                [
+                  1503,
+                  1285
+                ],
+                [
+                  1503,
+                  1324
+                ],
+                [
+                  1407,
+                  1324
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0075",
+              "region_id": "p0005-full-page",
+              "detector_index": 74,
+              "crop_path": "crops/lines/region-00005-line-00074.png",
+              "text": "(4.746)",
+              "detection_confidence": 0.954497000475385,
+              "recognition_confidence": 0.9345114231109619,
+              "region_quad": [
+                [
+                  1095,
+                  1290
+                ],
+                [
+                  1190,
+                  1290
+                ],
+                [
+                  1190,
+                  1327
+                ],
+                [
+                  1095,
+                  1327
+                ]
+              ],
+              "page_quad": [
+                [
+                  1095,
+                  1290
+                ],
+                [
+                  1190,
+                  1290
+                ],
+                [
+                  1190,
+                  1327
+                ],
+                [
+                  1095,
+                  1327
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0073",
+              "region_id": "p0005-full-page",
+              "detector_index": 72,
+              "crop_path": "crops/lines/region-00005-line-00072.png",
+              "text": "Dự phòng rúi ro hoạt động mua nợ thuật",
+              "detection_confidence": 0.7626211453895388,
+              "recognition_confidence": 0.8348774884484316,
+              "region_quad": [
+                [
+                  266,
+                  1295
+                ],
+                [
+                  682,
+                  1295
+                ],
+                [
+                  682,
+                  1329
+                ],
+                [
+                  266,
+                  1329
+                ]
+              ],
+              "page_quad": [
+                [
+                  266,
+                  1295
+                ],
+                [
+                  682,
+                  1295
+                ],
+                [
+                  682,
+                  1329
+                ],
+                [
+                  266,
+                  1329
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0074",
+              "region_id": "p0005-full-page",
+              "detector_index": 73,
+              "crop_path": "crops/lines/region-00005-line-00073.png",
+              "text": "2",
+              "detection_confidence": 0.7916929839644582,
+              "recognition_confidence": 0.9344823360443115,
+              "region_quad": [
+                [
+                  198,
+                  1298
+                ],
+                [
+                  230,
+                  1298
+                ],
+                [
+                  230,
+                  1334
+                ],
+                [
+                  198,
+                  1334
+                ]
+              ],
+              "page_quad": [
+                [
+                  198,
+                  1298
+                ],
+                [
+                  230,
+                  1298
+                ],
+                [
+                  230,
+                  1334
+                ],
+                [
+                  198,
+                  1334
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0072",
+              "region_id": "p0005-full-page",
+              "detector_index": 71,
+              "crop_path": "crops/lines/region-00005-line-00071.png",
+              "text": "59.472.044",
+              "detection_confidence": 0.7931239697420239,
+              "recognition_confidence": 0.9320123791694641,
+              "region_quad": [
+                [
+                  1363,
+                  1334
+                ],
+                [
+                  1505,
+                  1334
+                ],
+                [
+                  1505,
+                  1371
+                ],
+                [
+                  1363,
+                  1371
+                ]
+              ],
+              "page_quad": [
+                [
+                  1363,
+                  1334
+                ],
+                [
+                  1505,
+                  1334
+                ],
+                [
+                  1505,
+                  1371
+                ],
+                [
+                  1363,
+                  1371
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0070",
+              "region_id": "p0005-full-page",
+              "detector_index": 69,
+              "crop_path": "crops/lines/region-00005-line-00069.png",
+              "text": "57.166.207",
+              "detection_confidence": 0.8394146184596633,
+              "recognition_confidence": 0.9294975876808167,
+              "region_quad": [
+                [
+                  1051,
+                  1336
+                ],
+                [
+                  1190,
+                  1336
+                ],
+                [
+                  1190,
+                  1371
+                ],
+                [
+                  1051,
+                  1371
+                ]
+              ],
+              "page_quad": [
+                [
+                  1051,
+                  1336
+                ],
+                [
+                  1190,
+                  1336
+                ],
+                [
+                  1190,
+                  1371
+                ],
+                [
+                  1051,
+                  1371
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0071",
+              "region_id": "p0005-full-page",
+              "detector_index": 70,
+              "crop_path": "crops/lines/region-00005-line-00070.png",
+              "text": "14",
+              "detection_confidence": 0.8535475011526917,
+              "recognition_confidence": 0.9255072772502899,
+              "region_quad": [
+                [
+                  850,
+                  1341
+                ],
+                [
+                  892,
+                  1341
+                ],
+                [
+                  892,
+                  1378
+                ],
+                [
+                  850,
+                  1378
+                ]
+              ],
+              "page_quad": [
+                [
+                  850,
+                  1341
+                ],
+                [
+                  892,
+                  1341
+                ],
+                [
+                  892,
+                  1378
+                ],
+                [
+                  850,
+                  1378
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0069",
+              "region_id": "p0005-full-page",
+              "detector_index": 68,
+              "crop_path": "crops/lines/region-00005-line-00068.png",
+              "text": "VIII",
+              "detection_confidence": 0.8392625649417328,
+              "recognition_confidence": 0.9277651458978653,
+              "region_quad": [
+                [
+                  181,
+                  1344
+                ],
+                [
+                  252,
+                  1344
+                ],
+                [
+                  252,
+                  1380
+                ],
+                [
+                  181,
+                  1380
+                ]
+              ],
+              "page_quad": [
+                [
+                  181,
+                  1344
+                ],
+                [
+                  252,
+                  1344
+                ],
+                [
+                  252,
+                  1380
+                ],
+                [
+                  181,
+                  1380
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0068",
+              "region_id": "p0005-full-page",
+              "detector_index": 67,
+              "crop_path": "crops/lines/region-00005-line-00067.png",
+              "text": "Chứng khoán đầu tư",
+              "detection_confidence": 0.9034814203662062,
+              "recognition_confidence": 0.9327960213025411,
+              "region_quad": [
+                [
+                  266,
+                  1344
+                ],
+                [
+                  538,
+                  1344
+                ],
+                [
+                  538,
+                  1378
+                ],
+                [
+                  266,
+                  1378
+                ]
+              ],
+              "page_quad": [
+                [
+                  266,
+                  1344
+                ],
+                [
+                  538,
+                  1344
+                ],
+                [
+                  538,
+                  1378
+                ],
+                [
+                  266,
+                  1378
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0067",
+              "region_id": "p0005-full-page",
+              "detector_index": 66,
+              "crop_path": "crops/lines/region-00005-line-00066.png",
+              "text": "59.549.367",
+              "detection_confidence": 0.896054994857737,
+              "recognition_confidence": 0.930093652009964,
+              "region_quad": [
+                [
+                  1363,
+                  1383
+                ],
+                [
+                  1503,
+                  1383
+                ],
+                [
+                  1503,
+                  1417
+                ],
+                [
+                  1363,
+                  1417
+                ]
+              ],
+              "page_quad": [
+                [
+                  1363,
+                  1383
+                ],
+                [
+                  1503,
+                  1383
+                ],
+                [
+                  1503,
+                  1417
+                ],
+                [
+                  1363,
+                  1417
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0066",
+              "region_id": "p0005-full-page",
+              "detector_index": 65,
+              "crop_path": "crops/lines/region-00005-line-00065.png",
+              "text": "57.216.163",
+              "detection_confidence": 0.7944610464852303,
+              "recognition_confidence": 0.926811695098877,
+              "region_quad": [
+                [
+                  1051,
+                  1385
+                ],
+                [
+                  1190,
+                  1385
+                ],
+                [
+                  1190,
+                  1422
+                ],
+                [
+                  1051,
+                  1422
+                ]
+              ],
+              "page_quad": [
+                [
+                  1051,
+                  1385
+                ],
+                [
+                  1190,
+                  1385
+                ],
+                [
+                  1190,
+                  1422
+                ],
+                [
+                  1051,
+                  1422
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0065",
+              "region_id": "p0005-full-page",
+              "detector_index": 64,
+              "crop_path": "crops/lines/region-00005-line-00064.png",
+              "text": "Chứng khoán đầu tư sẫn sàng để bán",
+              "detection_confidence": 0.8082090582571275,
+              "recognition_confidence": 0.9254686955143424,
+              "region_quad": [
+                [
+                  269,
+                  1388
+                ],
+                [
+                  709,
+                  1388
+                ],
+                [
+                  709,
+                  1429
+                ],
+                [
+                  269,
+                  1429
+                ]
+              ],
+              "page_quad": [
+                [
+                  269,
+                  1388
+                ],
+                [
+                  709,
+                  1388
+                ],
+                [
+                  709,
+                  1429
+                ],
+                [
+                  269,
+                  1429
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0064",
+              "region_id": "p0005-full-page",
+              "detector_index": 63,
+              "crop_path": "crops/lines/region-00005-line-00063.png",
+              "text": "1",
+              "detection_confidence": 0.8020867445905293,
+              "recognition_confidence": 0.9309708476066589,
+              "region_quad": [
+                [
+                  203,
+                  1397
+                ],
+                [
+                  227,
+                  1397
+                ],
+                [
+                  227,
+                  1424
+                ],
+                [
+                  203,
+                  1424
+                ]
+              ],
+              "page_quad": [
+                [
+                  203,
+                  1397
+                ],
+                [
+                  227,
+                  1397
+                ],
+                [
+                  227,
+                  1424
+                ],
+                [
+                  203,
+                  1424
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0063",
+              "region_id": "p0005-full-page",
+              "detector_index": 62,
+              "crop_path": "crops/lines/region-00005-line-00062.png",
+              "text": "44.700",
+              "detection_confidence": 0.8897729365553166,
+              "recognition_confidence": 0.9322146972020467,
+              "region_quad": [
+                [
+                  1412,
+                  1429
+                ],
+                [
+                  1505,
+                  1429
+                ],
+                [
+                  1505,
+                  1465
+                ],
+                [
+                  1412,
+                  1465
+                ]
+              ],
+              "page_quad": [
+                [
+                  1412,
+                  1429
+                ],
+                [
+                  1505,
+                  1429
+                ],
+                [
+                  1505,
+                  1465
+                ],
+                [
+                  1412,
+                  1465
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0062",
+              "region_id": "p0005-full-page",
+              "detector_index": 61,
+              "crop_path": "crops/lines/region-00005-line-00061.png",
+              "text": "44.700",
+              "detection_confidence": 0.876809693189458,
+              "recognition_confidence": 0.9332771102587382,
+              "region_quad": [
+                [
+                  1100,
+                  1431
+                ],
+                [
+                  1192,
+                  1431
+                ],
+                [
+                  1192,
+                  1468
+                ],
+                [
+                  1100,
+                  1468
+                ]
+              ],
+              "page_quad": [
+                [
+                  1100,
+                  1431
+                ],
+                [
+                  1192,
+                  1431
+                ],
+                [
+                  1192,
+                  1468
+                ],
+                [
+                  1100,
+                  1468
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0061",
+              "region_id": "p0005-full-page",
+              "detector_index": 60,
+              "crop_path": "crops/lines/region-00005-line-00060.png",
+              "text": "2",
+              "detection_confidence": 0.7662401181895152,
+              "recognition_confidence": 0.934608519077301,
+              "region_quad": [
+                [
+                  200,
+                  1439
+                ],
+                [
+                  230,
+                  1439
+                ],
+                [
+                  230,
+                  1475
+                ],
+                [
+                  200,
+                  1475
+                ]
+              ],
+              "page_quad": [
+                [
+                  200,
+                  1439
+                ],
+                [
+                  230,
+                  1439
+                ],
+                [
+                  230,
+                  1475
+                ],
+                [
+                  200,
+                  1475
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0060",
+              "region_id": "p0005-full-page",
+              "detector_index": 59,
+              "crop_path": "crops/lines/region-00005-line-00059.png",
+              "text": "Chứng khoán đầu tư giữ đến ngày đáo hạn thuật",
+              "detection_confidence": 0.8633928066922532,
+              "recognition_confidence": 0.8360053112109502,
+              "region_quad": [
+                [
+                  271,
+                  1439
+                ],
+                [
+                  772,
+                  1439
+                ],
+                [
+                  772,
+                  1473
+                ],
+                [
+                  271,
+                  1473
+                ]
+              ],
+              "page_quad": [
+                [
+                  271,
+                  1439
+                ],
+                [
+                  772,
+                  1439
+                ],
+                [
+                  772,
+                  1473
+                ],
+                [
+                  271,
+                  1473
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0059",
+              "region_id": "p0005-full-page",
+              "detector_index": 58,
+              "crop_path": "crops/lines/region-00005-line-00058.png",
+              "text": "(122.023)",
+              "detection_confidence": 0.7415986321816904,
+              "recognition_confidence": 0.9352470371458266,
+              "region_quad": [
+                [
+                  1378,
+                  1475
+                ],
+                [
+                  1503,
+                  1475
+                ],
+                [
+                  1503,
+                  1512
+                ],
+                [
+                  1378,
+                  1512
+                ]
+              ],
+              "page_quad": [
+                [
+                  1378,
+                  1475
+                ],
+                [
+                  1503,
+                  1475
+                ],
+                [
+                  1503,
+                  1512
+                ],
+                [
+                  1378,
+                  1512
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0056",
+              "region_id": "p0005-full-page",
+              "detector_index": 55,
+              "crop_path": "crops/lines/region-00005-line-00055.png",
+              "text": "Dự phòng rúi ro chứng khoán đầu tư",
+              "detection_confidence": 0.8088242910502677,
+              "recognition_confidence": 0.9176949595703798,
+              "region_quad": [
+                [
+                  266,
+                  1483
+                ],
+                [
+                  706,
+                  1480
+                ],
+                [
+                  706,
+                  1521
+                ],
+                [
+                  266,
+                  1524
+                ]
+              ],
+              "page_quad": [
+                [
+                  266,
+                  1483
+                ],
+                [
+                  706,
+                  1480
+                ],
+                [
+                  706,
+                  1521
+                ],
+                [
+                  266,
+                  1524
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0058",
+              "region_id": "p0005-full-page",
+              "detector_index": 57,
+              "crop_path": "crops/lines/region-00005-line-00057.png",
+              "text": "(94.656)",
+              "detection_confidence": 0.8904822867226381,
+              "recognition_confidence": 0.9337878003716469,
+              "region_quad": [
+                [
+                  1080,
+                  1480
+                ],
+                [
+                  1192,
+                  1480
+                ],
+                [
+                  1192,
+                  1517
+                ],
+                [
+                  1080,
+                  1517
+                ]
+              ],
+              "page_quad": [
+                [
+                  1080,
+                  1480
+                ],
+                [
+                  1192,
+                  1480
+                ],
+                [
+                  1192,
+                  1517
+                ],
+                [
+                  1080,
+                  1517
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0057",
+              "region_id": "p0005-full-page",
+              "detector_index": 56,
+              "crop_path": "crops/lines/region-00005-line-00056.png",
+              "text": "3",
+              "detection_confidence": 0.7915581292971702,
+              "recognition_confidence": 0.9302403330802917,
+              "region_quad": [
+                [
+                  200,
+                  1487
+                ],
+                [
+                  230,
+                  1487
+                ],
+                [
+                  230,
+                  1524
+                ],
+                [
+                  200,
+                  1524
+                ]
+              ],
+              "page_quad": [
+                [
+                  200,
+                  1487
+                ],
+                [
+                  230,
+                  1487
+                ],
+                [
+                  230,
+                  1524
+                ],
+                [
+                  200,
+                  1524
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0055",
+              "region_id": "p0005-full-page",
+              "detector_index": 54,
+              "crop_path": "crops/lines/region-00005-line-00054.png",
+              "text": "1.221.874",
+              "detection_confidence": 0.8211822216450755,
+              "recognition_confidence": 0.9294742080900404,
+              "region_quad": [
+                [
+                  1378,
+                  1524
+                ],
+                [
+                  1505,
+                  1524
+                ],
+                [
+                  1505,
+                  1560
+                ],
+                [
+                  1378,
+                  1560
+                ]
+              ],
+              "page_quad": [
+                [
+                  1378,
+                  1524
+                ],
+                [
+                  1505,
+                  1524
+                ],
+                [
+                  1505,
+                  1560
+                ],
+                [
+                  1378,
+                  1560
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0054",
+              "region_id": "p0005-full-page",
+              "detector_index": 53,
+              "crop_path": "crops/lines/region-00005-line-00053.png",
+              "text": "1.253.386",
+              "detection_confidence": 0.858516792065671,
+              "recognition_confidence": 0.927359508143531,
+              "region_quad": [
+                [
+                  1065,
+                  1526
+                ],
+                [
+                  1192,
+                  1526
+                ],
+                [
+                  1192,
+                  1563
+                ],
+                [
+                  1065,
+                  1563
+                ]
+              ],
+              "page_quad": [
+                [
+                  1065,
+                  1526
+                ],
+                [
+                  1192,
+                  1526
+                ],
+                [
+                  1192,
+                  1563
+                ],
+                [
+                  1065,
+                  1563
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0053",
+              "region_id": "p0005-full-page",
+              "detector_index": 52,
+              "crop_path": "crops/lines/region-00005-line-00052.png",
+              "text": "IX",
+              "detection_confidence": 0.7631648796753815,
+              "recognition_confidence": 0.7389338910579681,
+              "region_quad": [
+                [
+                  191,
+                  1531
+                ],
+                [
+                  239,
+                  1531
+                ],
+                [
+                  239,
+                  1573
+                ],
+                [
+                  191,
+                  1573
+                ]
+              ],
+              "page_quad": [
+                [
+                  191,
+                  1531
+                ],
+                [
+                  239,
+                  1531
+                ],
+                [
+                  239,
+                  1573
+                ],
+                [
+                  191,
+                  1573
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0052",
+              "region_id": "p0005-full-page",
+              "detector_index": 51,
+              "crop_path": "crops/lines/region-00005-line-00051.png",
+              "text": "Tài sản cố định",
+              "detection_confidence": 0.8022469667510208,
+              "recognition_confidence": 0.9289270162582397,
+              "region_quad": [
+                [
+                  274,
+                  1531
+                ],
+                [
+                  474,
+                  1531
+                ],
+                [
+                  474,
+                  1568
+                ],
+                [
+                  274,
+                  1568
+                ]
+              ],
+              "page_quad": [
+                [
+                  274,
+                  1531
+                ],
+                [
+                  474,
+                  1531
+                ],
+                [
+                  474,
+                  1568
+                ],
+                [
+                  274,
+                  1568
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0050",
+              "region_id": "p0005-full-page",
+              "detector_index": 49,
+              "crop_path": "crops/lines/region-00005-line-00049.png",
+              "text": "796.929",
+              "detection_confidence": 0.7698305288885355,
+              "recognition_confidence": 0.9359794344220843,
+              "region_quad": [
+                [
+                  1082,
+                  1573
+                ],
+                [
+                  1191,
+                  1567
+                ],
+                [
+                  1193,
+                  1606
+                ],
+                [
+                  1084,
+                  1612
+                ]
+              ],
+              "page_quad": [
+                [
+                  1082,
+                  1573
+                ],
+                [
+                  1191,
+                  1567
+                ],
+                [
+                  1193,
+                  1606
+                ],
+                [
+                  1084,
+                  1612
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0051",
+              "region_id": "p0005-full-page",
+              "detector_index": 50,
+              "crop_path": "crops/lines/region-00005-line-00050.png",
+              "text": "856.699",
+              "detection_confidence": 0.839862012674063,
+              "recognition_confidence": 0.9342162098203387,
+              "region_quad": [
+                [
+                  1398,
+                  1570
+                ],
+                [
+                  1505,
+                  1570
+                ],
+                [
+                  1505,
+                  1607
+                ],
+                [
+                  1398,
+                  1607
+                ]
+              ],
+              "page_quad": [
+                [
+                  1398,
+                  1570
+                ],
+                [
+                  1505,
+                  1570
+                ],
+                [
+                  1505,
+                  1607
+                ],
+                [
+                  1398,
+                  1607
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0049",
+              "region_id": "p0005-full-page",
+              "detector_index": 48,
+              "crop_path": "crops/lines/region-00005-line-00048.png",
+              "text": "15",
+              "detection_confidence": 0.8207363751645272,
+              "recognition_confidence": 0.922200083732605,
+              "region_quad": [
+                [
+                  848,
+                  1575
+                ],
+                [
+                  897,
+                  1575
+                ],
+                [
+                  897,
+                  1616
+                ],
+                [
+                  848,
+                  1616
+                ]
+              ],
+              "page_quad": [
+                [
+                  848,
+                  1575
+                ],
+                [
+                  897,
+                  1575
+                ],
+                [
+                  897,
+                  1616
+                ],
+                [
+                  848,
+                  1616
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0047",
+              "region_id": "p0005-full-page",
+              "detector_index": 46,
+              "crop_path": "crops/lines/region-00005-line-00046.png",
+              "text": "Tài sản cố định hữu hình",
+              "detection_confidence": 0.8032942652593875,
+              "recognition_confidence": 0.9298757140835127,
+              "region_quad": [
+                [
+                  274,
+                  1580
+                ],
+                [
+                  574,
+                  1577
+                ],
+                [
+                  574,
+                  1614
+                ],
+                [
+                  274,
+                  1617
+                ]
+              ],
+              "page_quad": [
+                [
+                  274,
+                  1580
+                ],
+                [
+                  574,
+                  1577
+                ],
+                [
+                  574,
+                  1614
+                ],
+                [
+                  274,
+                  1617
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0048",
+              "region_id": "p0005-full-page",
+              "detector_index": 47,
+              "crop_path": "crops/lines/region-00005-line-00047.png",
+              "text": "1",
+              "detection_confidence": 0.803422751960655,
+              "recognition_confidence": 0.9321979880332947,
+              "region_quad": [
+                [
+                  205,
+                  1585
+                ],
+                [
+                  227,
+                  1585
+                ],
+                [
+                  227,
+                  1616
+                ],
+                [
+                  205,
+                  1616
+                ]
+              ],
+              "page_quad": [
+                [
+                  205,
+                  1585
+                ],
+                [
+                  227,
+                  1585
+                ],
+                [
+                  227,
+                  1616
+                ],
+                [
+                  205,
+                  1616
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0046",
+              "region_id": "p0005-full-page",
+              "detector_index": 45,
+              "crop_path": "crops/lines/region-00005-line-00045.png",
+              "text": "2.134.077",
+              "detection_confidence": 0.8186672934822532,
+              "recognition_confidence": 0.8979291717211405,
+              "region_quad": [
+                [
+                  1378,
+                  1619
+                ],
+                [
+                  1505,
+                  1619
+                ],
+                [
+                  1505,
+                  1655
+                ],
+                [
+                  1378,
+                  1655
+                ]
+              ],
+              "page_quad": [
+                [
+                  1378,
+                  1619
+                ],
+                [
+                  1505,
+                  1619
+                ],
+                [
+                  1505,
+                  1655
+                ],
+                [
+                  1378,
+                  1655
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0045",
+              "region_id": "p0005-full-page",
+              "detector_index": 44,
+              "crop_path": "crops/lines/region-00005-line-00044.png",
+              "text": "2.239.827",
+              "detection_confidence": 0.8445080761144788,
+              "recognition_confidence": 0.9335575434896681,
+              "region_quad": [
+                [
+                  1065,
+                  1621
+                ],
+                [
+                  1195,
+                  1621
+                ],
+                [
+                  1195,
+                  1658
+                ],
+                [
+                  1065,
+                  1658
+                ]
+              ],
+              "page_quad": [
+                [
+                  1065,
+                  1621
+                ],
+                [
+                  1195,
+                  1621
+                ],
+                [
+                  1195,
+                  1658
+                ],
+                [
+                  1065,
+                  1658
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0044",
+              "region_id": "p0005-full-page",
+              "detector_index": 43,
+              "crop_path": "crops/lines/region-00005-line-00043.png",
+              "text": "Nguyên giá TSCĐ",
+              "detection_confidence": 0.7981223851990193,
+              "recognition_confidence": 0.9066052516301473,
+              "region_quad": [
+                [
+                  274,
+                  1626
+                ],
+                [
+                  518,
+                  1626
+                ],
+                [
+                  518,
+                  1668
+                ],
+                [
+                  274,
+                  1668
+                ]
+              ],
+              "page_quad": [
+                [
+                  274,
+                  1626
+                ],
+                [
+                  518,
+                  1626
+                ],
+                [
+                  518,
+                  1668
+                ],
+                [
+                  274,
+                  1668
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0043",
+              "region_id": "p0005-full-page",
+              "detector_index": 42,
+              "crop_path": "crops/lines/region-00005-line-00042.png",
+              "text": "a",
+              "detection_confidence": 0.7571049172880261,
+              "recognition_confidence": 0.9301025867462158,
+              "region_quad": [
+                [
+                  203,
+                  1638
+                ],
+                [
+                  227,
+                  1638
+                ],
+                [
+                  227,
+                  1665
+                ],
+                [
+                  203,
+                  1665
+                ]
+              ],
+              "page_quad": [
+                [
+                  203,
+                  1638
+                ],
+                [
+                  227,
+                  1638
+                ],
+                [
+                  227,
+                  1665
+                ],
+                [
+                  203,
+                  1665
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0042",
+              "region_id": "p0005-full-page",
+              "detector_index": 41,
+              "crop_path": "crops/lines/region-00005-line-00041.png",
+              "text": "(1.277.378)",
+              "detection_confidence": 0.8656171636162874,
+              "recognition_confidence": 0.931601881980896,
+              "region_quad": [
+                [
+                  1363,
+                  1668
+                ],
+                [
+                  1505,
+                  1668
+                ],
+                [
+                  1505,
+                  1704
+                ],
+                [
+                  1363,
+                  1704
+                ]
+              ],
+              "page_quad": [
+                [
+                  1363,
+                  1668
+                ],
+                [
+                  1505,
+                  1668
+                ],
+                [
+                  1505,
+                  1704
+                ],
+                [
+                  1363,
+                  1704
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0041",
+              "region_id": "p0005-full-page",
+              "detector_index": 40,
+              "crop_path": "crops/lines/region-00005-line-00040.png",
+              "text": "(1.442.898)",
+              "detection_confidence": 0.8390776782224958,
+              "recognition_confidence": 0.9334095391360197,
+              "region_quad": [
+                [
+                  1048,
+                  1670
+                ],
+                [
+                  1192,
+                  1670
+                ],
+                [
+                  1192,
+                  1706
+                ],
+                [
+                  1048,
+                  1706
+                ]
+              ],
+              "page_quad": [
+                [
+                  1048,
+                  1670
+                ],
+                [
+                  1192,
+                  1670
+                ],
+                [
+                  1192,
+                  1706
+                ],
+                [
+                  1048,
+                  1706
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0039",
+              "region_id": "p0005-full-page",
+              "detector_index": 38,
+              "crop_path": "crops/lines/region-00005-line-00038.png",
+              "text": "- Hao mòn TSCĐ",
+              "detection_confidence": 0.8957330405225677,
+              "recognition_confidence": 0.8983670813696725,
+              "region_quad": [
+                [
+                  276,
+                  1677
+                ],
+                [
+                  489,
+                  1677
+                ],
+                [
+                  489,
+                  1711
+                ],
+                [
+                  276,
+                  1711
+                ]
+              ],
+              "page_quad": [
+                [
+                  276,
+                  1677
+                ],
+                [
+                  489,
+                  1677
+                ],
+                [
+                  489,
+                  1711
+                ],
+                [
+                  276,
+                  1711
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0040",
+              "region_id": "p0005-full-page",
+              "detector_index": 39,
+              "crop_path": "crops/lines/region-00005-line-00039.png",
+              "text": "b",
+              "detection_confidence": 0.9095217276502539,
+              "recognition_confidence": 0.9240991473197937,
+              "region_quad": [
+                [
+                  205,
+                  1680
+                ],
+                [
+                  227,
+                  1680
+                ],
+                [
+                  227,
+                  1709
+                ],
+                [
+                  205,
+                  1709
+                ]
+              ],
+              "page_quad": [
+                [
+                  205,
+                  1680
+                ],
+                [
+                  227,
+                  1680
+                ],
+                [
+                  227,
+                  1709
+                ],
+                [
+                  205,
+                  1709
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0038",
+              "region_id": "p0005-full-page",
+              "detector_index": 37,
+              "crop_path": "crops/lines/region-00005-line-00037.png",
+              "text": "365.175",
+              "detection_confidence": 0.8653170902075038,
+              "recognition_confidence": 0.9283763340541294,
+              "region_quad": [
+                [
+                  1400,
+                  1709
+                ],
+                [
+                  1505,
+                  1709
+                ],
+                [
+                  1505,
+                  1745
+                ],
+                [
+                  1400,
+                  1745
+                ]
+              ],
+              "page_quad": [
+                [
+                  1400,
+                  1709
+                ],
+                [
+                  1505,
+                  1709
+                ],
+                [
+                  1505,
+                  1745
+                ],
+                [
+                  1400,
+                  1745
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0037",
+              "region_id": "p0005-full-page",
+              "detector_index": 36,
+              "crop_path": "crops/lines/region-00005-line-00036.png",
+              "text": "456.457",
+              "detection_confidence": 0.8686547168787607,
+              "recognition_confidence": 0.9296499064990452,
+              "region_quad": [
+                [
+                  1087,
+                  1711
+                ],
+                [
+                  1192,
+                  1711
+                ],
+                [
+                  1192,
+                  1748
+                ],
+                [
+                  1087,
+                  1748
+                ]
+              ],
+              "page_quad": [
+                [
+                  1087,
+                  1711
+                ],
+                [
+                  1192,
+                  1711
+                ],
+                [
+                  1192,
+                  1748
+                ],
+                [
+                  1087,
+                  1748
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0034",
+              "region_id": "p0005-full-page",
+              "detector_index": 33,
+              "crop_path": "crops/lines/region-00005-line-00033.png",
+              "text": "Tài sản cố định vô hình",
+              "detection_confidence": 0.7765252388987642,
+              "recognition_confidence": 0.93369460105896,
+              "region_quad": [
+                [
+                  276,
+                  1716
+                ],
+                [
+                  559,
+                  1714
+                ],
+                [
+                  560,
+                  1755
+                ],
+                [
+                  276,
+                  1758
+                ]
+              ],
+              "page_quad": [
+                [
+                  276,
+                  1716
+                ],
+                [
+                  559,
+                  1714
+                ],
+                [
+                  560,
+                  1755
+                ],
+                [
+                  276,
+                  1758
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0036",
+              "region_id": "p0005-full-page",
+              "detector_index": 35,
+              "crop_path": "crops/lines/region-00005-line-00035.png",
+              "text": "16",
+              "detection_confidence": 0.8242827375419438,
+              "recognition_confidence": 0.9272907078266144,
+              "region_quad": [
+                [
+                  848,
+                  1714
+                ],
+                [
+                  897,
+                  1714
+                ],
+                [
+                  897,
+                  1755
+                ],
+                [
+                  848,
+                  1755
+                ]
+              ],
+              "page_quad": [
+                [
+                  848,
+                  1714
+                ],
+                [
+                  897,
+                  1714
+                ],
+                [
+                  897,
+                  1755
+                ],
+                [
+                  848,
+                  1755
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0035",
+              "region_id": "p0005-full-page",
+              "detector_index": 34,
+              "crop_path": "crops/lines/region-00005-line-00034.png",
+              "text": "2",
+              "detection_confidence": 0.8851085574676593,
+              "recognition_confidence": 0.9317406415939331,
+              "region_quad": [
+                [
+                  205,
+                  1724
+                ],
+                [
+                  227,
+                  1724
+                ],
+                [
+                  227,
+                  1755
+                ],
+                [
+                  205,
+                  1755
+                ]
+              ],
+              "page_quad": [
+                [
+                  205,
+                  1724
+                ],
+                [
+                  227,
+                  1724
+                ],
+                [
+                  227,
+                  1755
+                ],
+                [
+                  205,
+                  1755
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0033",
+              "region_id": "p0005-full-page",
+              "detector_index": 32,
+              "crop_path": "crops/lines/region-00005-line-00032.png",
+              "text": "1.027.747",
+              "detection_confidence": 0.8310960458112985,
+              "recognition_confidence": 0.9312668840090433,
+              "region_quad": [
+                [
+                  1381,
+                  1755
+                ],
+                [
+                  1508,
+                  1755
+                ],
+                [
+                  1508,
+                  1792
+                ],
+                [
+                  1381,
+                  1792
+                ]
+              ],
+              "page_quad": [
+                [
+                  1381,
+                  1755
+                ],
+                [
+                  1508,
+                  1755
+                ],
+                [
+                  1508,
+                  1792
+                ],
+                [
+                  1381,
+                  1792
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0031",
+              "region_id": "p0005-full-page",
+              "detector_index": 30,
+              "crop_path": "crops/lines/region-00005-line-00030.png",
+              "text": "Nguyên giá TSCĐ",
+              "detection_confidence": 0.759302920939615,
+              "recognition_confidence": 0.924337097009023,
+              "region_quad": [
+                [
+                  273,
+                  1763
+                ],
+                [
+                  517,
+                  1757
+                ],
+                [
+                  518,
+                  1799
+                ],
+                [
+                  274,
+                  1804
+                ]
+              ],
+              "page_quad": [
+                [
+                  273,
+                  1763
+                ],
+                [
+                  517,
+                  1757
+                ],
+                [
+                  518,
+                  1799
+                ],
+                [
+                  274,
+                  1804
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0032",
+              "region_id": "p0005-full-page",
+              "detector_index": 31,
+              "crop_path": "crops/lines/region-00005-line-00031.png",
+              "text": "1.198.273",
+              "detection_confidence": 0.8297921200858621,
+              "recognition_confidence": 0.9281602833006117,
+              "region_quad": [
+                [
+                  1065,
+                  1758
+                ],
+                [
+                  1195,
+                  1758
+                ],
+                [
+                  1195,
+                  1794
+                ],
+                [
+                  1065,
+                  1794
+                ]
+              ],
+              "page_quad": [
+                [
+                  1065,
+                  1758
+                ],
+                [
+                  1195,
+                  1758
+                ],
+                [
+                  1195,
+                  1794
+                ],
+                [
+                  1065,
+                  1794
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0030",
+              "region_id": "p0005-full-page",
+              "detector_index": 29,
+              "crop_path": "crops/lines/region-00005-line-00029.png",
+              "text": "a",
+              "detection_confidence": 0.7645341553503558,
+              "recognition_confidence": 0.9280787706375122,
+              "region_quad": [
+                [
+                  205,
+                  1772
+                ],
+                [
+                  230,
+                  1772
+                ],
+                [
+                  230,
+                  1801
+                ],
+                [
+                  205,
+                  1801
+                ]
+              ],
+              "page_quad": [
+                [
+                  205,
+                  1772
+                ],
+                [
+                  230,
+                  1772
+                ],
+                [
+                  230,
+                  1801
+                ],
+                [
+                  205,
+                  1801
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0029",
+              "region_id": "p0005-full-page",
+              "detector_index": 28,
+              "crop_path": "crops/lines/region-00005-line-00028.png",
+              "text": "(662.572)",
+              "detection_confidence": 0.8717473241403092,
+              "recognition_confidence": 0.9328443275557624,
+              "region_quad": [
+                [
+                  1383,
+                  1801
+                ],
+                [
+                  1505,
+                  1801
+                ],
+                [
+                  1505,
+                  1838
+                ],
+                [
+                  1383,
+                  1838
+                ]
+              ],
+              "page_quad": [
+                [
+                  1383,
+                  1801
+                ],
+                [
+                  1505,
+                  1801
+                ],
+                [
+                  1505,
+                  1838
+                ],
+                [
+                  1383,
+                  1838
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0028",
+              "region_id": "p0005-full-page",
+              "detector_index": 27,
+              "crop_path": "crops/lines/region-00005-line-00027.png",
+              "text": "(741.816)",
+              "detection_confidence": 0.878204835145626,
+              "recognition_confidence": 0.9333251714706421,
+              "region_quad": [
+                [
+                  1070,
+                  1806
+                ],
+                [
+                  1192,
+                  1806
+                ],
+                [
+                  1192,
+                  1843
+                ],
+                [
+                  1070,
+                  1843
+                ]
+              ],
+              "page_quad": [
+                [
+                  1070,
+                  1806
+                ],
+                [
+                  1192,
+                  1806
+                ],
+                [
+                  1192,
+                  1843
+                ],
+                [
+                  1070,
+                  1843
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0027",
+              "region_id": "p0005-full-page",
+              "detector_index": 26,
+              "crop_path": "crops/lines/region-00005-line-00026.png",
+              "text": "b",
+              "detection_confidence": 0.7534509156597778,
+              "recognition_confidence": 0.9246983528137207,
+              "region_quad": [
+                [
+                  203,
+                  1811
+                ],
+                [
+                  232,
+                  1811
+                ],
+                [
+                  232,
+                  1848
+                ],
+                [
+                  203,
+                  1848
+                ]
+              ],
+              "page_quad": [
+                [
+                  203,
+                  1811
+                ],
+                [
+                  232,
+                  1811
+                ],
+                [
+                  232,
+                  1848
+                ],
+                [
+                  203,
+                  1848
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0026",
+              "region_id": "p0005-full-page",
+              "detector_index": 25,
+              "crop_path": "crops/lines/region-00005-line-00025.png",
+              "text": "- Hao mòn TSCĐ",
+              "detection_confidence": 0.8812900120490994,
+              "recognition_confidence": 0.9215307491166251,
+              "region_quad": [
+                [
+                  276,
+                  1811
+                ],
+                [
+                  491,
+                  1811
+                ],
+                [
+                  491,
+                  1845
+                ],
+                [
+                  276,
+                  1845
+                ]
+              ],
+              "page_quad": [
+                [
+                  276,
+                  1811
+                ],
+                [
+                  491,
+                  1811
+                ],
+                [
+                  491,
+                  1845
+                ],
+                [
+                  276,
+                  1845
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0025",
+              "region_id": "p0005-full-page",
+              "detector_index": 24,
+              "crop_path": "crops/lines/region-00005-line-00024.png",
+              "text": "14.807.073",
+              "detection_confidence": 0.8052124392504308,
+              "recognition_confidence": 0.9280925869941712,
+              "region_quad": [
+                [
+                  1363,
+                  1851
+                ],
+                [
+                  1507,
+                  1845
+                ],
+                [
+                  1508,
+                  1881
+                ],
+                [
+                  1364,
+                  1887
+                ]
+              ],
+              "page_quad": [
+                [
+                  1363,
+                  1851
+                ],
+                [
+                  1507,
+                  1845
+                ],
+                [
+                  1508,
+                  1881
+                ],
+                [
+                  1364,
+                  1887
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0024",
+              "region_id": "p0005-full-page",
+              "detector_index": 23,
+              "crop_path": "crops/lines/region-00005-line-00023.png",
+              "text": "13.092.245",
+              "detection_confidence": 0.7457680631882977,
+              "recognition_confidence": 0.9264919877052307,
+              "region_quad": [
+                [
+                  1056,
+                  1848
+                ],
+                [
+                  1195,
+                  1848
+                ],
+                [
+                  1195,
+                  1884
+                ],
+                [
+                  1056,
+                  1884
+                ]
+              ],
+              "page_quad": [
+                [
+                  1056,
+                  1848
+                ],
+                [
+                  1195,
+                  1848
+                ],
+                [
+                  1195,
+                  1884
+                ],
+                [
+                  1056,
+                  1884
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0023",
+              "region_id": "p0005-full-page",
+              "detector_index": 22,
+              "crop_path": "crops/lines/region-00005-line-00022.png",
+              "text": "17",
+              "detection_confidence": 0.874812448047038,
+              "recognition_confidence": 0.9261417388916016,
+              "region_quad": [
+                [
+                  850,
+                  1855
+                ],
+                [
+                  894,
+                  1855
+                ],
+                [
+                  894,
+                  1889
+                ],
+                [
+                  850,
+                  1889
+                ]
+              ],
+              "page_quad": [
+                [
+                  850,
+                  1855
+                ],
+                [
+                  894,
+                  1855
+                ],
+                [
+                  894,
+                  1889
+                ],
+                [
+                  850,
+                  1889
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0021",
+              "region_id": "p0005-full-page",
+              "detector_index": 20,
+              "crop_path": "crops/lines/region-00005-line-00020.png",
+              "text": "Tài sản Có khác",
+              "detection_confidence": 0.8414746108982297,
+              "recognition_confidence": 0.9056459108988444,
+              "region_quad": [
+                [
+                  269,
+                  1857
+                ],
+                [
+                  484,
+                  1857
+                ],
+                [
+                  484,
+                  1892
+                ],
+                [
+                  269,
+                  1892
+                ]
+              ],
+              "page_quad": [
+                [
+                  269,
+                  1857
+                ],
+                [
+                  484,
+                  1857
+                ],
+                [
+                  484,
+                  1892
+                ],
+                [
+                  269,
+                  1892
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0022",
+              "region_id": "p0005-full-page",
+              "detector_index": 21,
+              "crop_path": "crops/lines/region-00005-line-00021.png",
+              "text": "x",
+              "detection_confidence": 0.9158895504373459,
+              "recognition_confidence": 0.8501787185668945,
+              "region_quad": [
+                [
+                  200,
+                  1860
+                ],
+                [
+                  235,
+                  1860
+                ],
+                [
+                  235,
+                  1894
+                ],
+                [
+                  200,
+                  1894
+                ]
+              ],
+              "page_quad": [
+                [
+                  200,
+                  1860
+                ],
+                [
+                  235,
+                  1860
+                ],
+                [
+                  235,
+                  1894
+                ],
+                [
+                  200,
+                  1894
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0020",
+              "region_id": "p0005-full-page",
+              "detector_index": 19,
+              "crop_path": "crops/lines/region-00005-line-00019.png",
+              "text": "7.033.567",
+              "detection_confidence": 0.8404054824495688,
+              "recognition_confidence": 0.9293578267097473,
+              "region_quad": [
+                [
+                  1381,
+                  1896
+                ],
+                [
+                  1508,
+                  1896
+                ],
+                [
+                  1508,
+                  1933
+                ],
+                [
+                  1381,
+                  1933
+                ]
+              ],
+              "page_quad": [
+                [
+                  1381,
+                  1896
+                ],
+                [
+                  1508,
+                  1896
+                ],
+                [
+                  1508,
+                  1933
+                ],
+                [
+                  1381,
+                  1933
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0019",
+              "region_id": "p0005-full-page",
+              "detector_index": 18,
+              "crop_path": "crops/lines/region-00005-line-00018.png",
+              "text": "3.256.268",
+              "detection_confidence": 0.962339308228552,
+              "recognition_confidence": 0.9277623030874464,
+              "region_quad": [
+                [
+                  1065,
+                  1899
+                ],
+                [
+                  1195,
+                  1899
+                ],
+                [
+                  1195,
+                  1933
+                ],
+                [
+                  1065,
+                  1933
+                ]
+              ],
+              "page_quad": [
+                [
+                  1065,
+                  1899
+                ],
+                [
+                  1195,
+                  1899
+                ],
+                [
+                  1195,
+                  1933
+                ],
+                [
+                  1065,
+                  1933
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0017",
+              "region_id": "p0005-full-page",
+              "detector_index": 16,
+              "crop_path": "crops/lines/region-00005-line-00016.png",
+              "text": "Các khoản phải thu",
+              "detection_confidence": 0.8560949002645228,
+              "recognition_confidence": 0.9289179874791039,
+              "region_quad": [
+                [
+                  274,
+                  1906
+                ],
+                [
+                  508,
+                  1906
+                ],
+                [
+                  508,
+                  1940
+                ],
+                [
+                  274,
+                  1940
+                ]
+              ],
+              "page_quad": [
+                [
+                  274,
+                  1906
+                ],
+                [
+                  508,
+                  1906
+                ],
+                [
+                  508,
+                  1940
+                ],
+                [
+                  274,
+                  1940
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0018",
+              "region_id": "p0005-full-page",
+              "detector_index": 17,
+              "crop_path": "crops/lines/region-00005-line-00017.png",
+              "text": "1",
+              "detection_confidence": 0.7337670733220876,
+              "recognition_confidence": 0.9296250939369202,
+              "region_quad": [
+                [
+                  208,
+                  1911
+                ],
+                [
+                  227,
+                  1911
+                ],
+                [
+                  227,
+                  1938
+                ],
+                [
+                  208,
+                  1938
+                ]
+              ],
+              "page_quad": [
+                [
+                  208,
+                  1911
+                ],
+                [
+                  227,
+                  1911
+                ],
+                [
+                  227,
+                  1938
+                ],
+                [
+                  208,
+                  1938
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0016",
+              "region_id": "p0005-full-page",
+              "detector_index": 15,
+              "crop_path": "crops/lines/region-00005-line-00015.png",
+              "text": "3.285.020",
+              "detection_confidence": 0.8123106853984711,
+              "recognition_confidence": 0.9293176730473837,
+              "region_quad": [
+                [
+                  1381,
+                  1943
+                ],
+                [
+                  1508,
+                  1943
+                ],
+                [
+                  1508,
+                  1979
+                ],
+                [
+                  1381,
+                  1979
+                ]
+              ],
+              "page_quad": [
+                [
+                  1381,
+                  1943
+                ],
+                [
+                  1508,
+                  1943
+                ],
+                [
+                  1508,
+                  1979
+                ],
+                [
+                  1381,
+                  1979
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0015",
+              "region_id": "p0005-full-page",
+              "detector_index": 14,
+              "crop_path": "crops/lines/region-00005-line-00014.png",
+              "text": "4.233.668",
+              "detection_confidence": 0.8468074903797566,
+              "recognition_confidence": 0.9285855756865607,
+              "region_quad": [
+                [
+                  1068,
+                  1945
+                ],
+                [
+                  1195,
+                  1945
+                ],
+                [
+                  1195,
+                  1982
+                ],
+                [
+                  1068,
+                  1982
+                ]
+              ],
+              "page_quad": [
+                [
+                  1068,
+                  1945
+                ],
+                [
+                  1195,
+                  1945
+                ],
+                [
+                  1195,
+                  1982
+                ],
+                [
+                  1068,
+                  1982
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0013",
+              "region_id": "p0005-full-page",
+              "detector_index": 12,
+              "crop_path": "crops/lines/region-00005-line-00012.png",
+              "text": "Các khoản lãi phí phải thu trị",
+              "detection_confidence": 0.8229652204610728,
+              "recognition_confidence": 0.8266850436727206,
+              "region_quad": [
+                [
+                  274,
+                  1952
+                ],
+                [
+                  586,
+                  1952
+                ],
+                [
+                  586,
+                  1986
+                ],
+                [
+                  274,
+                  1986
+                ]
+              ],
+              "page_quad": [
+                [
+                  274,
+                  1952
+                ],
+                [
+                  586,
+                  1952
+                ],
+                [
+                  586,
+                  1986
+                ],
+                [
+                  274,
+                  1986
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0014",
+              "region_id": "p0005-full-page",
+              "detector_index": 13,
+              "crop_path": "crops/lines/region-00005-line-00013.png",
+              "text": "2",
+              "detection_confidence": 0.7076923197775613,
+              "recognition_confidence": 0.9335728883743286,
+              "region_quad": [
+                [
+                  205,
+                  1955
+                ],
+                [
+                  235,
+                  1955
+                ],
+                [
+                  235,
+                  1991
+                ],
+                [
+                  205,
+                  1991
+                ]
+              ],
+              "page_quad": [
+                [
+                  205,
+                  1955
+                ],
+                [
+                  235,
+                  1955
+                ],
+                [
+                  235,
+                  1991
+                ],
+                [
+                  205,
+                  1991
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0011",
+              "region_id": "p0005-full-page",
+              "detector_index": 10,
+              "crop_path": "crops/lines/region-00005-line-00010.png",
+              "text": "Tài sản thuế TNDN hoãn lại",
+              "detection_confidence": 0.8170752947461449,
+              "recognition_confidence": 0.8762184496109302,
+              "region_quad": [
+                [
+                  274,
+                  1999
+                ],
+                [
+                  611,
+                  1999
+                ],
+                [
+                  611,
+                  2033
+                ],
+                [
+                  274,
+                  2033
+                ]
+              ],
+              "page_quad": [
+                [
+                  274,
+                  1999
+                ],
+                [
+                  611,
+                  1999
+                ],
+                [
+                  611,
+                  2033
+                ],
+                [
+                  274,
+                  2033
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0012",
+              "region_id": "p0005-full-page",
+              "detector_index": 11,
+              "crop_path": "crops/lines/region-00005-line-00011.png",
+              "text": "3",
+              "detection_confidence": 0.7469968399540945,
+              "recognition_confidence": 0.9289973974227905,
+              "region_quad": [
+                [
+                  208,
+                  2001
+                ],
+                [
+                  230,
+                  2001
+                ],
+                [
+                  230,
+                  2035
+                ],
+                [
+                  208,
+                  2035
+                ]
+              ],
+              "page_quad": [
+                [
+                  208,
+                  2001
+                ],
+                [
+                  230,
+                  2001
+                ],
+                [
+                  230,
+                  2035
+                ],
+                [
+                  208,
+                  2035
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0010",
+              "region_id": "p0005-full-page",
+              "detector_index": 9,
+              "crop_path": "crops/lines/region-00005-line-00009.png",
+              "text": "4.518.359",
+              "detection_confidence": 0.79581098337011,
+              "recognition_confidence": 0.9247029489941068,
+              "region_quad": [
+                [
+                  1381,
+                  2035
+                ],
+                [
+                  1508,
+                  2035
+                ],
+                [
+                  1508,
+                  2072
+                ],
+                [
+                  1381,
+                  2072
+                ]
+              ],
+              "page_quad": [
+                [
+                  1381,
+                  2035
+                ],
+                [
+                  1508,
+                  2035
+                ],
+                [
+                  1508,
+                  2072
+                ],
+                [
+                  1381,
+                  2072
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0009",
+              "region_id": "p0005-full-page",
+              "detector_index": 8,
+              "crop_path": "crops/lines/region-00005-line-00008.png",
+              "text": "5.602.338",
+              "detection_confidence": 0.9144080086287273,
+              "recognition_confidence": 0.9306660691897074,
+              "region_quad": [
+                [
+                  1065,
+                  2040
+                ],
+                [
+                  1195,
+                  2040
+                ],
+                [
+                  1195,
+                  2074
+                ],
+                [
+                  1065,
+                  2074
+                ]
+              ],
+              "page_quad": [
+                [
+                  1065,
+                  2040
+                ],
+                [
+                  1195,
+                  2040
+                ],
+                [
+                  1195,
+                  2074
+                ],
+                [
+                  1065,
+                  2074
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0008",
+              "region_id": "p0005-full-page",
+              "detector_index": 7,
+              "crop_path": "crops/lines/region-00005-line-00007.png",
+              "text": "4",
+              "detection_confidence": 0.6601557712558479,
+              "recognition_confidence": 0.945349931716919,
+              "region_quad": [
+                [
+                  208,
+                  2050
+                ],
+                [
+                  232,
+                  2050
+                ],
+                [
+                  232,
+                  2079
+                ],
+                [
+                  208,
+                  2079
+                ]
+              ],
+              "page_quad": [
+                [
+                  208,
+                  2050
+                ],
+                [
+                  232,
+                  2050
+                ],
+                [
+                  232,
+                  2079
+                ],
+                [
+                  208,
+                  2079
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0007",
+              "region_id": "p0005-full-page",
+              "detector_index": 6,
+              "crop_path": "crops/lines/region-00005-line-00006.png",
+              "text": "Tài sản Có khác",
+              "detection_confidence": 0.9627202111870458,
+              "recognition_confidence": 0.9213784575462342,
+              "region_quad": [
+                [
+                  276,
+                  2050
+                ],
+                [
+                  467,
+                  2050
+                ],
+                [
+                  467,
+                  2077
+                ],
+                [
+                  276,
+                  2077
+                ]
+              ],
+              "page_quad": [
+                [
+                  276,
+                  2050
+                ],
+                [
+                  467,
+                  2050
+                ],
+                [
+                  467,
+                  2077
+                ],
+                [
+                  276,
+                  2077
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0006",
+              "region_id": "p0005-full-page",
+              "detector_index": 5,
+              "crop_path": "crops/lines/region-00005-line-00005.png",
+              "text": "Các khoản dự phòng rủi ro cho các tài sản",
+              "detection_confidence": 0.8303876765595075,
+              "recognition_confidence": 0.9315082314537793,
+              "region_quad": [
+                [
+                  274,
+                  2091
+                ],
+                [
+                  772,
+                  2091
+                ],
+                [
+                  772,
+                  2125
+                ],
+                [
+                  274,
+                  2125
+                ]
+              ],
+              "page_quad": [
+                [
+                  274,
+                  2091
+                ],
+                [
+                  772,
+                  2091
+                ],
+                [
+                  772,
+                  2125
+                ],
+                [
+                  274,
+                  2125
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0004",
+              "region_id": "p0005-full-page",
+              "detector_index": 3,
+              "crop_path": "crops/lines/region-00005-line-00003.png",
+              "text": "(29.873)",
+              "detection_confidence": 0.8735391917142864,
+              "recognition_confidence": 0.9334877282381058,
+              "region_quad": [
+                [
+                  1395,
+                  2094
+                ],
+                [
+                  1510,
+                  2094
+                ],
+                [
+                  1510,
+                  2137
+                ],
+                [
+                  1395,
+                  2137
+                ]
+              ],
+              "page_quad": [
+                [
+                  1395,
+                  2094
+                ],
+                [
+                  1510,
+                  2094
+                ],
+                [
+                  1510,
+                  2137
+                ],
+                [
+                  1395,
+                  2137
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0005",
+              "region_id": "p0005-full-page",
+              "detector_index": 4,
+              "crop_path": "crops/lines/region-00005-line-00004.png",
+              "text": "(29)",
+              "detection_confidence": 0.8873225097237021,
+              "recognition_confidence": 0.9404588788747787,
+              "region_quad": [
+                [
+                  1134,
+                  2096
+                ],
+                [
+                  1200,
+                  2096
+                ],
+                [
+                  1200,
+                  2142
+                ],
+                [
+                  1134,
+                  2142
+                ]
+              ],
+              "page_quad": [
+                [
+                  1134,
+                  2096
+                ],
+                [
+                  1200,
+                  2096
+                ],
+                [
+                  1200,
+                  2142
+                ],
+                [
+                  1134,
+                  2142
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0003",
+              "region_id": "p0005-full-page",
+              "detector_index": 2,
+              "crop_path": "crops/lines/region-00005-line-00002.png",
+              "text": "5",
+              "detection_confidence": 0.7777381615402797,
+              "recognition_confidence": 0.9258934855461121,
+              "region_quad": [
+                [
+                  208,
+                  2108
+                ],
+                [
+                  230,
+                  2108
+                ],
+                [
+                  230,
+                  2140
+                ],
+                [
+                  208,
+                  2140
+                ]
+              ],
+              "page_quad": [
+                [
+                  208,
+                  2108
+                ],
+                [
+                  230,
+                  2108
+                ],
+                [
+                  230,
+                  2140
+                ],
+                [
+                  208,
+                  2140
+                ]
+              ]
+            },
+            {
+              "id": "p0005-full-page-line-0002",
+              "region_id": "p0005-full-page",
+              "detector_index": 1,
+              "crop_path": "crops/lines/region-00005-line-00001.png",
+              "text": "Có nội bảng khác",
+              "detection_confidence": 0.8263209793432906,
+              "recognition_confidence": 0.9316741488873959,
+              "region_quad": [
+                [
+                  274,
+                  2125
+                ],
+                [
+                  486,
+                  2125
+                ],
+                [
+                  486,
+                  2159
+                ],
+                [
+                  274,
+                  2159
+                ]
+              ],
+              "page_quad": [
+                [
+                  274,
+                  2125
+                ],
+                [
+                  486,
+                  2125
+                ],
+                [
+                  486,
+                  2159
+                ],
+                [
+                  274,
+                  2159
+                ]
+              ]
+            }
+          ],
+          "blocks": []
+        },
+        "table": {
+          "structure_status": "pending",
+          "structure": null
+        },
+        "needs_review": true
+      }
+    }
+  ]
+}

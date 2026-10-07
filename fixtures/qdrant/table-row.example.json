@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "fixture_kind": "illustrative",
+  "description": "Three proposed searchable rows using the actual p0004-r0005 cell text and OCR references. Header-keyed table parent and row vectors are not currently indexed.",
+  "embedding_status": "pending",
+  "points": [
+    {
+      "id": "c1bb5601-6c04-54a0-b97b-b12b9abab910",
+      "payload": {
+        "schema_version": "1.2",
+        "record_type": "table_row",
+        "ocr_path": "data/ocr/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/pp-ocrv6-vietnamese/pages-79e9d28f078f/ocr.json",
+        "table_artifact": "data/tables/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/tables.json",
+        "table_artifact_sha256": "abdfde3dd25721df5825166ad88cdcc41d1c8754f386f94059d172c80a11b407",
+        "table_point_id": "de674fe0-2068-5d96-b7ce-2a8441e89298",
+        "table_id": "p0004-r0005",
+        "page_number": 4,
+        "row_index": 1,
+        "header_mapping": "ocr_aligned",
+        "values": {
+          "Họ tên": "Bà Nguyễn Thị Thu Hương",
+          "Chức vụ": "Trưởng ban kiểm soát"
+        },
+        "cell_ocr_refs": {
+          "Họ tên": ["p0004-full-page-line-0037"],
+          "Chức vụ": ["p0004-full-page-line-0038"]
+        },
+        "embedding_model": "thanhtantran/Vietnamese_Embedding",
+        "embedding_text": "Họ tên: Bà Nguyễn Thị Thu Hương\nChức vụ: Trưởng ban kiểm soát"
+      }
+    },
+    {
+      "id": "209646f4-eb5a-5888-8969-ea15d9d0e208",
+      "payload": {
+        "schema_version": "1.2",
+        "record_type": "table_row",
+        "ocr_path": "data/ocr/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/pp-ocrv6-vietnamese/pages-79e9d28f078f/ocr.json",
+        "table_artifact": "data/tables/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/tables.json",
+        "table_artifact_sha256": "abdfde3dd25721df5825166ad88cdcc41d1c8754f386f94059d172c80a11b407",
+        "table_point_id": "de674fe0-2068-5d96-b7ce-2a8441e89298",
+        "table_id": "p0004-r0005",
+        "page_number": 4,
+        "row_index": 2,
+        "header_mapping": "ocr_aligned",
+        "values": {
+          "Họ tên": "Ông Thái Duy Nghĩa",
+          "Chức vụ": "Thành viên chuyên trách"
+        },
+        "cell_ocr_refs": {
+          "Họ tên": ["p0004-full-page-line-0036"],
+          "Chức vụ": ["p0004-full-page-line-0035"]
+        },
+        "embedding_model": "thanhtantran/Vietnamese_Embedding",
+        "embedding_text": "Họ tên: Ông Thái Duy Nghĩa\nChức vụ: Thành viên chuyên trách"
+      }
+    },
+    {
+      "id": "1b23c1b5-6e31-535a-b4c7-dc16e9ebf1be",
+      "payload": {
+        "schema_version": "1.2",
+        "record_type": "table_row",
+        "ocr_path": "data/ocr/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/pp-ocrv6-vietnamese/pages-79e9d28f078f/ocr.json",
+        "table_artifact": "data/tables/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/tables.json",
+        "table_artifact_sha256": "abdfde3dd25721df5825166ad88cdcc41d1c8754f386f94059d172c80a11b407",
+        "table_point_id": "de674fe0-2068-5d96-b7ce-2a8441e89298",
+        "table_id": "p0004-r0005",
+        "page_number": 4,
+        "row_index": 3,
+        "header_mapping": "ocr_aligned",
+        "values": {
+          "Họ tên": "Bà Nguyễn Thị Thu Nguyệt",
+          "Chức vụ": "Thành viên không chuyên trách"
+        },
+        "cell_ocr_refs": {
+          "Họ tên": ["p0004-full-page-line-0033"],
+          "Chức vụ": ["p0004-full-page-line-0034"]
+        },
+        "embedding_model": "thanhtantran/Vietnamese_Embedding",
+        "embedding_text": "Họ tên: Bà Nguyễn Thị Thu Nguyệt\nChức vụ: Thành viên không chuyên trách"
+      }
+    }
+  ]
+}

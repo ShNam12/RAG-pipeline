@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Embedded reconstructed table cell payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_type", "source", "source_id", "ocr_path", "ocr_sha256", "ocr_model", "ocr_status", "embedding_model", "table_artifact", "table_artifact_sha256", "table_model", "table_status", "method", "region_id", "page_number", "bbox", "row", "column", "rowspan", "colspan", "text", "ocr_refs", "embedding_text"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "record_type": {"const": "table_cell"},
+    "source": {"type": "string", "minLength": 1},
+    "source_id": {"type": "string", "format": "uuid"},
+    "ocr_path": {"type": "string", "minLength": 1},
+    "ocr_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "ocr_model": {"type": "string", "minLength": 1},
+    "ocr_status": {"enum": ["complete", "partial", "failed"]},
+    "embedding_model": {"const": "thanhtantran/Vietnamese_Embedding"},
+    "table_artifact": {"type": "string", "minLength": 1},
+    "table_artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "table_model": {"type": "string", "minLength": 1},
+    "table_status": {"enum": ["complete", "partial"]},
+    "method": {"type": "string", "minLength": 1},
+    "region_id": {"type": "string", "minLength": 1},
+    "page_number": {"type": "integer", "minimum": 1},
+    "bbox": {
+      "type": "array", "minItems": 4, "maxItems": 4,
+      "items": {"type": "number"}
+    },
+    "row": {"type": "integer", "minimum": 0},
+    "column": {"type": "integer", "minimum": 0},
+    "rowspan": {"type": "integer", "minimum": 1},
+    "colspan": {"type": "integer", "minimum": 1},
+    "text": {"type": "string", "minLength": 1},
+    "ocr_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "embedding_text": {"type": "string", "minLength": 1}
+  }
+}

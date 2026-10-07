@@ -1,0 +1,14 @@
+device: cpu
+output_dir: data/ocr
+model: paddleocr-vl
+models:
+  paddleocr_v6:
+    detection_model: PP-OCRv6_small_det
+    recognition_model: pp-ocrv6-medium-rec-vietnamese
+    recognition_model_dir: .cache/models/pp-ocrv6-medium-rec-vietnamese
+    batch_size: 1
+    enable_mkldnn: false
+  vietocr:
+    config_name: vgg_transformer
+  paddleocr_vl:
+    pipeline_version: v1.6

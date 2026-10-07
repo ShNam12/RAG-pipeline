@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Rag1 Qdrant point",
+  "description": "Proposal points have a dense vector; chunk children and table cells use a named text vector; chunk ancestors and header-keyed tables have no vector.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "vector", "payload"],
+  "properties": {
+    "id": {"$ref": "#/$defs/id"},
+    "vector": {},
+    "payload": {}
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "vector": {"$ref": "#/$defs/proposal_vector"},
+        "payload": {"$ref": "payload.schema.json"}
+      }
+    },
+    {
+      "properties": {
+        "vector": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["text"],
+          "properties": {"text": {"$ref": "#/$defs/chunk_vector"}}
+        },
+        "payload": {
+          "allOf": [
+            {"$ref": "chunk.schema.json"},
+            {"properties": {"level": {"const": 2}}}
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "vector": {"type": "object", "maxProperties": 0},
+        "payload": {
+          "allOf": [
+            {"$ref": "chunk.schema.json"},
+            {"properties": {"level": {"enum": [0, 1]}}}
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "vector": {"type": "object", "maxProperties": 0},
+        "payload": {"$ref": "table-keyed.schema.json"}
+      }
+    },
+    {
+      "properties": {
+        "vector": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["text"],
+          "properties": {"text": {"$ref": "#/$defs/chunk_vector"}}
+        },
+        "payload": {"$ref": "table-cell.schema.json"}
+      }
+    }
+  ],
+  "$defs": {
+    "id": {"type": "string", "format": "uuid"},
+    "dense_vector": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "number"}
+    },
+    "chunk_vector": {
+      "type": "array",
+      "minItems": 1024,
+      "maxItems": 1024,
+      "items": {"type": "number"}
+    },
+    "proposal_vector": {
+      "oneOf": [
+        {"$ref": "#/$defs/dense_vector"},
+        {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {"minLength": 1},
+          "additionalProperties": {"$ref": "#/$defs/dense_vector"}
+        }
+      ]
+    },
+    "staged_point": {
+      "description": "A local fixture point without vectors; add a vector for proposal and chunk child points or an empty vector object for payload-only points.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "payload"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "payload": {
+          "oneOf": [
+            {"$ref": "payload.schema.json"},
+            {"$ref": "chunk.schema.json"},
+            {"$ref": "table-keyed.schema.json"},
+            {"$ref": "table-cell.schema.json"},
+            {"$ref": "table-row.schema.json"}
+          ]
+        }
+      }
+    }
+  }
+}

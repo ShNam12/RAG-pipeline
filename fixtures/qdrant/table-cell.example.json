@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "fixture_kind": "illustrative",
+  "description": "Synthetic current-indexer table-cell payload matching the focused indexing test. No model vector is included and no table cells are present in the currently observed live Q3 collection.",
+  "embedding_status": "pending",
+  "points": [
+    {
+      "id": "0259b940-897c-5f10-840b-024f5e697141",
+      "payload": {
+        "schema_version": "1.0",
+        "record_type": "table_cell",
+        "source": "report.pdf",
+        "source_id": "00000000-0000-0000-0000-000000000001",
+        "ocr_path": "ocr.json",
+        "ocr_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "ocr_model": "paddleocr-v6",
+        "ocr_status": "complete",
+        "embedding_model": "thanhtantran/Vietnamese_Embedding",
+        "table_artifact": "tables.json",
+        "table_artifact_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "table_model": "PaddlePaddle/SLANet_plus_safetensors",
+        "table_status": "complete",
+        "method": "slanet_ocr",
+        "region_id": "r2",
+        "page_number": 1,
+        "bbox": [10, 20, 30, 40],
+        "row": 0,
+        "column": 1,
+        "rowspan": 1,
+        "colspan": 1,
+        "text": "451.893.195",
+        "ocr_refs": ["line-2"],
+        "embedding_text": "Table page 1, region r2\nTài sản\n451.893.195"
+      }
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Nested table payload",
+  "description": "Table data stays inside payload.table.structure with null structure until extraction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["structure_status", "structure"],
+  "properties": {
+    "structure_status": {
+      "enum": ["pending", "complete", "partial", "failed"]
+    },
+    "structure": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/structure"}
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"structure_status": {"enum": ["pending", "failed"]}}},
+      "then": {"properties": {"structure": {"type": "null"}}},
+      "else": {"properties": {"structure": {"$ref": "#/$defs/structure"}}}
+    }
+  ],
+  "$defs": {
+    "bbox": {
+      "description": "[x0, y0, x1, y1] in rendered page pixels with a top-left origin.",
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {"type": "number", "minimum": 0}
+    },
+    "cell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["column_index", "rowspan", "colspan", "text", "source_line_ids", "page_bbox"],
+      "properties": {
+        "column_index": {"type": "integer", "minimum": 0},
+        "rowspan": {"type": "integer", "minimum": 1},
+        "colspan": {"type": "integer", "minimum": 1},
+        "text": {
+          "description": "Keep exact cell text, financial amounts, and dates as strings; null means unavailable and an empty string means observed empty content.",
+          "type": ["string", "null"]
+        },
+        "source_line_ids": {
+          "description": "References to payload.evidence.lines, with an empty list allowed for cells without OCR line evidence.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "page_bbox": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/bbox"}
+          ]
+        }
+      }
+    },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["row_index", "cells"],
+      "properties": {
+        "row_index": {"type": "integer", "minimum": 0},
+        "cells": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/cell"}
+        }
+      }
+    },
+    "structure": {
+      "$comment": "Consumers must also check row/column bounds, unique row indices, non-overlapping spans, and that source_line_ids resolve within the enclosing payload.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["producer", "row_count", "column_count", "header_row_indices", "rows"],
+      "properties": {
+        "producer": {
+          "description": "Table extractor identity/version or manual_contract_example for the illustrative fixture.",
+          "type": "string",
+          "minLength": 1
+        },
+        "row_count": {"type": "integer", "minimum": 1},
+        "column_count": {"type": "integer", "minimum": 1},
+        "header_row_indices": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "integer", "minimum": 0}
+        },
+        "rows": {
+          "description": "Zero-based rows including headers, with each merged cell stored once at its starting row and column.",
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/row"}
+        }
+      }
+    }
+  }
+}

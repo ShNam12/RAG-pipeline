@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Qdrant point fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "fixture_kind", "description", "embedding_status", "points"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "fixture_kind": {"enum": ["extracted", "illustrative"]},
+    "description": {"type": "string", "minLength": 1},
+    "embedding_status": {"enum": ["pending", "not_applicable"]},
+    "points": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "point.schema.json#/$defs/staged_point"}
+    }
+  }
+}

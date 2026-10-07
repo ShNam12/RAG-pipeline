@@ -17,7 +17,17 @@ dependencies = [
     "sentence-transformers>=6.1.0",
     "qdrant-client>=1.19.1",
     "openai>=1.20.0",
+    "pyyaml>=6.0,<7.0",
+    "setuptools<82",
+    "torch>=2.0",
+    "vietocr>=0.3.13,<0.4",
 ]
+
+[project.optional-dependencies]
+vl = ["paddleocr[doc-parser]==3.7.0", "einops>=0.6.1,<1"]
+
+[tool.uv]
+override-dependencies = ["einops>=0.6.1,<1"]
 
 [project.scripts]
 rag1 = "rag1:main"

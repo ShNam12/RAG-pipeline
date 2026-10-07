@@ -16,16 +16,22 @@ from rag1.extractions.layouts.paddle import (
     RenderedPage,
 )
 from rag1.extractions.layouts.writer import document_output_path
+from rag1.extractions.config import load_extraction_config
 
 
-DEFAULT_RENDER_DPI = 200
-DEFAULT_PAGE_IMAGE_DIR = Path("pages")
+_CONFIG = load_extraction_config("layouts")
+_RENDER_CONFIG = _CONFIG["render"]
+_DEBUG_CONFIG = _CONFIG["debug"]
+DEFAULT_RENDER_DPI = _RENDER_CONFIG["dpi"]
+DEFAULT_PAGE_IMAGE_DIR = Path(_RENDER_CONFIG["image_dir"])
 BBOX_IMAGE_DIR = Path("bbox")
+DEFAULT_LAYOUT_OUTPUT_DIR = Path(_RENDER_CONFIG["output_dir"])
+DEFAULT_DEBUG_OUTPUT_DIR = Path(_DEBUG_CONFIG["output_dir"])
 _REGION_COLORS = {
-    RegionKind.TEXT: (255, 196, 0),
-    RegionKind.TABLE: (255, 48, 48),
-    RegionKind.PICTURE: (0, 180, 255),
-    RegionKind.OTHER: (255, 0, 255),
+    RegionKind.TEXT: tuple(_DEBUG_CONFIG["overlay_colors"]["text"]),
+    RegionKind.TABLE: tuple(_DEBUG_CONFIG["overlay_colors"]["table"]),
+    RegionKind.PICTURE: tuple(_DEBUG_CONFIG["overlay_colors"]["picture"]),
+    RegionKind.OTHER: tuple(_DEBUG_CONFIG["overlay_colors"]["other"]),
 }
 
 
@@ -36,7 +42,7 @@ class PDFPageRenderer:
         self,
         *,
         dpi: int = DEFAULT_RENDER_DPI,
-        output_dir: str | Path = Path("data/extraction/pdf_debug"),
+        output_dir: str | Path = DEFAULT_DEBUG_OUTPUT_DIR,
         image_dir: str | Path = DEFAULT_PAGE_IMAGE_DIR,
     ) -> None:
         if isinstance(dpi, bool) or not isinstance(dpi, int) or dpi < 1:
@@ -176,7 +182,14 @@ class PDFPageRenderer:
                     round(y1 * y_scale),
                 )
                 color = _REGION_COLORS[region.kind]
-                draw.rectangle(box, outline=color, width=max(2, self.dpi // 80))
+                draw.rectangle(
+                    box,
+                    outline=color,
+                    width=max(
+                        _DEBUG_CONFIG["overlay_min_width"],
+                        self.dpi // _DEBUG_CONFIG["overlay_dpi_divisor"],
+                    ),
+                )
                 label = f"{region.kind.value}:{region.id}"
                 font = ImageFont.load_default()
                 label_box = draw.textbbox((box[0], box[1]), label, font=font)
@@ -251,7 +264,7 @@ def render_pdf_layout_debug(
     source: str | Path,
     *,
     dpi: int = DEFAULT_RENDER_DPI,
-    output_dir: str | Path = Path("data/extraction/pdf_debug"),
+    output_dir: str | Path = DEFAULT_DEBUG_OUTPUT_DIR,
     image_dir: str | Path = DEFAULT_PAGE_IMAGE_DIR,
     model_factory: ModelFactory | None = None,
 ) -> Path:
@@ -284,7 +297,7 @@ def main() -> None:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("data/extraction/pdf_debug"),
+        default=DEFAULT_DEBUG_OUTPUT_DIR,
     )
     parser.add_argument(
         "--image-dir",

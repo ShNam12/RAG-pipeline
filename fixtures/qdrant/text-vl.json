@@ -1,0 +1,449 @@
+{
+  "schema_version": "1.0",
+  "fixture_kind": "extracted",
+  "description": "Full page 1 from the saved paddleocr-vl direct OCR run. Block text is preserved without invented line confidence.",
+  "embedding_status": "pending",
+  "points": [
+    {
+      "id": "d8f6dcba-fd97-598d-b250-230c5de59d27",
+      "payload": {
+        "schema_version": "1.0",
+        "document_id": "c0546b0f-7827-5f14-b353-83cd86b124ce",
+        "record_type": "text",
+        "source": {
+          "path": "data/raw/Bao+cao+tai+chinh+hop+nhat+Q3.2025.pdf",
+          "format": "pdf",
+          "sha256": "9b1835cd486444b1a220a9133a04d6bf041a2df23bf955ea9e0f8733ba7f15e5"
+        },
+        "page_number": 1,
+        "dpi": 200,
+        "proposal": {
+          "id": "p0001-full-page",
+          "kind": "text",
+          "role": "body",
+          "raw_label": "full_page",
+          "confidence": null,
+          "location": {
+            "type": "visual",
+            "page_number": 1,
+            "bbox": [
+              0,
+              0,
+              1653,
+              2337
+            ],
+            "page_width": 1653,
+            "page_height": 2337,
+            "coordinate_origin": "top_left"
+          }
+        },
+        "text": "\nCỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\nTHE SOCIALIST REPUBLIC OF VIETNAM\nIndependence - Freedom - Happiness\nSố: ΛΛ5/2025/TPB.HĐQT\nNo.: ΛΛS/2025/TPB.HĐQT\nHà Nội, ngày 30 tháng 10 năm 2025\nHanoi, October 30, 2025\nCÔNG BÓ THÔNG TIN TRÊN CỔNG THÔNG TIN ĐIỆN TỬ CỦA\nỦY BAN CHÚNG KHOÁN NHÀ NƯỚC VÀ SGDCK TP.HCM\nDISCLOSURE OF INFORMATION ON THE STATE SECURITIES\nCOMMISSION'S PORTAL AND HOCHIMINH STOCK EXCHANGE'S PORTAL\nKính gửi: - Ủy ban Chứng khoán Nhà nước\n- Sở Giao dịch Chứng khoán Thành phố Hồ Chí Minh\nTo: - The State Securities Commission\n- The Hochiminh Stock Exchange\n- Tên tổ chức: Ngân hàng Thương mại Cổ phần Tiên Phong\nOrganization name: Tien Phong Commercial Joint Stock Bank\n- Mã chúng khoán: TPB\nSecurities Symbol: TPB\n- Địa chỉ trụ sở chính: Tòa nhà TPBank, Số 57, Phố Lý Thường Kiệt, Phường Cửa Nam, Thành phố Hà Nội\n\nAddress: TPBank Building, No. 57, Ly Thuong Kiet Street, Cua Nam Ward, Hanoi City\n\n- Điện thoại: 024.3768 8998\nTelephone: 024.3768 8998\n- Fax: 024.3768 8979\n- Người thực hiện công bố thông tin: Ông Lê Quang Tiến\nPosition: Vice Chairman of the Board of Directors\nLoại thông tin công bố: \u2611 định kỳ \u2610 bất thường \u2610 24h \u2610 theo yêu cầu\nInformation disclosure type: \u2611 Periodic \u2610 Irregular \u2610 24 hours \u2610 On demand\nSubmitted by: Mr. Le Quang Tien\nChức vụ: Phó Chủ tịch Hội đồng Quản trị\nNội dung thông tin công bố: Báo cáo tài chính hợp nhất Quý 3 năm 2025.\nContent of Information disclosure: Consolidated financial statements for the  $ 3^{rd} $ quarter of 2025.\nThông tin này đã được công bố trên trang thông tin điện tử của Ngân hàng vào ngày 30/10/2025 tại đường dẫn:  $ \\underline{\\text{https://tpb.vn/nha-dau-tu/bao-cao-tai-chinh}} $\n1",
+        "text_source": "ocr_region",
+        "provenance": {
+          "layout": {
+            "path": "data/layouts/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/layout.json",
+            "manifest_path": "data/layouts/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/manifest.json",
+            "schema_version": "1.0",
+            "status": "complete",
+            "proposal_pointer": null
+          },
+          "ocr": {
+            "path": "data/ocr/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/ocr-vl/page-0001-89e669968ef8/ocr.json",
+            "schema_version": "1.0",
+            "status": "complete",
+            "input_mode": "direct",
+            "model": "paddleocr-vl",
+            "region_id": "p0001-full-page",
+            "region_pointer": "/regions/0"
+          },
+          "association": "ocr_scope"
+        },
+        "artifacts": {
+          "page_image": "data/layouts/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/pages/page-0001.png",
+          "region_crop": "data/ocr/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/ocr-vl/page-0001-89e669968ef8/crops/regions/region-00001.png"
+        },
+        "evidence": {
+          "ocr_region_status": "complete",
+          "ocr_crop": {
+            "proposal_bbox": [
+              0,
+              0,
+              1653,
+              2337
+            ],
+            "page_bbox": [
+              0,
+              0,
+              1653,
+              2337
+            ],
+            "page_origin": [
+              0,
+              0
+            ],
+            "width": 1653,
+            "height": 2337,
+            "path": "crops/regions/region-00001.png"
+          },
+          "lines": [],
+          "blocks": [
+            {
+              "label": "header_image",
+              "content": "",
+              "region_bbox": [
+                318,
+                226,
+                651,
+                311
+              ],
+              "page_bbox": [
+                318,
+                226,
+                651,
+                311
+              ]
+            },
+            {
+              "label": "header",
+              "content": "CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\nTHE SOCIALIST REPUBLIC OF VIETNAM\nIndependence - Freedom - Happiness",
+              "region_bbox": [
+                776,
+                149,
+                1483,
+                314
+              ],
+              "page_bbox": [
+                776,
+                149,
+                1483,
+                314
+              ]
+            },
+            {
+              "label": "text",
+              "content": "Số: ΛΛ5/2025/TPB.HĐQT\nNo.: ΛΛS/2025/TPB.HĐQT",
+              "region_bbox": [
+                295,
+                343,
+                672,
+                430
+              ],
+              "page_bbox": [
+                295,
+                343,
+                672,
+                430
+              ]
+            },
+            {
+              "label": "text",
+              "content": "Hà Nội, ngày 30 tháng 10 năm 2025\nHanoi, October 30, 2025",
+              "region_bbox": [
+                864,
+                344,
+                1364,
+                424
+              ],
+              "page_bbox": [
+                864,
+                344,
+                1364,
+                424
+              ]
+            },
+            {
+              "label": "doc_title",
+              "content": "CÔNG BÓ THÔNG TIN TRÊN CỔNG THÔNG TIN ĐIỆN TỬ CỦA\nỦY BAN CHÚNG KHOÁN NHÀ NƯỚC VÀ SGDCK TP.HCM\nDISCLOSURE OF INFORMATION ON THE STATE SECURITIES\nCOMMISSION'S PORTAL AND HOCHIMINH STOCK EXCHANGE'S PORTAL",
+              "region_bbox": [
+                243,
+                471,
+                1485,
+                674
+              ],
+              "page_bbox": [
+                243,
+                471,
+                1485,
+                674
+              ]
+            },
+            {
+              "label": "text",
+              "content": "Kính gửi: - Ủy ban Chứng khoán Nhà nước\n- Sở Giao dịch Chứng khoán Thành phố Hồ Chí Minh\nTo: - The State Securities Commission\n- The Hochiminh Stock Exchange",
+              "region_bbox": [
+                530,
+                732,
+                1469,
+                923
+              ],
+              "page_bbox": [
+                530,
+                732,
+                1469,
+                923
+              ]
+            },
+            {
+              "label": "text",
+              "content": "- Tên tổ chức: Ngân hàng Thương mại Cổ phần Tiên Phong\nOrganization name: Tien Phong Commercial Joint Stock Bank",
+              "region_bbox": [
+                226,
+                981,
+                1115,
+                1075
+              ],
+              "page_bbox": [
+                226,
+                981,
+                1115,
+                1075
+              ]
+            },
+            {
+              "label": "text",
+              "content": "- Mã chúng khoán: TPB\nSecurities Symbol: TPB\n- Địa chỉ trụ sở chính: Tòa nhà TPBank, Số 57, Phố Lý Thường Kiệt, Phường Cửa Nam, Thành phố Hà Nội",
+              "region_bbox": [
+                227,
+                1087,
+                597,
+                1175
+              ],
+              "page_bbox": [
+                227,
+                1087,
+                597,
+                1175
+              ]
+            },
+            {
+              "label": "text",
+              "content": "",
+              "region_bbox": [
+                224,
+                1183,
+                1509,
+                1284
+              ],
+              "page_bbox": [
+                224,
+                1183,
+                1509,
+                1284
+              ]
+            },
+            {
+              "label": "text",
+              "content": "Address: TPBank Building, No. 57, Ly Thuong Kiet Street, Cua Nam Ward, Hanoi City",
+              "region_bbox": [
+                265,
+                1283,
+                1447,
+                1325
+              ],
+              "page_bbox": [
+                265,
+                1283,
+                1447,
+                1325
+              ]
+            },
+            {
+              "label": "seal",
+              "content": "",
+              "region_bbox": [
+                1496,
+                994,
+                1652,
+                1282
+              ],
+              "page_bbox": [
+                1496,
+                994,
+                1652,
+                1282
+              ]
+            },
+            {
+              "label": "text",
+              "content": "- Điện thoại: 024.3768 8998\nTelephone: 024.3768 8998",
+              "region_bbox": [
+                228,
+                1335,
+                650,
+                1425
+              ],
+              "page_bbox": [
+                228,
+                1335,
+                650,
+                1425
+              ]
+            },
+            {
+              "label": "text",
+              "content": "- Fax: 024.3768 8979",
+              "region_bbox": [
+                228,
+                1435,
+                557,
+                1473
+              ],
+              "page_bbox": [
+                228,
+                1435,
+                557,
+                1473
+              ]
+            },
+            {
+              "label": "text",
+              "content": "- Người thực hiện công bố thông tin: Ông Lê Quang Tiến",
+              "region_bbox": [
+                227,
+                1481,
+                1027,
+                1526
+              ],
+              "page_bbox": [
+                227,
+                1481,
+                1027,
+                1526
+              ]
+            },
+            {
+              "label": "text",
+              "content": "Position: Vice Chairman of the Board of Directors",
+              "region_bbox": [
+                266,
+                1634,
+                961,
+                1673
+              ],
+              "page_bbox": [
+                266,
+                1634,
+                961,
+                1673
+              ]
+            },
+            {
+              "label": "text",
+              "content": "Loại thông tin công bố: \u2611 định kỳ \u2610 bất thường \u2610 24h \u2610 theo yêu cầu\nInformation disclosure type: \u2611 Periodic \u2610 Irregular \u2610 24 hours \u2610 On demand",
+              "region_bbox": [
+                226,
+                1683,
+                1491,
+                1774
+              ],
+              "page_bbox": [
+                226,
+                1683,
+                1491,
+                1774
+              ]
+            },
+            {
+              "label": "text",
+              "content": "Submitted by: Mr. Le Quang Tien",
+              "region_bbox": [
+                265,
+                1535,
+                733,
+                1573
+              ],
+              "page_bbox": [
+                265,
+                1535,
+                733,
+                1573
+              ]
+            },
+            {
+              "label": "text",
+              "content": "Chức vụ: Phó Chủ tịch Hội đồng Quản trị",
+              "region_bbox": [
+                267,
+                1583,
+                839,
+                1623
+              ],
+              "page_bbox": [
+                267,
+                1583,
+                839,
+                1623
+              ]
+            },
+            {
+              "label": "text",
+              "content": "Nội dung thông tin công bố: Báo cáo tài chính hợp nhất Quý 3 năm 2025.",
+              "region_bbox": [
+                229,
+                1832,
+                1245,
+                1874
+              ],
+              "page_bbox": [
+                229,
+                1832,
+                1245,
+                1874
+              ]
+            },
+            {
+              "label": "text",
+              "content": "Content of Information disclosure: Consolidated financial statements for the  $ 3^{rd} $ quarter of 2025.",
+              "region_bbox": [
+                228,
+                1881,
+                1511,
+                1970
+              ],
+              "page_bbox": [
+                228,
+                1881,
+                1511,
+                1970
+              ]
+            },
+            {
+              "label": "text",
+              "content": "Thông tin này đã được công bố trên trang thông tin điện tử của Ngân hàng vào ngày 30/10/2025 tại đường dẫn:  $ \\underline{\\text{https://tpb.vn/nha-dau-tu/bao-cao-tai-chinh}} $",
+              "region_bbox": [
+                228,
+                2029,
+                1502,
+                2121
+              ],
+              "page_bbox": [
+                228,
+                2029,
+                1502,
+                2121
+              ]
+            },
+            {
+              "label": "number",
+              "content": "1",
+              "region_bbox": [
+                1480,
+                2219,
+                1498,
+                2248
+              ],
+              "page_bbox": [
+                1480,
+                2219,
+                1498,
+                2248
+              ]
+            }
+          ]
+        },
+        "table": null,
+        "needs_review": true
+      }
+    }
+  ]
+}

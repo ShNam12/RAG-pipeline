@@ -15,6 +15,7 @@ CURRENT_SCHEMA_VERSION = "1.0"
 class DocumentFormat(str, Enum):
     PDF = "pdf"
     DOCX = "docx"
+    IMAGE = "image"
 
 
 class DocumentStatus(str, Enum):

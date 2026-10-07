@@ -164,7 +164,8 @@ The model recorded in an artifact describes that saved run, regardless of the cu
 | `layout_proposal_id` | Layout-mode OCR can join to the layout proposal using the preserved proposal ID |
 | `line_center_in_layout_bbox` | Same-page full-page OCR lines are selected by whether their bounding-box centers fall inside the selected layout bbox |
 
-The table fixtures use `line_center_in_layout_bbox` because `p0004-full-page` and `p0004-r0005` identify different scopes.
+The table fixtures use `line_center_in_layout_bbox` because their full-page OCR scopes and selected layout proposals have different IDs.
+For example, `p0004-full-page` and `p0004-r0005` identify different scopes on page 4.
 Compute each line's center from the minimum and maximum x and y coordinates of `page_quad`, including centers on a table bbox edge.
 Require matching rendered page dimensions and retain the original OCR line order.
 This spatial association is unreviewed and does not perform table reconstruction.
@@ -285,35 +286,35 @@ Beyond schema validation, consumers must check unique row indices, grid bounds, 
 
 ## Usage of each fixture
 
-### `text-v6.json`
+### [text-v6.json](text-v6.json)
 
 This fixture represents direct OCR scope `p0003-full-page` on page 3 from the saved `paddleocr-v6` run.
 It has three OCR lines, no VL blocks, `text_source: "ocr_region"`, and `table: null`.
 Use it as the smallest example when developing text payload loading, embedding preparation, line geometry handling, and separate confidence displays.
 Its generated full-page proposal has no corresponding layout proposal pointer.
 
-### `text-vl.json`
+### [text-vl.json](text-vl.json)
 
 This fixture represents direct OCR scope `p0001-full-page` on page 1 from the saved `paddleocr-vl` run.
 It has 22 VL blocks, no OCR lines, `text_source: "ocr_region"`, and `table: null`.
 Use it to develop consumers that accept block content and geometry without requiring line confidence fields.
 Preserve empty block content and the existing formatting in recognized strings.
 
-### `table-pending.json`
+### [table-pending.json](table-pending.json)
 
 This fixture represents layout proposal `p0004-r0005` on page 4 with eight OCR lines associated from `p0004-full-page`.
 It has `text_source: "associated_lines"`, pending structure, and no saved dedicated table crop.
 Use it to develop pending-table displays, layout-to-OCR provenance handling, and the handoff to future table extraction.
 Do not interpret its newline-separated text as already paired names and roles.
 
-### `table-financial-pending.json`
+### [table-financial-pending.json](table-financial-pending.json)
 
 This fixture represents layout proposal `p0005-r0001` on page 5 with 151 associated full-page OCR lines.
 It retains financial labels, dates, amounts, polygons, and confidence scores while keeping table structure pending.
 Use it as a larger example for financial-text preservation, evidence browsing, and future row/cell reconstruction inputs.
 Amounts have not been assigned to accounting rows or date columns.
 
-### `table-structured.example.json`
+### [table-structured.example.json](table-structured.example.json)
 
 This fixture manually arranges the eight OCR strings from `table-pending.json` into four rows and two columns, including the header row.
 It is marked `fixture_kind: "illustrative"`, uses `producer: "manual_contract_example"`, and has `text_source: "table_structure"`.

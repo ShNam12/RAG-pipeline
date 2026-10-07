@@ -224,7 +224,9 @@ class OcrError(OcrModel):
 class OcrDocument(OcrModel):
     schema_version: Literal[CURRENT_SCHEMA_VERSION] = CURRENT_SCHEMA_VERSION
     input_mode: Literal["layout", "direct"] = "layout"
-    model: Literal["paddleocr-v6", "paddleocr-vl"] = "paddleocr-v6"
+    model: Literal[
+        "paddleocr-v6", "pp-ocrv6-medium-rec-vietnamese", "paddleocr-vl"
+    ] = "paddleocr-v6"
     source: str = Field(min_length=1)
     source_format: DocumentFormat
     upstream_schema_version: Literal[CURRENT_SCHEMA_VERSION] | None = CURRENT_SCHEMA_VERSION

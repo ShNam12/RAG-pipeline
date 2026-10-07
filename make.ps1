@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateSet("layout", "ocr", "ocr-text")]
+    [ValidateSet("layout", "ocr", "ocr-vietnamese", "ocr-text")]
     [string]$Task,
 
     [string]$InputPath,
@@ -22,6 +22,11 @@ Push-Location $RepositoryRoot
 try {
     if ([string]::IsNullOrWhiteSpace($InputPath)) {
         throw "Pass the input path with -InputPath or Make variable INPUT."
+    }
+
+    if ($Task -eq "ocr-vietnamese") {
+        $Task = "ocr"
+        $Model = "pp-ocrv6-medium-rec-vietnamese"
     }
 
     $UvArguments = @("run")

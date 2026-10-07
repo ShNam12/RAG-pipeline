@@ -20,6 +20,21 @@ class OcrCliTests(unittest.TestCase):
         self.assertTrue(arguments.direct)
         self.assertEqual(arguments.model, "paddleocr-vl")
 
+    def test_vietnamese_recognizer_option_is_forwarded_to_pipeline(self) -> None:
+        model = "pp-ocrv6-medium-rec-vietnamese"
+        arguments = _build_parser().parse_args(["ocr", "region", "--model", model])
+        self.assertEqual(arguments.model, model)
+
+        with patch(
+            "rag1.extractions.ocr_text.pipeline.run_ocr",
+            side_effect=ValueError("stop before inference"),
+        ) as run_ocr:
+            with contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit):
+                    main(["ocr", "region", "--model", model])
+
+        self.assertEqual(run_ocr.call_args.kwargs["model"], model)
+
     def test_direct_option_is_forwarded_to_pipeline(self) -> None:
         with patch(
             "rag1.extractions.ocr_text.pipeline.run_ocr",

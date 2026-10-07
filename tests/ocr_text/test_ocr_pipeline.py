@@ -4,6 +4,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from PIL import Image
 
@@ -113,6 +114,7 @@ class OcrPipelineTests(unittest.TestCase):
             output_path = run_ocr(
                 layout_path,
                 output_dir=root / "ocr",
+                model="paddleocr-v6",
                 adapter=adapter,
             )
 
@@ -145,6 +147,43 @@ class OcrPipelineTests(unittest.TestCase):
             self.assertIsNone(table_region.text)
             self.assertEqual(table_region.table.structure_status, "pending")
             self.assertEqual(len(table_region.lines), 1)
+
+    def test_vietnamese_model_uses_paddle_recognizer_and_records_model(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            layout_path, _ = self.create_layout_and_page(root)
+            adapter = FakeAdapter()
+            with patch(
+                "rag1.extractions.ocr_text.pipeline.TEXT_RECOGNITION_MODEL_DIR",
+                str(root),
+            ):
+                with patch(
+                    "rag1.extractions.ocr_text.pipeline.PaddleOcrV6Adapter",
+                    return_value=adapter,
+                ) as adapter_factory:
+                    output_path = run_ocr(
+                        layout_path,
+                        output_dir=root / "ocr",
+                        model="pp-ocrv6-medium-rec-vietnamese",
+                    )
+
+            adapter_factory.assert_called_once_with(device="cpu")
+            result = json.loads(output_path.read_text(encoding="utf-8"))
+            self.assertEqual(result["model"], "pp-ocrv6-medium-rec-vietnamese")
+            self.assertNotIn("blocks", result["regions"][0])
+            self.assertEqual(len(adapter.recognized), 2)
+
+    def test_vietnamese_model_requires_downloaded_directory(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            missing_dir = Path(temporary_directory) / "missing-model"
+            with patch(
+                "rag1.extractions.ocr_text.pipeline.TEXT_RECOGNITION_MODEL_DIR",
+                str(missing_dir),
+            ):
+                with self.assertRaisesRegex(
+                    FileNotFoundError, "model directory does not exist"
+                ):
+                    run_ocr("unused-layout.json", model="pp-ocrv6-medium-rec-vietnamese")
 
     def test_vl_blocks_preserve_layout_geometry_and_table_content(self):
         with tempfile.TemporaryDirectory() as temporary_directory:

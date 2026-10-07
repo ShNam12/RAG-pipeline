@@ -1,10 +1,11 @@
 device: cpu
 output_dir: data/ocr
-model: paddleocr-v6
+model: pp-ocrv6-medium-rec-vietnamese
 models:
   paddleocr_v6:
     detection_model: PP-OCRv6_small_det
-    recognition_model: PP-OCRv6_medium_rec
+    recognition_model: pp-ocrv6-medium-rec-vietnamese
+    recognition_model_dir: .cache/models/pp-ocrv6-medium-rec-vietnamese
     batch_size: 1
     enable_mkldnn: false
   vietocr:

@@ -100,7 +100,7 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     ocr.add_argument(
         "--model",
-        choices=("paddleocr-v6", "paddleocr-vl"),
+        choices=("paddleocr-v6", "pp-ocrv6-medium-rec-vietnamese", "paddleocr-vl"),
         default=DEFAULT_OCR_MODEL,
         help=f"OCR model path (default: {DEFAULT_OCR_MODEL})",
     )

@@ -42,7 +42,10 @@ from rag1.extractions.ocr_text.layout_input import (
     load_upstream_manifest,
 )
 from rag1.extractions.ocr_text.adapters import OcrAdapter, RegionOcrAdapter
-from rag1.extractions.ocr_text.paddle import PaddleOcrV6Adapter
+from rag1.extractions.ocr_text.paddle import (
+    PaddleOcrV6Adapter,
+    TEXT_RECOGNITION_MODEL_DIR,
+)
 from rag1.extractions.ocr_text.paddle_vl import PaddleOcrVlAdapter
 from rag1.extractions.ocr_text.text_output import render_ocr_text, write_ocr_text
 from rag1.extractions.ocr_text.vietocr import VietOcrAdapter
@@ -85,14 +88,30 @@ def run_ocr(
     manifest_path: str | Path | None = None,
     output_dir: str | Path = DEFAULT_OCR_OUTPUT_DIR,
     device: str = DEFAULT_OCR_DEVICE,
-    model: Literal["paddleocr-v6", "paddleocr-vl"] = DEFAULT_OCR_MODEL,
+    model: Literal[
+        "paddleocr-v6", "pp-ocrv6-medium-rec-vietnamese", "paddleocr-vl"
+    ] = DEFAULT_OCR_MODEL,
     adapter: OcrAdapter | RegionOcrAdapter | None = None,
 ) -> Path:
     """Run OCR on layout proposals or directly on full page images."""
     input_started_at = perf_counter()
     logger.info("Phase started: load OCR input")
-    if model not in {"paddleocr-v6", "paddleocr-vl"}:
-        raise ValueError("model must be paddleocr-v6 or paddleocr-vl")
+    if model not in {
+        "paddleocr-v6",
+        "pp-ocrv6-medium-rec-vietnamese",
+        "paddleocr-vl",
+    }:
+        raise ValueError(
+            "model must be paddleocr-v6, pp-ocrv6-medium-rec-vietnamese, or paddleocr-vl"
+        )
+    if adapter is None and model == "pp-ocrv6-medium-rec-vietnamese":
+        if not TEXT_RECOGNITION_MODEL_DIR:
+            raise ValueError("recognition_model_dir must be configured for Vietnamese OCR")
+        if not Path(TEXT_RECOGNITION_MODEL_DIR).is_dir():
+            raise FileNotFoundError(
+                "Vietnamese recognition model directory does not exist: "
+                f"{TEXT_RECOGNITION_MODEL_DIR}"
+            )
     layout_path = Path(layout_path)
     if direct:
         if image_dir is not None or manifest_path is not None:
@@ -219,11 +238,13 @@ def run_ocr(
         ocr_adapter = adapter
     elif model == "paddleocr-vl":
         ocr_adapter = PaddleOcrVlAdapter(device=device)
-    else:
+    elif model == "paddleocr-v6":
         ocr_adapter = PaddleOcrV6Adapter(
             device=device,
             recognizer=VietOcrAdapter(device=device),
         )
+    else:
+        ocr_adapter = PaddleOcrV6Adapter(device=device)
     initialization_error: Exception | None = None
     if processable_regions and len(page_image_errors) < len(page_proposals):
         try:
@@ -493,8 +514,8 @@ def run_ocr(
             exclude = {"input_mode": True}
         else:
             exclude = {}
-        if model == "paddleocr-v6":
-            if not direct:
+        if model in {"paddleocr-v6", "pp-ocrv6-medium-rec-vietnamese"}:
+            if model == "paddleocr-v6" and not direct:
                 exclude["model"] = True
             exclude["regions"] = {"__all__": {"blocks"}}
         _write_json_atomically(

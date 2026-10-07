@@ -30,16 +30,33 @@ The image directory must stay inside the document output directory and cannot us
 
 ### Choose an OCR model
 
-`rag1 ocr` defaults to `--model paddleocr-v6`, which uses PP-OCRv6 small text detection and VietOCR line recognition.
+`rag1 ocr` defaults to `--model pp-ocrv6-medium-rec-vietnamese`, which uses PP-OCRv6 small text detection and the local Paddle Vietnamese recognition model at `.cache/models/pp-ocrv6-medium-rec-vietnamese`.
+The command reports an error when that directory is missing.
+From the repository root, download its inference files with the Hugging Face CLI:
+
+```powershell
+hf download tieubaoca/pp-ocrv6-medium-rec-vietnamese inference.json inference.pdiparams inference.yml ppocr_keys.txt --local-dir .cache/models/pp-ocrv6-medium-rec-vietnamese
+```
+
 Select `--model paddleocr-vl` for PaddleOCR-VL document parsing.
 The model choice works with both layout proposals and direct page image input.
+PaddleOCR-VL, V6, and VietOCR use the CPU by default.
+Run PaddleOCR-VL with the project's `vl` optional dependencies:
+
+```powershell
+uv run --extra vl rag1 ocr "data/layouts/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/pages/page-0001.png" --direct --model paddleocr-vl --device cpu --output-dir data/ocr
+```
+
+The first use may download PaddleOCR-VL model weights.
+The command writes `ocr.json` and `ocr.md` under the selected output directory.
 To switch from PaddleOCR-VL to VietOCR line recognition, select `--model paddleocr-v6`:
 
 ```powershell
 uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/region" --direct --model paddleocr-v6 --device cpu
+uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/region" --direct --model pp-ocrv6-medium-rec-vietnamese --device cpu
 ```
 
-There is no separate `vietocr` value for `--model`; omitting `--model` selects the same VietOCR recognition path.
+There is no separate `vietocr` value for `--model`; select `--model paddleocr-v6` to use VietOCR line recognition.
 Install the optional VL dependencies before selecting that model:
 
 ```powershell
@@ -75,7 +92,7 @@ Use `--direct` to bypass layout proposals and OCR a clean image file or every `p
 
 ```powershell
 uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/region/page-0001.png" --direct
-uv run --extra vl rag1 ocr "data/extraction/<document-name>-<path-hash>/region" --direct --model paddleocr-vl
+uv run --extra vl rag1 ocr "data/extraction/<document-name>-<path-hash>/region" --direct --model paddleocr-vl --device cpu
 ```
 
 Direct mode accepts one PNG, JPEG, TIFF, BMP, or WebP image, or a directory of clean `page-NNNN.png` images.
@@ -100,7 +117,7 @@ Line records retain the detector and recognizer confidence separately, polygon c
 Text proposal `text` is the recognized lines joined in detector order with newline separators, while every line's recognized text is retained verbatim.
 Table proposals retain their image crop and any recognized lines, have `text: null`, and carry `table.structure_status: "pending"` with `table.structure: null` for a later table reconstruction stage.
 The VL path parses each proposal crop or full page into ordered `blocks` with a label, content, input-relative bbox, and page-relative bbox.
-VL output records `model: "paddleocr-vl"`; default V6 layout JSON retains its existing shape.
+VL and Vietnamese V6 output record their selected `model` value; legacy `paddleocr-v6` layout JSON retains its existing shape.
 VL blocks do not invent detector or recognizer confidence scores or line crop images.
 Text proposal `text` joins the VL block content in reading order, and table block content is included in `ocr.md` while table proposal `text` remains null.
 
@@ -147,11 +164,14 @@ make ocr-text INPUT="data/ocr/<document-name>-<path-hash>/ocr.json"
 .\make.ps1 layout -InputPath "data/raw/Bao+cao+tai+chinh+hop+nhat+Q3.2025.pdf"
 .\make.ps1 ocr -InputPath "data/extraction/<document-name>-<path-hash>/layout.json"
 .\make.ps1 ocr -InputPath "data/extraction/<document-name>-<path-hash>/pages" -Direct true
-.\make.ps1 ocr -InputPath "data/extraction/<document-name>-<path-hash>/pages" -Direct true -Model paddleocr-vl -Device cpu
+.\make.ps1 ocr -InputPath "data/extraction/<document-name>-<path-hash>/pages" -Direct true -Model paddleocr-vl
+.\make.ps1 ocr-vietnamese -InputPath "data/extraction/<document-name>-<path-hash>/pages" -Direct true -Device cpu
 ```
 
 Make variables and PowerShell parameters can override YAML defaults when needed.
-For example, use `DPI=300 IMAGE_DIR=page-images` with `make layout`, or `MODEL=paddleocr-vl DEVICE=cpu` with `make ocr`.
+For example, use `DPI=300 IMAGE_DIR=page-images` with `make layout`, or `MODEL=paddleocr-vl` with `make ocr`.
+The Vietnamese Paddle recognizer is the default for `make ocr`; `make ocr-vietnamese INPUT="data/extraction/<document-name>-<path-hash>/pages" DIRECT=1` selects it explicitly.
+Use `MODEL=paddleocr-v6` with `make ocr` to select VietOCR.
 For OCR-VL, `make.ps1` selects the `vl` optional dependencies when `-Model paddleocr-vl` is set.
 When invoking `rag1` directly, use `uv run --extra vl rag1 ocr ... --model paddleocr-vl`.
 
@@ -234,9 +254,8 @@ $env:PADDLE_PDX_CACHE_HOME = "D:\models\paddlex"
 uv run rag1 layout "data/raw/report.pdf" --output-dir data/extraction
 ```
 
-The project currently pins the CPU PaddlePaddle wheel.
+The project pins the CPU PaddlePaddle wheel for layout and OCR extraction.
 Selecting `--device gpu:0` requires a compatible GPU PaddlePaddle installation and driver stack.
-Changing the extraction output directory does not install or select a GPU runtime.
 
 ## Downstream use
 
@@ -266,6 +285,12 @@ The detector's categories and accuracy are model-dependent, so inspect bbox imag
 The default render resolution is 200 DPI and proposals are tied to those rendered pixel dimensions.
 Failures while initializing or running layout inference are recorded per page, but a PDF page rendering failure aborts the rendering run.
 Output directories are keyed by resolved source path, so repeated runs on the same path reuse the same document directory.
+
+## Qdrant schemas and fixtures
+
+[Qdrant storage contracts](schemas/qdrant/README.md) define JSON schemas and fixtures derived from the saved layout and OCR artifacts.
+Future table rows and cells live under `payload.table.structure`; the current table fixtures keep structure pending.
+The fixtures require real embeddings before upload, and the populated table example is explicitly illustrative.
 
 ## References
 

@@ -13,9 +13,15 @@ from rag1.extractions.layouts.contracts import (
     VisualLocation,
     normalize_detector_label,
 )
+from rag1.extractions.config import load_extraction_config
 
 
-PADDLE_LAYOUT_MODEL_NAME = "PP-DocLayout_plus-L"
+_CONFIG = load_extraction_config("layouts")
+_MODEL_CONFIG = _CONFIG["model"]
+PADDLE_LAYOUT_MODEL_NAME = _MODEL_CONFIG["name"]
+DEFAULT_LAYOUT_DEVICE = _MODEL_CONFIG["device"]
+PADDLE_LAYOUT_BATCH_SIZE = _MODEL_CONFIG["batch_size"]
+PADDLE_LAYOUT_ENABLE_MKLDNN = _MODEL_CONFIG["enable_mkldnn"]
 
 
 @dataclass(frozen=True)
@@ -87,7 +93,7 @@ def _create_model(*, model_name: str, device: str) -> PaddleLayoutModel:
     return LayoutDetection(
         model_name=model_name,
         device=device,
-        enable_mkldnn=False,
+        enable_mkldnn=PADDLE_LAYOUT_ENABLE_MKLDNN,
     )
 
 
@@ -98,12 +104,16 @@ class PaddleLayoutAdapter:
         self,
         model_factory: ModelFactory | None = None,
         *,
-        device: str = "cpu",
+        device: str = _MODEL_CONFIG["device"],
+        batch_size: int = PADDLE_LAYOUT_BATCH_SIZE,
     ) -> None:
         if not isinstance(device, str) or not device.strip():
             raise ValueError("device must be a non-empty string")
         self._model_factory = model_factory or _create_model
         self.device = device.strip()
+        if isinstance(batch_size, bool) or not isinstance(batch_size, int) or batch_size < 1:
+            raise ValueError("batch_size must be a positive integer")
+        self.batch_size = batch_size
 
     def extract_document(
         self,
@@ -151,12 +161,11 @@ class PaddleLayoutAdapter:
             errors=errors,
         )
 
-    @staticmethod
-    def _detect_page(model: PaddleLayoutModel, page: RenderedPage) -> list[Region]:
+    def _detect_page(self, model: PaddleLayoutModel, page: RenderedPage) -> list[Region]:
         regions: list[Region] = []
         region_index = 0
 
-        for prediction in model.predict(page.image, batch_size=1):
+        for prediction in model.predict(page.image, batch_size=self.batch_size):
             prediction_data = prediction.json
             result_data = prediction_data.get("res", prediction_data)
             boxes = result_data.get("boxes", [])

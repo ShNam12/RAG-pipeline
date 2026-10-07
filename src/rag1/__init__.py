@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import logging
 from pathlib import Path
 from typing import Sequence
 
@@ -18,6 +19,18 @@ def _positive_int(value: str) -> int:
 
 
 def _build_parser() -> argparse.ArgumentParser:
+    from rag1.extractions.layouts.pdf_renderer import (
+        DEFAULT_LAYOUT_OUTPUT_DIR,
+        DEFAULT_PAGE_IMAGE_DIR,
+        DEFAULT_RENDER_DPI,
+    )
+    from rag1.extractions.layouts.paddle import DEFAULT_LAYOUT_DEVICE
+    from rag1.extractions.ocr_text.pipeline import (
+        DEFAULT_OCR_DEVICE,
+        DEFAULT_OCR_MODEL,
+        DEFAULT_OCR_OUTPUT_DIR,
+    )
+
     parser = argparse.ArgumentParser(prog="rag1")
     commands = parser.add_subparsers(dest="command")
     layout = commands.add_parser(
@@ -29,35 +42,40 @@ def _build_parser() -> argparse.ArgumentParser:
     layout.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("data/extraction"),
-        help="root directory for document-specific artifacts (default: data/extraction)",
+        default=DEFAULT_LAYOUT_OUTPUT_DIR,
+        help=f"root directory for document-specific artifacts (default: {DEFAULT_LAYOUT_OUTPUT_DIR})",
     )
     layout.add_argument(
         "--image-dir",
         type=Path,
-        default=Path("pages"),
-        help="relative subdirectory for unannotated page images (default: pages)",
+        default=DEFAULT_PAGE_IMAGE_DIR,
+        help=f"relative subdirectory for unannotated page images (default: {DEFAULT_PAGE_IMAGE_DIR})",
     )
     layout.add_argument(
         "--dpi",
         type=_positive_int,
-        default=200,
-        help="PDF page render resolution (default: 200)",
+        default=DEFAULT_RENDER_DPI,
+        help=f"PDF page render resolution (default: {DEFAULT_RENDER_DPI})",
     )
     layout.add_argument(
         "--device",
-        default="cpu",
-        help="Paddle device such as cpu or gpu:0 (default: cpu)",
+        default=DEFAULT_LAYOUT_DEVICE,
+        help=f"Paddle device such as cpu or gpu:0 (default: {DEFAULT_LAYOUT_DEVICE})",
     )
     ocr = commands.add_parser(
         "ocr",
-        help="recognize text inside a layout proposal JSON",
-        description="Run PP-OCRv6 text detection and recognition for layout proposals.",
+        help="recognize text from layout proposals or directly from page images",
+        description="Run line OCR or PaddleOCR-VL on layout proposals or page images.",
     )
     ocr.add_argument(
         "layout_json",
         type=Path,
-        help="version 1.0 layout JSON or its region artifact directory",
+        help="layout JSON or region directory; with --direct, an image or page image directory",
+    )
+    ocr.add_argument(
+        "--direct",
+        action="store_true",
+        help="OCR full page images without reading layout proposals",
     )
     ocr.add_argument(
         "--manifest",
@@ -72,22 +90,62 @@ def _build_parser() -> argparse.ArgumentParser:
     ocr.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("data/ocr"),
-        help="root directory for OCR JSON and crop artifacts (default: data/ocr)",
+        default=DEFAULT_OCR_OUTPUT_DIR,
+        help=f"root directory for OCR JSON and crop artifacts (default: {DEFAULT_OCR_OUTPUT_DIR})",
     )
     ocr.add_argument(
         "--device",
-        default="cpu",
-        help="Paddle device such as cpu or gpu:0 (default: cpu)",
+        default=DEFAULT_OCR_DEVICE,
+        help=f"Paddle device such as cpu or gpu:0 (default: {DEFAULT_OCR_DEVICE})",
+    )
+    ocr.add_argument(
+        "--model",
+        choices=("paddleocr-v6", "paddleocr-vl"),
+        default=DEFAULT_OCR_MODEL,
+        help=f"OCR model path (default: {DEFAULT_OCR_MODEL})",
+    )
+    ocr_text = commands.add_parser(
+        "ocr-text",
+        help="export Markdown from an existing OCR JSON file",
+    )
+    ocr_text.add_argument("ocr_json", type=Path, help="OCR JSON file to export")
+    ocr_text.add_argument(
+        "--output",
+        type=Path,
+        help="output Markdown path (default: ocr.md beside the JSON file)",
     )
     return parser
+
+
+def _configure_logging() -> None:
+    logging.basicConfig(
+        level=logging.WARNING,
+        format="%(asctime)s %(levelname)s %(message)s",
+    )
+    logging.getLogger("rag1").setLevel(logging.INFO)
 
 
 def main(argv: Sequence[str] | None = None) -> None:
     parser = _build_parser()
     arguments = parser.parse_args(argv)
-    if arguments.command not in {"layout", "ocr"}:
+    if arguments.command not in {"layout", "ocr", "ocr-text"}:
         parser.print_help()
+        return
+    _configure_logging()
+
+    if arguments.command == "ocr-text":
+        from rag1.extractions.ocr_text.contracts import OcrDocument
+        from rag1.extractions.ocr_text.text_output import write_ocr_text
+
+        try:
+            document = OcrDocument.model_validate_json(
+                arguments.ocr_json.read_text(encoding="utf-8")
+            )
+            output_path = arguments.output or arguments.ocr_json.with_name("ocr.md")
+            write_ocr_text(document, output_path)
+        except (OSError, ValueError) as error:
+            parser.error(str(error))
+        print(f"OCR Markdown: {output_path}")
         return
 
     if arguments.command == "ocr":
@@ -97,14 +155,17 @@ def main(argv: Sequence[str] | None = None) -> None:
         try:
             output_path = run_ocr(
                 arguments.layout_json,
+                direct=arguments.direct,
                 image_dir=arguments.image_dir,
                 manifest_path=arguments.manifest,
                 output_dir=arguments.output_dir,
                 device=arguments.device,
+                model=arguments.model,
             )
         except (LookupError, OSError, RuntimeError, ValueError) as error:
             parser.error(str(error))
         print(f"OCR JSON: {output_path}")
+        print(f"OCR Markdown: {output_path.with_name('ocr.md')}")
         output_document = OcrDocument.model_validate_json(
             output_path.read_text(encoding="utf-8")
         )

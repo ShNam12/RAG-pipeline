@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
+from contextlib import contextmanager
+import logging
 from pathlib import Path
+from time import perf_counter
 
 from rag1.extractions.layouts.contracts import DocumentFormat
 from rag1.extractions.layouts.extractors import (
@@ -10,17 +14,47 @@ from rag1.extractions.layouts.extractors import (
     detect_document_format,
 )
 from rag1.extractions.layouts.paddle import ModelFactory, PaddleLayoutAdapter
-from rag1.extractions.layouts.pdf_renderer import DEFAULT_RENDER_DPI, PDFPageRenderer
+from rag1.extractions.layouts.pdf_renderer import (
+    DEFAULT_LAYOUT_OUTPUT_DIR,
+    DEFAULT_PAGE_IMAGE_DIR,
+    DEFAULT_RENDER_DPI,
+    PDFPageRenderer,
+)
 from rag1.extractions.layouts.writer import LayoutArtifactWriter, LayoutArtifacts
+from rag1.extractions.layouts.paddle import DEFAULT_LAYOUT_DEVICE
+
+
+logger = logging.getLogger(__name__)
+
+
+@contextmanager
+def _log_phase(name: str) -> Iterator[None]:
+    logger.info("Phase started: %s", name)
+    started_at = perf_counter()
+    try:
+        yield
+    except Exception:
+        logger.error(
+            "Phase failed: %s (%.2f seconds)",
+            name,
+            perf_counter() - started_at,
+        )
+        raise
+    else:
+        logger.info(
+            "Phase completed: %s (%.2f seconds)",
+            name,
+            perf_counter() - started_at,
+        )
 
 
 def run_pdf_layout(
     source: str | Path,
     *,
-    output_dir: str | Path = Path("data/extraction"),
-    image_dir: str | Path = Path("pages"),
+    output_dir: str | Path = DEFAULT_LAYOUT_OUTPUT_DIR,
+    image_dir: str | Path = DEFAULT_PAGE_IMAGE_DIR,
     dpi: int = DEFAULT_RENDER_DPI,
-    device: str = "cpu",
+    device: str = DEFAULT_LAYOUT_DEVICE,
     model_factory: ModelFactory | None = None,
 ) -> LayoutArtifacts:
     """Render a PDF, detect page regions, and write one document artifact set."""
@@ -42,27 +76,35 @@ def run_pdf_layout(
     )
     adapter = PaddleLayoutAdapter(model_factory=model_factory, device=device)
     writer = LayoutArtifactWriter(output_dir)
-    document_dir = writer.create_document_directory(source_path)
-    pages = renderer.render(source_path, document_output_dir=document_dir)
-    document = adapter.extract_document(
-        source=str(source_path.resolve()),
-        source_format=document_format,
-        pages=pages,
-    )
-    bbox_images = renderer.export_bbox_overlays(
-        pages,
-        document.regions,
-        document_output_dir=document_dir,
-    )
+    with _log_phase("prepare layout output directory"):
+        document_dir = writer.create_document_directory(source_path)
+    with _log_phase(f"render PDF pages at {dpi} DPI"):
+        pages = renderer.render(source_path, document_output_dir=document_dir)
+    with _log_phase(f"detect layout regions across {len(pages)} page(s)"):
+        document = adapter.extract_document(
+            source=str(source_path.resolve()),
+            source_format=document_format,
+            pages=pages,
+        )
+    logger.info("Detected %d region(s)", len(document.regions))
+    with _log_phase("export page overlays"):
+        bbox_images = renderer.export_bbox_overlays(
+            pages,
+            document.regions,
+            document_output_dir=document_dir,
+        )
     bbox_images_by_page = {
         page.page_number: bbox_image
         for page, bbox_image in zip(pages, bbox_images, strict=True)
     }
-    return writer.write(
-        source=source_path,
-        document_dir=document_dir,
-        document=document,
-        dpi=dpi,
-        pages=pages,
-        bbox_images_by_page=bbox_images_by_page,
-    )
+    with _log_phase("write layout artifacts"):
+        artifacts = writer.write(
+            source=source_path,
+            document_dir=document_dir,
+            document=document,
+            dpi=dpi,
+            pages=pages,
+            bbox_images_by_page=bbox_images_by_page,
+        )
+    logger.info("Layout status: %s; artifacts: %s", artifacts.status, artifacts.output_dir)
+    return artifacts

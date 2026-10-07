@@ -72,9 +72,9 @@ class OcrLine(OcrModel):
     region_id: str = Field(min_length=1)
     detector_index: int = Field(ge=0)
     crop_path: str | None = None
-    text: str
+    text: str | None
     detection_confidence: float = Field(ge=0, le=1)
-    recognition_confidence: float = Field(ge=0, le=1)
+    recognition_confidence: float | None = Field(default=None, ge=0, le=1)
     region_quad: list[list[float]] = Field(min_length=4, max_length=4)
     page_quad: list[list[float]] = Field(min_length=4, max_length=4)
 
@@ -94,6 +94,28 @@ class OcrLine(OcrModel):
             raise ValueError("quadrilateral must have positive area")
         return quad
 
+    @model_validator(mode="after")
+    def validate_recognition_result(self) -> OcrLine:
+        if (self.text is None) != (self.recognition_confidence is None):
+            raise ValueError("recognition text and confidence must both be present or null")
+        return self
+
+
+class OcrBlock(OcrModel):
+    label: str = Field(min_length=1)
+    content: str
+    region_bbox: list[float] = Field(min_length=4, max_length=4)
+    page_bbox: list[float] = Field(min_length=4, max_length=4)
+
+    @field_validator("region_bbox", "page_bbox")
+    @classmethod
+    def validate_bbox(cls, bbox: list[float]) -> list[float]:
+        if not all(math.isfinite(value) for value in bbox):
+            raise ValueError("block bbox coordinates must be finite")
+        if bbox[0] < 0 or bbox[1] < 0 or bbox[0] >= bbox[2] or bbox[1] >= bbox[3]:
+            raise ValueError("block bbox must have non-negative origin and positive area")
+        return bbox
+
 
 class TableMetadata(OcrModel):
     structure_status: Literal["pending"] = "pending"
@@ -112,14 +134,25 @@ class OcrPageMetadata(OcrModel):
 
 class OcrRegion(OcrModel):
     proposal: Region
-    status: Literal["complete", "failed"]
+    status: Literal["complete", "empty", "partial", "failed", "skipped"]
     crop: OcrCrop
     lines: list[OcrLine] = Field(default_factory=list)
+    blocks: list[OcrBlock] = Field(default_factory=list)
     text: str | None = None
     table: TableMetadata | None = None
 
     @model_validator(mode="after")
     def validate_region_content(self) -> OcrRegion:
+        if self.status == "skipped":
+            if self.proposal.kind in {RegionKind.TEXT, RegionKind.TABLE}:
+                raise ValueError("text and table proposals cannot be skipped")
+            if self.crop.path is not None or self.lines or self.blocks or self.text is not None:
+                raise ValueError("skipped proposals cannot contain OCR output or crop files")
+            if self.table is not None:
+                raise ValueError("skipped proposals cannot contain table reconstruction metadata")
+            return self
+        if self.status == "empty" and (self.lines or self.blocks):
+            raise ValueError("empty regions cannot contain OCR lines or blocks")
         if self.proposal.kind is RegionKind.TABLE:
             if self.table is None or self.text is not None:
                 raise ValueError("table proposals require pending table metadata and null text")
@@ -164,6 +197,19 @@ class OcrRegion(OcrModel):
                     or page_vertex[1] > self.proposal.location.page_height
                 ):
                     raise ValueError("page quadrilateral must fit within page dimensions")
+        for block in self.blocks:
+            if self.crop.path is None:
+                raise ValueError("OCR blocks require an available crop")
+            x0, y0, _, _ = self.crop.page_bbox
+            bx0, by0, bx1, by1 = block.region_bbox
+            if bx1 > self.crop.width or by1 > self.crop.height:
+                raise ValueError("block bbox must fit within its crop")
+            expected_page_bbox = [bx0 + x0, by0 + y0, bx1 + x0, by1 + y0]
+            if any(
+                not math.isclose(actual, expected)
+                for actual, expected in zip(block.page_bbox, expected_page_bbox, strict=True)
+            ):
+                raise ValueError("page block bbox must match crop-to-page offset")
         return self
 
 
@@ -177,20 +223,30 @@ class OcrError(OcrModel):
 
 class OcrDocument(OcrModel):
     schema_version: Literal[CURRENT_SCHEMA_VERSION] = CURRENT_SCHEMA_VERSION
+    input_mode: Literal["layout", "direct"] = "layout"
+    model: Literal["paddleocr-v6", "paddleocr-vl"] = "paddleocr-v6"
     source: str = Field(min_length=1)
     source_format: DocumentFormat
-    upstream_schema_version: Literal[CURRENT_SCHEMA_VERSION] = CURRENT_SCHEMA_VERSION
-    upstream_status: DocumentStatus
+    upstream_schema_version: Literal[CURRENT_SCHEMA_VERSION] | None = CURRENT_SCHEMA_VERSION
+    upstream_status: DocumentStatus | None
     upstream_errors: list[PageFailure] = Field(default_factory=list)
     dpi: int | None = Field(default=None, gt=0)
     pages: list[OcrPageMetadata] = Field(default_factory=list)
     status: DocumentStatus
+    text: str | None = None
     regions: list[OcrRegion] = Field(default_factory=list)
     errors: list[OcrError] = Field(default_factory=list)
     page_failures: list[PageFailure] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def validate_identifiers_and_status(self) -> OcrDocument:
+        if self.input_mode == "direct":
+            if self.source_format is not DocumentFormat.IMAGE:
+                raise ValueError("direct OCR source format must be image")
+            if self.upstream_schema_version is not None or self.upstream_status is not None or self.upstream_errors:
+                raise ValueError("direct OCR cannot reference an upstream layout")
+        elif self.upstream_schema_version is None or self.upstream_status is None:
+            raise ValueError("layout OCR requires upstream layout metadata")
         region_ids = [region.proposal.id for region in self.regions]
         if len(region_ids) != len(set(region_ids)):
             raise ValueError("proposal region IDs must be unique")

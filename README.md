@@ -28,13 +28,36 @@ The image directory must stay inside the document output directory and cannot us
 
 ## OCR enrichment
 
-Run OCR after layout extraction by passing its `layout.json` to the independent OCR command:
+### Choose an OCR model
+
+`rag1 ocr` defaults to `--model paddleocr-v6`, which uses PP-OCRv6 small text detection and VietOCR line recognition.
+Select `--model paddleocr-vl` for PaddleOCR-VL document parsing.
+The model choice works with both layout proposals and direct page image input.
+To switch from PaddleOCR-VL to VietOCR line recognition, select `--model paddleocr-v6`:
+
+```powershell
+uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/region" --direct --model paddleocr-v6 --device cpu
+```
+
+There is no separate `vietocr` value for `--model`; omitting `--model` selects the same VietOCR recognition path.
+Install the optional VL dependencies before selecting that model:
+
+```powershell
+uv sync --extra vl
+```
+
+The first VL run downloads model weights into the PaddleX cache and may take several minutes.
+
+### OCR with layout proposals
+
+Pass a `layout.json` file to OCR its proposed text and table regions:
 
 ```powershell
 uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/layout.json" --device cpu
+uv run --extra vl rag1 ocr "data/extraction/<document-name>-<path-hash>/layout.json" --model paddleocr-vl --device cpu
 ```
 
-You can pass a layout JSON file or a `region/` artifact directory containing `layout.json`, `manifest.json`, and the clean page images:
+You can also pass a `region/` artifact directory containing `layout.json`, `manifest.json`, and clean page images:
 
 ```powershell
 uv run rag1 ocr "data/extraction/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/region"
@@ -43,58 +66,98 @@ uv run rag1 ocr "data/extraction/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391
 For a layout file, the command searches its directory, then sibling `pages/`, then sibling `region/` for clean `page-NNNN.png` images.
 When given an artifact directory, it uses that directory's images and automatically reads its `manifest.json` when present.
 `_bbox.png` debug images are ignored.
-`--image-dir` selects another page image directory, `--manifest` supplies the optional upstream `manifest.json`, `--output-dir` selects the artifact root and defaults to `data/ocr`, and `--device` selects the Paddle device.
-Each source document gets a deterministic output directory containing `ocr.json` and the crop images referenced by that JSON.
 When supplied, the manifest source must match `layout.json`, and its page region references must resolve to proposals on the same page.
 Available DPI, rotation, dimensions, image paths, and region references are retained in OCR page metadata; missing metadata fields remain null.
 
+### OCR directly from page images
+
+Use `--direct` to bypass layout proposals and OCR a clean image file or every `page-NNNN.png` image in a directory:
+
+```powershell
+uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/region/page-0001.png" --direct
+uv run --extra vl rag1 ocr "data/extraction/<document-name>-<path-hash>/region" --direct --model paddleocr-vl
+```
+
+Direct mode accepts one PNG, JPEG, TIFF, BMP, or WebP image, or a directory of clean `page-NNNN.png` images.
+It ignores `_bbox.png` debug images in directories and does not accept PDF files.
+It sends each original full-page image to the selected OCR model without reading `layout.json` or running the separate layout extraction command.
+The OCR output creates one generated full-page scope per image so the existing `ocr.json` fields remain usable.
+It records `input_mode: "direct"`, `source_format: "image"`, null upstream layout metadata, and absolute input image paths in page metadata.
+Unreadable images are recorded as page failures while other pages continue.
+`--manifest` and `--image-dir` cannot be used with `--direct`.
+
+### OCR output and options
+
+In layout mode, `--image-dir` selects another page image directory and `--manifest` supplies an upstream `manifest.json`.
+In either mode, `--output-dir` selects the artifact root and defaults to `data/ocr`, `--device` selects the Paddle device, and `--model` selects the OCR path.
+Each source gets a deterministic output directory containing `ocr.json`, `ocr.md`, and the crop images referenced by the JSON.
+The document-level `text` field in `ocr.json` contains the same ordered text as `ocr.md`.
+
 For each visual proposal, the OCR module floors the left/top and ceils the right/bottom bbox edges to obtain the effective integer crop bounds.
 `crop.proposal_bbox` retains the original fractional proposal coordinates, and `crop.page_bbox` records the effective integer bounds used to crop the image.
-PP-OCRv6_small_det detects text polygons inside that proposal crop, each detected polygon is cropped, and PP-OCRv6_small_rec recognizes the resulting line image.
+In the default path, PP-OCRv6_small_det detects text polygons inside that proposal crop, each detected polygon is cropped, and VietOCR recognizes the resulting line image.
 Line records retain the detector and recognizer confidence separately, polygon coordinates relative to the proposal crop, corresponding page coordinates, and a relative line crop path.
 Text proposal `text` is the recognized lines joined in detector order with newline separators, while every line's recognized text is retained verbatim.
 Table proposals retain their image crop and any recognized lines, have `text: null`, and carry `table.structure_status: "pending"` with `table.structure: null` for a later table reconstruction stage.
+The VL path parses each proposal crop or full page into ordered `blocks` with a label, content, input-relative bbox, and page-relative bbox.
+VL output records `model: "paddleocr-vl"`; default V6 layout JSON retains its existing shape.
+VL blocks do not invent detector or recognizer confidence scores or line crop images.
+Text proposal `text` joins the VL block content in reading order, and table block content is included in `ocr.md` while table proposal `text` remains null.
 
-The OCR output has `schema_version: "1.0"`, source metadata, optional DPI and page metadata, upstream layout status and page errors, proposal-linked OCR regions, OCR errors, and image page failures.
-Region proposals remain embedded unchanged so `proposal.id` is the join key back to the layout JSON.
-Coordinates use rendered page pixels and a top-left origin, and all crop/image references are relative to the OCR output directory.
-The loader rejects unsupported layout schema versions and duplicate proposal IDs before inference.
+The OCR output has `schema_version: "1.0"`, source metadata, optional DPI and page metadata, OCR regions, OCR errors, and image page failures.
+Layout mode also records upstream layout status and keeps proposals unchanged so `proposal.id` joins back to `layout.json`.
+Direct mode records null upstream layout metadata and generated full-page scopes.
+Coordinates use image pixels and a top-left origin.
+Crop references are relative to the OCR output directory; direct mode stores absolute source image paths in page metadata.
+The layout loader rejects unsupported schema versions and duplicate proposal IDs before inference.
 
-PaddleOCR initializes each named model once per run and downloads model files on cache misses using PaddleX's configured model source and cache.
+The OCR model adapters initialize lazily and reuse their models during a run.
+PaddleOCR downloads model files on cache misses using PaddleX's configured model source and cache.
 The default PaddleX model source is Hugging Face; set `PADDLE_PDX_MODEL_SOURCE=BOS` when that source is unreachable.
 OCR artifact paths do not control the model cache location.
-The module verifies that each clean page image is readable and has the exact pixel dimensions declared by its layout proposals.
+In layout mode, the module verifies that each clean page image is readable and has the exact pixel dimensions declared by its layout proposals.
 Missing, unreadable, or dimension-mismatched images are recorded as page failures; the pipeline does not rescale images or proposal coordinates.
+In direct mode, image dimensions come from the source images, and unreadable pages are recorded as page failures.
 The module does not qualify Vietnamese recognition accuracy, deskew rotated lines, or reconstruct table rows, columns, cells, `rowspan`, or `colspan`.
 Treat recognition accuracy as a separate checkpoint qualification gate and table structure as pending until a table reconstruction phase consumes the retained table crop and OCR lines.
 
 ## CLI
 
-Run the layout phase directly with `uv`:
+Extraction defaults are loaded from `configs/extraction/layouts.yml` and `configs/extraction/ocr_text.yml`.
+Edit those files to change default models, devices, render settings, and artifact roots.
+The command wrappers omit optional CLI flags unless you pass an override, so the YAML values take effect.
+
+Run the layout and OCR phases through the root Makefile:
 
 ```powershell
-uv run rag1 layout "data/raw/Bao+cao+tai+chinh+hop+nhat+Q3.2025.pdf" --output-dir data/extraction --image-dir pages --dpi 200 --device cpu
+make layout INPUT="data/raw/Bao+cao+tai+chinh+hop+nhat+Q3.2025.pdf"
+make ocr INPUT="data/extraction/<document-name>-<path-hash>/layout.json"
 ```
 
-The required positional argument is a PDF path.
-`--output-dir` selects the root for document-specific results and defaults to `data/extraction`.
-`--image-dir` selects the relative folder for clean page renders and defaults to `pages`.
-`--dpi` sets the render resolution and defaults to `200`.
-`--device` selects the Paddle device and defaults to `cpu`.
-The command reports the extraction status and paths to the manifest, layout JSON, and image folders.
-It exits with a nonzero status when layout extraction fails for every page.
-
-The root `Makefile` and `make.ps1` provide the same task:
+OCR can also run directly on page images or export Markdown from an existing OCR JSON file:
 
 ```powershell
-make layout INPUT="data/raw/Bao+cao+tai+chinh+hop+nhat+Q3.2025.pdf" OUTPUT_DIR=data/extraction IMAGE_DIR=pages DPI=200 DEVICE=cpu
+make ocr INPUT="data/extraction/<document-name>-<path-hash>/pages" DIRECT=1
+make ocr-text INPUT="data/ocr/<document-name>-<path-hash>/ocr.json"
 ```
 
-PowerShell can invoke the script directly:
+`make.ps1` provides the same tasks when invoking PowerShell directly:
 
 ```powershell
-.\make.ps1 layout -InputPath "data/raw/Bao+cao+tai+chinh+hop+nhat+Q3.2025.pdf" -OutputDir data/extraction -ImageDir pages -Dpi 200 -Device cpu
+.\make.ps1 layout -InputPath "data/raw/Bao+cao+tai+chinh+hop+nhat+Q3.2025.pdf"
+.\make.ps1 ocr -InputPath "data/extraction/<document-name>-<path-hash>/layout.json"
+.\make.ps1 ocr -InputPath "data/extraction/<document-name>-<path-hash>/pages" -Direct true
+.\make.ps1 ocr -InputPath "data/extraction/<document-name>-<path-hash>/pages" -Direct true -Model paddleocr-vl -Device cpu
 ```
+
+Make variables and PowerShell parameters can override YAML defaults when needed.
+For example, use `DPI=300 IMAGE_DIR=page-images` with `make layout`, or `MODEL=paddleocr-vl DEVICE=cpu` with `make ocr`.
+For OCR-VL, `make.ps1` selects the `vl` optional dependencies when `-Model paddleocr-vl` is set.
+When invoking `rag1` directly, use `uv run --extra vl rag1 ocr ... --model paddleocr-vl`.
+
+The required `INPUT` or `-InputPath` value is a PDF for `layout`, a layout JSON or image path for `ocr`, and an OCR JSON file for `ocr-text`.
+Pass `DIRECT=1` or `-Direct true` for OCR directly on page images.
+The `ocr-text` command writes `ocr.md` beside the JSON unless you pass `OUTPUT` or `-OutputPath`.
 
 ## JSON contract
 
@@ -187,8 +250,9 @@ Use the proposals as routing and alignment hints for selecting pages or regions 
 Convert between Docling's geometry and this contract's rendered-pixel coordinates before comparing boxes.
 This repository does not yet implement a Docling adapter or a conversion between the two coordinate systems.
 
-PP-OCRv6 consumes clean page images and the layout proposals as OCR work hints.
-The implemented `rag1 ocr` command detects and recognizes line crops within each visual proposal and stores both crop-relative and page-relative geometry.
+In layout mode, PP-OCRv6 uses clean page images and layout proposals as OCR work hints.
+In direct mode, it detects and recognizes text across each full page image.
+The `rag1 ocr` command stores crop-relative and page-relative geometry for its detected lines.
 Docling can continue to parse the original PDF for semantic reading order and richer document structures, then use proposal IDs and converted geometry to align its results with the OCR output.
 Route table proposals and their crops to a later table structure stage such as SLANet_plus.
 Keep the proposal ID on OCR and table outputs so they can be joined to the original layout proposal.
@@ -206,6 +270,7 @@ Output directories are keyed by resolved source path, so repeated runs on the sa
 ## References
 
 - [PaddleOCR layout detection documentation](https://paddlepaddle.github.io/PaddleOCR/main/en/version3.x/module_usage/layout_detection.html)
+- [PaddleOCR-VL usage documentation](https://www.paddleocr.ai/latest/en/version3.x/pipeline_usage/PaddleOCR-VL.html)
 - [PaddleX 3.7 official model downloader](https://github.com/PaddlePaddle/PaddleX/blob/release/3.7/paddlex/inference/utils/official_models.py)
 - [PaddleOCR discussion on configuring the model cache home](https://github.com/PaddlePaddle/PaddleOCR/discussions/16631)
 - [Docling document conversion reference](https://docling-project.github.io/docling/reference/document_converter/)

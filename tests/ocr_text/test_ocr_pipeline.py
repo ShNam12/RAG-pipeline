@@ -7,8 +7,10 @@ from pathlib import Path
 
 from PIL import Image
 
+from rag1.extractions.ocr_text.adapters import DetectedText, RecognizedBlock
 from rag1.extractions.ocr_text.contracts import OcrDocument
-from rag1.extractions.ocr_text.pipeline import run_ocr
+from rag1.extractions.ocr_text.pipeline import _rectify_polygon, run_ocr
+from rag1.extractions.ocr_text.text_output import render_ocr_text
 
 
 def proposal(region_id, kind):
@@ -40,11 +42,41 @@ class FakeAdapter:
 
     def detect(self, image_path):
         self.detected.append(Path(image_path))
-        return ([[[1, 2], [11, 2], [11, 12], [1, 12]]], [0.87])
+        return [DetectedText(
+            polygon=[[1, 2], [11, 2], [11, 12], [1, 12]],
+            confidence=0.87,
+        )]
 
     def recognize(self, image_path):
         self.recognized.append(Path(image_path))
         return ("  Doanh thu qu\u00fd III\t1.250.000\n", 0.61)
+
+
+class FakeVlAdapter:
+    def __init__(self):
+        self.initialized = False
+        self.parsed = []
+
+    def initialize(self):
+        self.initialized = True
+
+    def parse_region(self, image_path):
+        self.parsed.append(Path(image_path))
+        if "region-00001" in image_path:
+            return [
+                RecognizedBlock(
+                    bbox=[1, 2, 11, 12],
+                    label="text",
+                    content="Doanh thu Q3",
+                )
+            ]
+        return [
+            RecognizedBlock(
+                bbox=[3, 4, 30, 40],
+                label="table",
+                content="| Chi tieu | VND |\n|---|---|\n| Doanh thu | 100 |",
+            )
+        ]
 
 
 class OcrPipelineTests(unittest.TestCase):
@@ -85,6 +117,10 @@ class OcrPipelineTests(unittest.TestCase):
             )
 
             result = OcrDocument.model_validate_json(output_path.read_text(encoding="utf-8"))
+            raw_result = json.loads(output_path.read_text(encoding="utf-8"))
+            self.assertNotIn("blocks", raw_result["regions"][0])
+            self.assertNotIn("model", raw_result)
+            self.assertEqual(raw_result["text"], result.text)
             self.assertEqual([region.proposal.id for region in result.regions],
                              ["p0001-r0001", "p0001-r0002"])
             self.assertEqual(len(adapter.detected), 2)
@@ -102,9 +138,233 @@ class OcrPipelineTests(unittest.TestCase):
             self.assertEqual(text_region.crop.page_bbox, [10, 20, 91, 121])
             self.assertTrue((output_path.parent / text_region.crop.path).is_file())
             self.assertTrue((output_path.parent / text_region.lines[0].crop_path).is_file())
+            self.assertEqual(text_region.lines[0].region_quad,
+                             [[1, 2], [11, 2], [11, 12], [1, 12]])
+            self.assertEqual(text_region.lines[0].page_quad,
+                             [[11, 22], [21, 22], [21, 32], [11, 32]])
             self.assertIsNone(table_region.text)
             self.assertEqual(table_region.table.structure_status, "pending")
             self.assertEqual(len(table_region.lines), 1)
+
+    def test_vl_blocks_preserve_layout_geometry_and_table_content(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            layout_path, _ = self.create_layout_and_page(root)
+            adapter = FakeVlAdapter()
+
+            output_path = run_ocr(
+                layout_path,
+                output_dir=root / "ocr",
+                model="paddleocr-vl",
+                adapter=adapter,
+            )
+
+            result = OcrDocument.model_validate_json(output_path.read_text(encoding="utf-8"))
+            text_region, table_region = result.regions
+            self.assertEqual(result.model, "paddleocr-vl")
+            self.assertTrue(adapter.initialized)
+            self.assertEqual(len(adapter.parsed), 2)
+            self.assertEqual(text_region.lines, [])
+            self.assertEqual(text_region.text, "Doanh thu Q3")
+            self.assertEqual(text_region.blocks[0].region_bbox, [1, 2, 11, 12])
+            self.assertEqual(text_region.blocks[0].page_bbox, [11, 22, 21, 32])
+            self.assertIsNone(table_region.text)
+            self.assertEqual(table_region.blocks[0].label, "table")
+            self.assertIn("Doanh thu | 100", render_ocr_text(result))
+
+    def test_vl_empty_result_keeps_region_and_crop(self):
+        class EmptyVlAdapter(FakeVlAdapter):
+            def parse_region(self, image_path):
+                self.parsed.append(Path(image_path))
+                return []
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            layout_path, _ = self.create_layout_and_page(root)
+            output_path = run_ocr(
+                layout_path,
+                output_dir=root / "ocr",
+                model="paddleocr-vl",
+                adapter=EmptyVlAdapter(),
+            )
+            result = OcrDocument.model_validate_json(output_path.read_text(encoding="utf-8"))
+            self.assertEqual([region.status for region in result.regions], ["empty", "empty"])
+            self.assertTrue(all(region.crop.path for region in result.regions))
+
+    def test_direct_vl_uses_raw_page_image_without_layout_json(self):
+        class DirectVlAdapter(FakeVlAdapter):
+            def parse_region(self, image_path):
+                self.parsed.append(Path(image_path))
+                return [RecognizedBlock(
+                    bbox=[2, 3, 30, 20],
+                    label="table",
+                    content="| Revenue | 100 |",
+                )]
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            page_path = root / "page-0003.png"
+            Image.new("RGB", (100, 140), "white").save(page_path)
+            adapter = DirectVlAdapter()
+
+            output_path = run_ocr(
+                page_path,
+                direct=True,
+                model="paddleocr-vl",
+                output_dir=root / "ocr",
+                adapter=adapter,
+            )
+
+            result = OcrDocument.model_validate_json(output_path.read_text(encoding="utf-8"))
+            self.assertEqual(adapter.parsed, [page_path])
+            self.assertEqual(result.input_mode, "direct")
+            self.assertEqual(result.source_format.value, "image")
+            self.assertIsNone(result.upstream_schema_version)
+            self.assertIsNone(result.upstream_status)
+            self.assertEqual(result.pages[0].page_number, 3)
+            self.assertEqual(result.pages[0].image, str(page_path.resolve()))
+            self.assertEqual(result.regions[0].proposal.location.bbox, [0, 0, 100, 140])
+            self.assertEqual(result.regions[0].blocks[0].page_bbox, [2, 3, 30, 20])
+            self.assertIn("Revenue", (output_path.parent / "ocr.md").read_text(encoding="utf-8"))
+
+    def test_direct_v6_runs_on_each_page_in_directory(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            pages = root / "region"
+            pages.mkdir()
+            for number in (1, 2):
+                Image.new("RGB", (100, 140), "white").save(
+                    pages / f"page-{number:04d}.png"
+                )
+            Image.new("RGB", (100, 140), "red").save(pages / "page-0001_bbox.png")
+            adapter = FakeAdapter()
+
+            output_path = run_ocr(
+                pages,
+                direct=True,
+                output_dir=root / "ocr",
+                adapter=adapter,
+            )
+
+            result = OcrDocument.model_validate_json(output_path.read_text(encoding="utf-8"))
+            self.assertEqual([page.page_number for page in result.pages], [1, 2])
+            self.assertEqual(adapter.detected, [pages / "page-0001.png", pages / "page-0002.png"])
+            self.assertEqual(len(result.regions), 2)
+            self.assertTrue(all(region.lines for region in result.regions))
+            self.assertEqual(result.status.value, "complete")
+
+    def test_direct_input_rejects_missing_images_and_layout_options(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            page_path = root / "page-0001.png"
+            Image.new("RGB", (100, 140), "white").save(page_path)
+            with self.assertRaises(ValueError):
+                run_ocr(page_path, direct=True, manifest_path=root / "manifest.json")
+            with self.assertRaises(ValueError):
+                run_ocr(page_path, direct=True, image_dir=root)
+            with self.assertRaises(FileNotFoundError):
+                run_ocr(root / "empty", direct=True)
+
+    def test_direct_directory_records_unreadable_page_and_processes_other_pages(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            pages = root / "region"
+            pages.mkdir()
+            Image.new("RGB", (100, 140), "white").save(pages / "page-0001.png")
+            (pages / "page-0002.png").write_bytes(b"not an image")
+            adapter = FakeAdapter()
+
+            output_path = run_ocr(
+                pages,
+                direct=True,
+                output_dir=root / "ocr",
+                adapter=adapter,
+            )
+
+            result = OcrDocument.model_validate_json(output_path.read_text(encoding="utf-8"))
+            self.assertEqual(result.status.value, "partial")
+            self.assertEqual(len(result.regions), 1)
+            self.assertEqual([page.page_number for page in result.pages], [1, 2])
+            self.assertEqual(result.page_failures[0].page_number, 2)
+            self.assertEqual(result.page_failures[0].exception_type, "UnidentifiedImageError")
+            self.assertEqual(adapter.detected, [pages / "page-0001.png"])
+
+    def test_text_lines_are_sorted_by_position_then_detector_index(self):
+        class UnorderedAdapter(FakeAdapter):
+            def detect(self, image_path):
+                detections = [
+                    (30, 20),
+                    (20, 5),
+                    (5, 5),
+                    (20, 5),
+                ]
+                return [
+                    DetectedText(
+                        polygon=[
+                            [x, y], [x + 8, y], [x + 8, y + 4], [x, y + 4]
+                        ],
+                        confidence=0.87,
+                    )
+                    for x, y in detections
+                ]
+
+            def recognize(self, image_path):
+                detector_index = int(Path(image_path).stem.rsplit("-", 1)[1])
+                return ["lower ", " top ", "\tleft", " middle "][detector_index], 0.61
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            layout_path, _ = self.create_layout_and_page(root)
+            output_path = run_ocr(
+                layout_path,
+                output_dir=root / "ocr",
+                adapter=UnorderedAdapter(),
+            )
+
+            result = OcrDocument.model_validate_json(output_path.read_text(encoding="utf-8"))
+
+        text_region = result.regions[0]
+        self.assertEqual(text_region.text, "\tleft\n top \n middle \nlower ")
+        self.assertEqual(
+            [line.detector_index for line in text_region.lines],
+            [2, 1, 3, 0],
+        )
+        self.assertEqual(
+            [line.text for line in text_region.lines],
+            ["\tleft", " top ", " middle ", "lower "],
+        )
+
+    def test_rectification_maps_slanted_quad_to_a_rectangle(self):
+        image = Image.new("RGB", (40, 40), "white")
+        polygon = [[5, 8], [25, 5], [27, 15], [7, 18]]
+
+        rectified = _rectify_polygon(image, polygon)
+
+        self.assertEqual(rectified.size, (20, 10))
+
+    def test_degenerate_detection_is_a_line_error_and_does_not_discard_region(self):
+        class DegenerateAdapter(FakeAdapter):
+            def detect(self, image_path):
+                self.detected.append(Path(image_path))
+                return [DetectedText(
+                    polygon=[[1, 2], [5, 2], [9, 2], [1, 2]],
+                    confidence=0.87,
+                )]
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            layout_path, _ = self.create_layout_and_page(root)
+            output_path = run_ocr(
+                layout_path,
+                output_dir=root / "ocr",
+                adapter=DegenerateAdapter(),
+            )
+
+            result = OcrDocument.model_validate_json(output_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(result.regions[0].status, "complete")
+        self.assertEqual(result.regions[0].lines, [])
+        self.assertEqual(result.errors[0].stage, "line_1_rectification")
 
     def test_missing_page_image_preserves_failed_proposal_and_table_marker(self):
         with tempfile.TemporaryDirectory() as temporary_directory:

@@ -1,0 +1,13 @@
+device: cpu
+output_dir: data/ocr
+model: paddleocr-v6
+models:
+  paddleocr_v6:
+    detection_model: PP-OCRv6_small_det
+    recognition_model: PP-OCRv6_medium_rec
+    batch_size: 1
+    enable_mkldnn: false
+  vietocr:
+    config_name: vgg_transformer
+  paddleocr_vl:
+    pipeline_version: v1.6

@@ -7,7 +7,7 @@ wheels/
 *.egg-info
 
 # Virtual environments
-.venv
+.venv*
 .env
 .env.*
 !.env.example
@@ -17,6 +17,5 @@ wheels/
 AGENTS.md
 .rtk
 .codegraph
-data/raw/*
-/data/extraction/
-/data/ocr/
+data/*
+.cache

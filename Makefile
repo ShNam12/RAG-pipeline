@@ -1,9 +1,19 @@
 INPUT ?=
-OUTPUT_DIR ?= data/extraction
-IMAGE_DIR ?= pages
-DPI ?= 200
-DEVICE ?= cpu
+OUTPUT_DIR ?=
+IMAGE_DIR ?=
+DPI ?=
+DEVICE ?=
+MODEL ?=
+MANIFEST ?=
+DIRECT ?=
+OUTPUT ?=
 
-.PHONY: layout
+.PHONY: layout ocr ocr-text
 layout:
-	powershell -NoProfile -ExecutionPolicy Bypass -File "$(CURDIR)\make.ps1" layout -InputPath "$(INPUT)" -OutputDir "$(OUTPUT_DIR)" -ImageDir "$(IMAGE_DIR)" -Dpi $(DPI) -Device "$(DEVICE)"
+	powershell -NoProfile -ExecutionPolicy Bypass -File "$(CURDIR)\make.ps1" layout -InputPath "$(INPUT)" -OutputDir "$(OUTPUT_DIR)" -ImageDir "$(IMAGE_DIR)" -Dpi "$(DPI)" -Device "$(DEVICE)"
+
+ocr:
+	powershell -NoProfile -ExecutionPolicy Bypass -File "$(CURDIR)\make.ps1" ocr -InputPath "$(INPUT)" -OutputDir "$(OUTPUT_DIR)" -ImageDir "$(IMAGE_DIR)" -Device "$(DEVICE)" -Model "$(MODEL)" -Manifest "$(MANIFEST)" -Direct "$(DIRECT)"
+
+ocr-text:
+	powershell -NoProfile -ExecutionPolicy Bypass -File "$(CURDIR)\make.ps1" ocr-text -InputPath "$(INPUT)" -OutputPath "$(OUTPUT)"

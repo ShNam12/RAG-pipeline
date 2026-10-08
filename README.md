@@ -30,10 +30,12 @@ The image directory must stay inside the document output directory and cannot us
 
 `scripts/run_pipeline.py` runs selected stages in this order: `layout`, `ocr`, `tables`, `chunk`, `index`.
 The `layout` stage detects regions and saves clean page images.
-The `ocr` stage runs PaddleOCR-VL once per page for non-table proposals and separately on each table crop.
+The `ocr` stage uses PP-OCRv6 text detection with the local Vietnamese recognition model by default.
+PaddleOCR-VL remains available with an explicit OCR model override.
 The `tables` stage reconstructs visual data tables with the `tabular` dependency extra.
 The `chunk` stage creates section-aware OCR chunks, and `index` embeds both child chunks and nonempty reconstructed table cells before uploading them to Qdrant.
 
+The default OCR stage requires the Vietnamese checkpoint in `.cache/models/pp-ocrv6-medium-rec-vietnamese`; the download command appears in the OCR section below.
 Run the full pipeline from a PDF from the repository root:
 
 ```powershell
@@ -57,12 +59,23 @@ uv run python scripts/run_pipeline.py --stages index --chunks-json "data/ocr/<do
 make pipeline PIPELINE_STAGES=chunk,index PIPELINE_OCR_JSON="data/ocr/<document-name>-<path-hash>/ocr.json" PIPELINE_ENV_FILE=.env
 ```
 
+To send original full-page images straight to OCR without running layout proposal detection, set `--direct-ocr` and select `ocr` plus any downstream stages.
+Direct OCR accepts one supported image or a directory of clean `page-NNNN.png` images, not a PDF.
+Do not include `layout` or `tables` in the selected stages because table reconstruction requires layout proposals.
+
+```powershell
+uv run python scripts/run_pipeline.py --direct-ocr --source "data/extraction/<document-name>-<path-hash>/pages" --stages ocr,chunk,index --env-file .env --collection rag1_hybrid_v1
+make pipeline INPUT="data/extraction/<document-name>-<path-hash>/pages" PIPELINE_STAGES=ocr,chunk,index PIPELINE_DIRECT_OCR=1 PIPELINE_ENV_FILE=.env PIPELINE_COLLECTION=rag1_hybrid_v1
+```
+
 For the direct script, use `--layout-output-dir`, `--layout-image-dir`, `--layout-dpi`, and `--layout-device` to configure region detection.
-Use `--ocr-output-dir`, `--ocr-image-dir`, `--ocr-device`, and `--ocr-manifest` for OCR.
+Use `--ocr-output-dir`, `--ocr-image-dir`, `--ocr-device`, `--ocr-model`, and `--ocr-manifest` for OCR.
+Set `--ocr-model paddleocr-vl`, `-OcrModel paddleocr-vl`, or `PIPELINE_OCR_MODEL=paddleocr-vl` to run the full pipeline with PaddleOCR-VL.
 Use `--table-output-dir`, `--table-model`, `--table-device`, `--table-manifest`, and `--region-id` for table reconstruction.
 Use `--collection` for the Qdrant target.
-The PowerShell wrapper uses `-InputPath` for the PDF source and PascalCase names for the other options.
-Make uses `INPUT` for the PDF source and the corresponding `PIPELINE_` variables shown in `Makefile`.
+The PowerShell wrapper uses `-InputPath` for the PDF or image source and PascalCase names for the other options.
+Set `-Direct 1` with `-Stages ocr,chunk,index` for direct OCR through `make.ps1`.
+Make uses `INPUT` for the PDF or image source and the corresponding `PIPELINE_` variables shown in `Makefile`.
 Omitted options retain each existing CLI or YAML default.
 
 The runner stops when a stage fails or reports a partial artifact.
@@ -74,17 +87,17 @@ Reconstructed cell vectors are indexed only when `tables` runs or an existing `t
 
 ### Choose an OCR model
 
-`rag1 ocr` defaults to PaddleOCR-VL document parsing for layout pages or direct page images.
+`rag1 ocr` defaults to PP-OCRv6 small text detection with the local Vietnamese recognition model for layout pages or direct page images.
 Run the default model:
 
 ```powershell
 uv run rag1 ocr "data/extraction/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/pages/page-0001.png" --direct --device cpu --output-dir data/ocr
 ```
 
-The first use may download PaddleOCR-VL model weights.
+The first use may download the PP-OCRv6 detection model.
 The command writes `ocr.json` and `ocr.md` under the selected output directory.
-PaddleOCR-VL, V6, and VietOCR use the CPU by default.
-Select `--model pp-ocrv6-medium-rec-vietnamese` to use PP-OCRv6 small text detection and the local Paddle Vietnamese recognition model at `.cache/models/pp-ocrv6-medium-rec-vietnamese`.
+All OCR paths use the CPU by default.
+The Vietnamese recognition model is loaded from `.cache/models/pp-ocrv6-medium-rec-vietnamese`.
 The command reports an error when that directory is missing.
 From the repository root, download its inference files with the Hugging Face CLI:
 
@@ -92,11 +105,11 @@ From the repository root, download its inference files with the Hugging Face CLI
 hf download tieubaoca/pp-ocrv6-medium-rec-vietnamese inference.json inference.pdiparams inference.yml ppocr_keys.txt --local-dir .cache/models/pp-ocrv6-medium-rec-vietnamese
 ```
 
-To switch from PaddleOCR-VL to VietOCR line recognition, select `--model paddleocr-v6`:
+To select PaddleOCR-VL document parsing or VietOCR line recognition explicitly:
 
 ```powershell
-uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/region" --direct --model paddleocr-v6 --device cpu
-uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/region" --direct --model pp-ocrv6-medium-rec-vietnamese --device cpu
+uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/pages/page-0001.png" --direct --model paddleocr-vl --device cpu
+uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/pages/page-0001.png" --direct --model paddleocr-v6 --device cpu
 ```
 
 There is no separate `vietocr` value for `--model`; select `--model paddleocr-v6` to use VietOCR line recognition.
@@ -117,7 +130,8 @@ uv run rag1 ocr "data/extraction/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391
 ```
 
 For a layout file, the command searches its directory, then sibling `pages/`, then sibling `region/` for clean `page-NNNN.png` images.
-When given an artifact directory, it uses that directory's images and automatically reads its `manifest.json` when present.
+When given a layout file or artifact directory, it automatically reads the sibling `manifest.json` when present.
+When given an artifact directory, it uses that directory's images.
 `_bbox.png` debug images are ignored.
 When supplied, the manifest source must match `layout.json`, and its page region references must resolve to proposals on the same page.
 Available DPI, rotation, dimensions, image paths, and region references are retained in OCR page metadata; missing metadata fields remain null.
@@ -378,7 +392,8 @@ make ocr-text INPUT="data/ocr/<document-name>-<path-hash>/ocr.json"
 
 Make variables and PowerShell parameters can override YAML defaults when needed.
 For example, use `DPI=300 IMAGE_DIR=page-images` with `make layout`, or `MODEL=pp-ocrv6-medium-rec-vietnamese` with `make ocr`.
-PaddleOCR-VL is the default for `make ocr`; `make ocr-vietnamese INPUT="data/extraction/<document-name>-<path-hash>/pages" DIRECT=1` selects the Vietnamese Paddle recognizer explicitly.
+The Vietnamese Paddle recognizer is the default for `make ocr` and `make pipeline`; `make ocr-vietnamese INPUT="data/extraction/<document-name>-<path-hash>/pages" DIRECT=1` selects the same model explicitly.
+Use `MODEL=paddleocr-vl` with `make ocr` or `PIPELINE_OCR_MODEL=paddleocr-vl` with `make pipeline` to select PaddleOCR-VL.
 Use `MODEL=paddleocr-v6` with `make ocr` to select VietOCR.
 PaddleOCR-VL dependencies are installed with the base package, so use `uv run rag1 ocr ...` directly.
 

@@ -41,7 +41,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stages", type=parse_stages, default=STAGES,
                         help="comma-separated stages in order (default: all)")
-    parser.add_argument("--source", type=Path, help="PDF input when layout runs")
+    parser.add_argument("--source", type=Path, help="PDF input for layout, or image/image directory for direct OCR")
+    parser.add_argument("--direct-ocr", action="store_true",
+                        help="OCR full page image(s) directly; requires stages without layout or tables")
     parser.add_argument("--layout-json", type=Path, help="existing layout.json when layout is skipped")
     parser.add_argument("--ocr-json", type=Path, help="existing ocr.json when OCR is skipped")
     parser.add_argument("--tables-json", type=Path,
@@ -58,6 +60,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ocr-output-dir", type=Path)
     parser.add_argument("--ocr-image-dir", type=Path)
     parser.add_argument("--ocr-device")
+    parser.add_argument("--ocr-model", choices=(
+        "paddleocr-v6", "pp-ocrv6-medium-rec-vietnamese", "paddleocr-vl",
+    ), help="OCR model override (default: configs/extraction/ocr_text.yml)")
     parser.add_argument("--ocr-manifest", type=Path)
     parser.add_argument("--table-output-dir", type=Path)
     parser.add_argument("--table-model")
@@ -78,6 +83,15 @@ def _required(path: Path | None, description: str) -> Path:
     resolved = _absolute(path)
     if not resolved.is_file():
         raise PipelineError(f"{description} does not exist: {resolved}")
+    return resolved
+
+
+def _required_direct_input(path: Path | None) -> Path:
+    if path is None:
+        raise PipelineError("--source is required for --direct-ocr")
+    resolved = _absolute(path)
+    if not resolved.is_file() and not resolved.is_dir():
+        raise PipelineError(f"Direct OCR input does not exist: {resolved}")
     return resolved
 
 
@@ -147,6 +161,15 @@ def run_stage(stage: str, command: list[str], log: TextIO) -> Path | None:
 
 def run_pipeline(args: argparse.Namespace, log: TextIO) -> None:
     stages: tuple[str, ...] = args.stages
+    if args.direct_ocr:
+        if "ocr" not in stages:
+            raise PipelineError("--direct-ocr requires the ocr stage")
+        if "layout" in stages or "tables" in stages:
+            raise PipelineError("--direct-ocr cannot run layout or tables; select stages such as ocr,chunk,index")
+        if args.layout_json is not None:
+            raise PipelineError("--layout-json cannot be used with --direct-ocr")
+        if args.ocr_image_dir is not None or args.ocr_manifest is not None:
+            raise PipelineError("--ocr-image-dir and --ocr-manifest cannot be used with --direct-ocr")
     if args.layout_json is not None and "layout" in stages:
         raise PipelineError("--layout-json is only for runs that skip layout")
     if args.ocr_json is not None and "ocr" in stages:
@@ -156,10 +179,16 @@ def run_pipeline(args: argparse.Namespace, log: TextIO) -> None:
     if args.chunks_json is not None and "chunk" in stages:
         raise PipelineError("--chunks-json is only for runs that skip chunk")
 
-    source = _required(args.source, "--source") if "layout" in stages else None
+    if args.direct_ocr:
+        source = _required_direct_input(args.source)
+    elif "layout" in stages:
+        source = _required(args.source, "--source")
+    else:
+        source = None
     layout = (
         _required(args.layout_json, "--layout-json")
-        if "layout" not in stages and any(stage in stages for stage in ("ocr", "tables"))
+        if not args.direct_ocr and "layout" not in stages
+        and any(stage in stages for stage in ("ocr", "tables"))
         else None
     )
     ocr = (
@@ -199,12 +228,18 @@ def run_pipeline(args: argparse.Namespace, log: TextIO) -> None:
         _status(layout, allow_partial=args.allow_partial)
 
     if "ocr" in stages:
-        assert layout is not None
-        command = [*uv, "rag1", "ocr", str(layout), "--model", "paddleocr-vl"]
+        ocr_input = source if args.direct_ocr else layout
+        assert ocr_input is not None
+        command = [*uv, "rag1", "ocr", str(ocr_input)]
+        if args.direct_ocr:
+            command.append("--direct")
         _optional(command, "--output-dir", args.ocr_output_dir)
-        _optional(command, "--image-dir", args.ocr_image_dir)
+        if not args.direct_ocr:
+            _optional(command, "--image-dir", args.ocr_image_dir)
         _optional(command, "--device", args.ocr_device)
-        _optional(command, "--manifest", args.ocr_manifest)
+        _optional(command, "--model", args.ocr_model)
+        if not args.direct_ocr:
+            _optional(command, "--manifest", args.ocr_manifest)
         ocr = run_stage("ocr", command, log)
         assert ocr is not None
         _status(ocr, allow_partial=args.allow_partial)

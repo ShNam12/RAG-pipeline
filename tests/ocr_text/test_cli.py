@@ -11,12 +11,12 @@ from rag1 import _build_parser, main
 
 
 class OcrCliTests(unittest.TestCase):
-    def test_paddleocr_vl_is_default_model(self) -> None:
+    def test_vietnamese_recognizer_is_default_model(self) -> None:
         arguments = _build_parser().parse_args([
             "ocr", "region/page-0001.png", "--direct"
         ])
 
-        self.assertEqual(arguments.model, "paddleocr-vl")
+        self.assertEqual(arguments.model, "pp-ocrv6-medium-rec-vietnamese")
 
     def test_direct_option_accepts_page_image_and_model(self) -> None:
         arguments = _build_parser().parse_args([
@@ -58,7 +58,7 @@ class OcrCliTests(unittest.TestCase):
             manifest_path=None,
             output_dir=Path("data/ocr"),
             device="cpu",
-            model="paddleocr-vl",
+            model="pp-ocrv6-medium-rec-vietnamese",
         )
 
     def test_ocr_text_defaults_to_markdown_sidecar(self) -> None:

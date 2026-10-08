@@ -59,8 +59,7 @@ class PipelineScriptTests(unittest.TestCase):
             ["uv", "run", "--env-file", (self.root / ".env").resolve().as_posix()],
         )
         self.assertEqual(commands[0][-2:], ["layout", str(source)])
-        self.assertIn("--model", commands[1])
-        self.assertIn("paddleocr-vl", commands[1])
+        self.assertNotIn("--model", commands[1])
         self.assertIn(str(layout), commands[1])
         self.assertIn("--extra", commands[2])
         self.assertIn("tabular", commands[2])

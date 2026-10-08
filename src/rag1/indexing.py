@@ -15,7 +15,7 @@ from rag1.chunking import load_chunk_artifact
 
 
 MODEL_ID = "thanhtantran/Vietnamese_Embedding"
-DEFAULT_COLLECTION = "rag1_hybrid_v1"
+DEFAULT_COLLECTION = "rag1_vietnamese_embedding"
 VECTOR_NAME = "text"
 VECTOR_SIZE = 1024
 POINT_BATCH_SIZE = 64

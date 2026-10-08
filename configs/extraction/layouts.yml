@@ -1,7 +1,7 @@
 model:
   name: PP-DocLayout_plus-L
   device: cpu
-  batch_size: 1
+  batch_size: 10
   enable_mkldnn: false
 render:
   dpi: 200

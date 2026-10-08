@@ -20,3 +20,4 @@ data/*
 .cache
 logs/
 AGENTS.md
+.idea

@@ -161,6 +161,8 @@ def run_ocr(
             layout_path = artifact_directory / "layout.json"
             if manifest_path is None and (artifact_directory / "manifest.json").is_file():
                 manifest_path = artifact_directory / "manifest.json"
+        elif manifest_path is None and (layout_path.parent / "manifest.json").is_file():
+            manifest_path = layout_path.parent / "manifest.json"
         layout = load_layout_document(layout_path)
         for region in layout.regions:
             if not isinstance(region.location, VisualLocation):

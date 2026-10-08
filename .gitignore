@@ -21,3 +21,6 @@ data/*
 logs/
 AGENTS.md
 .idea
+
+bao_cao.md
+rag_serving_pipeline_report_slides.html

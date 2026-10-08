@@ -32,7 +32,9 @@ PIPELINE_LAYOUT_DEVICE ?=
 PIPELINE_OCR_OUTPUT_DIR ?=
 PIPELINE_OCR_IMAGE_DIR ?=
 PIPELINE_OCR_DEVICE ?=
+PIPELINE_OCR_MODEL ?=
 PIPELINE_OCR_MANIFEST ?=
+PIPELINE_DIRECT_OCR ?=
 PIPELINE_TABLE_OUTPUT_DIR ?=
 PIPELINE_TABLE_MODEL ?=
 PIPELINE_TABLE_DEVICE ?=
@@ -60,4 +62,4 @@ tables-flat:
 	powershell -NoProfile -ExecutionPolicy Bypass -File "$(CURDIR)\make.ps1" tables-flat -InputPath "$(TABLE_INPUT)" -OutputPath "$(TABLE_FLAT_OUTPUT)"
 
 pipeline:
-	powershell -NoProfile -ExecutionPolicy Bypass -File "$(CURDIR)\make.ps1" pipeline -InputPath "$(INPUT)" -Stages "$(PIPELINE_STAGES)" -LayoutJson "$(PIPELINE_LAYOUT_JSON)" -OcrJson "$(PIPELINE_OCR_JSON)" -TablesJson "$(PIPELINE_TABLES_JSON)" -ChunksJson "$(PIPELINE_CHUNKS_JSON)" -EnvFile "$(PIPELINE_ENV_FILE)" -LogFile "$(PIPELINE_LOG_FILE)" -Collection "$(PIPELINE_COLLECTION)" -LayoutOutputDir "$(PIPELINE_LAYOUT_OUTPUT_DIR)" -LayoutImageDir "$(PIPELINE_LAYOUT_IMAGE_DIR)" -LayoutDpi "$(PIPELINE_LAYOUT_DPI)" -LayoutDevice "$(PIPELINE_LAYOUT_DEVICE)" -OcrOutputDir "$(PIPELINE_OCR_OUTPUT_DIR)" -OcrImageDir "$(PIPELINE_OCR_IMAGE_DIR)" -OcrDevice "$(PIPELINE_OCR_DEVICE)" -OcrManifest "$(PIPELINE_OCR_MANIFEST)" -TableOutputDir "$(PIPELINE_TABLE_OUTPUT_DIR)" -TableModel "$(PIPELINE_TABLE_MODEL)" -TableDevice "$(PIPELINE_TABLE_DEVICE)" -TableManifest "$(PIPELINE_TABLE_MANIFEST)" -RegionId "$(PIPELINE_REGION_ID)" -AllowPartial "$(PIPELINE_ALLOW_PARTIAL)"
+	powershell -NoProfile -ExecutionPolicy Bypass -File "$(CURDIR)\make.ps1" pipeline -InputPath "$(INPUT)" -Stages "$(PIPELINE_STAGES)" -LayoutJson "$(PIPELINE_LAYOUT_JSON)" -OcrJson "$(PIPELINE_OCR_JSON)" -TablesJson "$(PIPELINE_TABLES_JSON)" -ChunksJson "$(PIPELINE_CHUNKS_JSON)" -EnvFile "$(PIPELINE_ENV_FILE)" -LogFile "$(PIPELINE_LOG_FILE)" -Collection "$(PIPELINE_COLLECTION)" -LayoutOutputDir "$(PIPELINE_LAYOUT_OUTPUT_DIR)" -LayoutImageDir "$(PIPELINE_LAYOUT_IMAGE_DIR)" -LayoutDpi "$(PIPELINE_LAYOUT_DPI)" -LayoutDevice "$(PIPELINE_LAYOUT_DEVICE)" -OcrOutputDir "$(PIPELINE_OCR_OUTPUT_DIR)" -OcrImageDir "$(PIPELINE_OCR_IMAGE_DIR)" -OcrDevice "$(PIPELINE_OCR_DEVICE)" -OcrModel "$(PIPELINE_OCR_MODEL)" -OcrManifest "$(PIPELINE_OCR_MANIFEST)" -Direct "$(PIPELINE_DIRECT_OCR)" -TableOutputDir "$(PIPELINE_TABLE_OUTPUT_DIR)" -TableModel "$(PIPELINE_TABLE_MODEL)" -TableDevice "$(PIPELINE_TABLE_DEVICE)" -TableManifest "$(PIPELINE_TABLE_MANIFEST)" -RegionId "$(PIPELINE_REGION_ID)" -AllowPartial "$(PIPELINE_ALLOW_PARTIAL)"

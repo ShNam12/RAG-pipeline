@@ -468,7 +468,6 @@ class OcrPipelineTests(unittest.TestCase):
 
             output_path = run_ocr(
                 layout_path,
-                manifest_path=manifest_path,
                 output_dir=root / "ocr",
                 model="pp-ocrv6-medium-rec-vietnamese",
                 adapter=adapter,

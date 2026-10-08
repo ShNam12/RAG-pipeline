@@ -29,6 +29,7 @@ param(
     [string]$OcrOutputDir,
     [string]$OcrImageDir,
     [string]$OcrDevice,
+    [string]$OcrModel,
     [string]$OcrManifest,
     [string]$TableOutputDir,
     [string]$TableModel,
@@ -61,6 +62,7 @@ try {
             "--ocr-output-dir" = $OcrOutputDir
             "--ocr-image-dir" = $OcrImageDir
             "--ocr-device" = $OcrDevice
+            "--ocr-model" = $OcrModel
             "--ocr-manifest" = $OcrManifest
             "--table-output-dir" = $TableOutputDir
             "--table-model" = $TableModel
@@ -71,6 +73,14 @@ try {
         foreach ($Option in $PipelineOptions.GetEnumerator()) {
             if (-not [string]::IsNullOrWhiteSpace($Option.Value)) {
                 $PipelineArguments += @($Option.Key, $Option.Value)
+            }
+        }
+        if (-not [string]::IsNullOrWhiteSpace($Direct)) {
+            if ($Direct -notin @("1", "true", "yes", "on", "0", "false", "no", "off")) {
+                throw "DIRECT must be 1/true/yes/on or 0/false/no/off."
+            }
+            if ($Direct -in @("1", "true", "yes", "on")) {
+                $PipelineArguments += "--direct-ocr"
             }
         }
         if (-not [string]::IsNullOrWhiteSpace($AllowPartial)) {

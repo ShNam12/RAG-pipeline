@@ -187,6 +187,7 @@ def run_tables(
         if (page.pixel_width, page.pixel_height) != (location.page_width, location.page_height):
             raise ValueError(f"layout and manifest dimensions disagree on page {location.page_number}")
         if ocr_page is None or (ocr_page.pixel_width, ocr_page.pixel_height) != (page.pixel_width, page.pixel_height):
+            print (ocr_page, ocr_page.pixel_width, ocr_page.pixel_height, page.pixel_width, page.pixel_height)
             raise ValueError(f"OCR and manifest dimensions disagree on page {location.page_number}")
         image_path = _image_path(layout_json.parent, page.image)
         if ocr.input_mode == "direct" and (ocr_page.image is None or Path(ocr_page.image).resolve() != image_path):

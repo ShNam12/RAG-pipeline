@@ -37,7 +37,6 @@ class LLMClient:
             Nội dung phản hồi hoàn chỉnh từ LLM.
         """
         try:
-            # Gửi request với cấu hình tắt thinking theo yêu cầu pipeline
             response = self.client.chat.completions.create(
                 model=self.model_name,
                 messages=[
@@ -45,7 +44,6 @@ class LLMClient:
                     {"role": "user", "content": user_prompt},
                 ],
                 temperature=temperature,
-                extra_body={"enable_thinking": False},
             )
             return response.choices[0].message.content or ""
 

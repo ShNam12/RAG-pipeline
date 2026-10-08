@@ -29,17 +29,17 @@ class Settings:
     )
 
     # Docker LLM
-    llm_base_url: str = os.getenv("LLM_BASE_URL", "http://localhost:11434/v1")
-    llm_api_key: str = os.getenv("LLM_API_KEY", "ollama")
+    llm_base_url: str = os.getenv("LLM_BASE_URL", "http://localhost:1234/v1")
+    llm_api_key: str = os.getenv("LLM_API_KEY", "lm-studio")
     llm_model: str = os.getenv(
-        "LLM_MODEL_NAME", "hf.co/unsloth/Qwen3.5-4B-GGUF:Q4_K_M"
+        "LLM_MODEL_NAME", "llama-3.2-1b-instruct"
     )
 
     # Retrieval parameters
     text_top_k: int = 15
     table_top_k: int = 10
     rrf_k: int = 60
-    final_top_k: int = 5
+    final_top_k: int = 3
 
 
 settings = Settings()

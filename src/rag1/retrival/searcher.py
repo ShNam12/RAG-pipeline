@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 from qdrant_client import QdrantClient
-from qdrant_client.models import ScoredPoint
+from qdrant_client.models import ScoredPoint, Filter, FieldCondition, MatchValue
 
 from rag1.retrival.config import settings
 from rag1.retrival.schemas import SearchCandidate, SourceType
@@ -29,26 +29,28 @@ class QdrantSearcher:
         """Chuyển đổi một ScoredPoint từ Qdrant sang model SearchCandidate chuẩn."""
         payload: dict[str, Any] = point.payload or {}
 
-        # 1. Trích xuất tên file tài liệu từ source.path
-        source_info = payload.get("source", {})
-        if isinstance(source_info, dict) and "path" in source_info:
-            doc_name = source_info["path"].split("/")[-1].replace("+", " ")
-        else:
-            doc_name = payload.get("doc_name", "Tài liệu không xác định")
+        # 1. Trích xuất tên file tài liệu từ source
+        source = payload.get("source", "")
+        doc_name = "Tài liệu không xác định"
+        if isinstance(source, str) and source:
+            parts = source.replace("\\", "/").split("/")
+            folder_name = parts[-2] if len(parts) > 1 and parts[-1] == "pages" else parts[-1]
+            doc_name = folder_name.split("-")[0] if "-" in folder_name else folder_name
+            doc_name = doc_name.replace("_", " ")
 
         # 2. Trích xuất số trang
-        page_number = payload.get("page_number", 1)
+        page_numbers = payload.get("page_numbers", [])
+        page_number = page_numbers[0] if isinstance(page_numbers, list) and page_numbers else "Không rõ"
 
-        # 3. Trích xuất nội dung (Ưu tiên text OCR có sẵn trong payload)
+        # 3. Trích xuất nội dung
         if source_type == SourceType.TEXT:
-            content = payload.get("parent_context") or payload.get("text") or payload.get("content", "")
-            section_or_caption = payload.get("section", f"Trang {page_number}")
+            content = payload.get("text") or payload.get("content", "")
+            section_heading = payload.get("section_heading")
+            section_or_caption = section_heading if section_heading else f"Trang {page_number}"
         else:
             # Đối với Bảng biểu:
             content = payload.get("text") or payload.get("table_markdown", "")
-            proposal = payload.get("proposal", {})
-            table_id = proposal.get("id") if isinstance(proposal, dict) else ""
-            section_or_caption = payload.get("caption") or f"Bảng {table_id}".strip()
+            section_or_caption = f"Bảng (Trang {page_number})"
 
         # Lưu lại metadata đã chuẩn hóa để các bước sau (Prompt, Citation) dùng thuận tiện
         normalized_metadata = {
@@ -79,10 +81,14 @@ class QdrantSearcher:
         if not self.client.collection_exists(settings.text_collection):
             return []
 
+        text_filter = Filter(must=[FieldCondition(key="level", match=MatchValue(value=2))])
+
         scored_points = self.client.query_points(
             collection_name=settings.text_collection,
             query=query_vector,
+            using="text",
             limit=top_k,
+            query_filter=text_filter,
             with_payload=True,
         ).points
 
@@ -102,10 +108,14 @@ class QdrantSearcher:
         if not self.client.collection_exists(settings.table_collection):
             return []
 
+        table_filter = Filter(must_not=[FieldCondition(key="level", match=MatchValue(value=2))])
+
         scored_points = self.client.query_points(
             collection_name=settings.table_collection,
             query=query_vector,
+            using="text",
             limit=top_k,
+            query_filter=table_filter,
             with_payload=True,
         ).points
 

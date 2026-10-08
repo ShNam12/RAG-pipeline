@@ -19,3 +19,6 @@ AGENTS.md
 .codegraph
 data/*
 .cache
+
+bao_cao.md
+rag_serving_pipeline_report_slides.html

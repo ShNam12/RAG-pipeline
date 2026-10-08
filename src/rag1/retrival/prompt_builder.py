@@ -13,6 +13,7 @@ QUY TẮC BẮT BUỘC:
 2. Với mọi thông tin hoặc số liệu đưa ra, bạn BẮT BUỘC phải trích dẫn nguồn gốc theo định dạng: [Tài liệu X, Trang Y] hoặc [Bảng Z, Trang Y].
 3. Nếu thông tin không xuất hiện trong ngữ cảnh, hãy nói rõ là tài liệu không đề cập, tuyệt đối không tự suy đoán hoặc bịa số liệu.
 4. Tuyệt đối không suy nghĩ nội tâm.
+5. Sửa lại các lỗi chính tả đảm bảo câu trả lời chính xác.
 """
 
 

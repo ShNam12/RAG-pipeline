@@ -2,6 +2,9 @@
 
 Tài liệu này đóng vai trò là kim chỉ nam kỹ thuật (Technical Specification & Prompt Guide) để AI hoặc lập trình viên phát triển toàn bộ module RAG Serving nằm trong thư mục `src/rag1/retrival/`.
 
+The two-collection examples below describe the earlier mock contract.
+For the current Qdrant indexer and the hybrid and extracted-table migration, follow [INTEGRATION_INSTRUCTIONS.md](INTEGRATION_INSTRUCTIONS.md) and [RETRIEVAL_HANDOFF.md](../../../schemas/qdrant/RETRIEVAL_HANDOFF.md).
+
 ---
 
 ## 1. TỔNG QUAN DỰ ÁN & BỐI CẢNH
@@ -198,4 +201,4 @@ src/rag1/retrival/
    uv run python -m unittest discover -s tests
    ```
 
-Khi partner hoàn thành việc nạp dữ liệu thật vào Qdrant, hệ thống chỉ cần trỏ vào collection thật là có thể vận hành trơn tru mà không cần can thiệp mã nguồn.
+The current retrieval code needs the changes in [INTEGRATION_INSTRUCTIONS.md](INTEGRATION_INSTRUCTIONS.md) before it can read the indexed payloads or use hybrid search.

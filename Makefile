@@ -1,3 +1,11 @@
+# Run "make help" to see the available tasks and examples.
+# Empty optional values are omitted by make.ps1, so CLI and YAML defaults apply.
+.DEFAULT_GOAL := help
+
+POWERSHELL ?= powershell
+HELPER = $(POWERSHELL) -NoProfile -ExecutionPolicy Bypass -File "$(CURDIR)\make.ps1"
+
+# Shared inputs for layout and OCR.
 INPUT ?=
 OUTPUT_DIR ?=
 IMAGE_DIR ?=
@@ -7,6 +15,8 @@ MODEL ?=
 MANIFEST ?=
 DIRECT ?=
 OUTPUT ?=
+
+# Table reconstruction and flat export.
 TABLE_LAYOUT_JSON ?=
 TABLE_OCR_JSON ?=
 TABLE_MANIFEST ?=
@@ -17,6 +27,8 @@ TABLE_REGION_ID ?=
 TABLE_JSON ?=
 TABLE_INPUT ?= $(TABLE_JSON)
 TABLE_FLAT_OUTPUT ?=
+
+# Partial or full pipeline.
 PIPELINE_STAGES ?=
 PIPELINE_LAYOUT_JSON ?=
 PIPELINE_OCR_JSON ?=
@@ -42,24 +54,96 @@ PIPELINE_TABLE_MANIFEST ?=
 PIPELINE_REGION_ID ?=
 PIPELINE_ALLOW_PARTIAL ?=
 
-.PHONY: layout ocr ocr-vietnamese ocr-text tables tables-flat pipeline
+LAYOUT_ARGS = \
+    -InputPath "$(INPUT)" \
+    -OutputDir "$(OUTPUT_DIR)" \
+    -ImageDir "$(IMAGE_DIR)" \
+    -Dpi "$(DPI)" \
+    -Device "$(DEVICE)"
+
+OCR_ARGS = \
+    -InputPath "$(INPUT)" \
+    -OutputDir "$(OUTPUT_DIR)" \
+    -ImageDir "$(IMAGE_DIR)" \
+    -Device "$(DEVICE)" \
+    -Model "$(MODEL)" \
+    -Manifest "$(MANIFEST)" \
+    -Direct "$(DIRECT)"
+
+OCR_VIETNAMESE_ARGS = \
+    -InputPath "$(INPUT)" \
+    -OutputDir "$(OUTPUT_DIR)" \
+    -ImageDir "$(IMAGE_DIR)" \
+    -Device "$(DEVICE)" \
+    -Manifest "$(MANIFEST)" \
+    -Direct "$(DIRECT)"
+
+OCR_TEXT_ARGS = \
+    -InputPath "$(INPUT)" \
+    -OutputPath "$(OUTPUT)"
+
+TABLE_ARGS = \
+    -InputPath "$(TABLE_LAYOUT_JSON)" \
+    -OcrJson "$(TABLE_OCR_JSON)" \
+    -Manifest "$(TABLE_MANIFEST)" \
+    -OutputDir "$(TABLE_OUTPUT_DIR)" \
+    -Model "$(TABLE_MODEL)" \
+    -Device "$(TABLE_DEVICE)" \
+    -RegionId "$(TABLE_REGION_ID)"
+
+TABLE_FLAT_ARGS = \
+    -InputPath "$(TABLE_INPUT)" \
+    -OutputPath "$(TABLE_FLAT_OUTPUT)"
+
+PIPELINE_ARGS = \
+    -InputPath "$(INPUT)" \
+    -Stages "$(PIPELINE_STAGES)" \
+    -LayoutJson "$(PIPELINE_LAYOUT_JSON)" \
+    -OcrJson "$(PIPELINE_OCR_JSON)" \
+    -TablesJson "$(PIPELINE_TABLES_JSON)" \
+    -ChunksJson "$(PIPELINE_CHUNKS_JSON)" \
+    -EnvFile "$(PIPELINE_ENV_FILE)" \
+    -LogFile "$(PIPELINE_LOG_FILE)" \
+    -Collection "$(PIPELINE_COLLECTION)" \
+    -LayoutOutputDir "$(PIPELINE_LAYOUT_OUTPUT_DIR)" \
+    -LayoutImageDir "$(PIPELINE_LAYOUT_IMAGE_DIR)" \
+    -LayoutDpi "$(PIPELINE_LAYOUT_DPI)" \
+    -LayoutDevice "$(PIPELINE_LAYOUT_DEVICE)" \
+    -OcrOutputDir "$(PIPELINE_OCR_OUTPUT_DIR)" \
+    -OcrImageDir "$(PIPELINE_OCR_IMAGE_DIR)" \
+    -OcrDevice "$(PIPELINE_OCR_DEVICE)" \
+    -OcrModel "$(PIPELINE_OCR_MODEL)" \
+    -OcrManifest "$(PIPELINE_OCR_MANIFEST)" \
+    -Direct "$(PIPELINE_DIRECT_OCR)" \
+    -TableOutputDir "$(PIPELINE_TABLE_OUTPUT_DIR)" \
+    -TableModel "$(PIPELINE_TABLE_MODEL)" \
+    -TableDevice "$(PIPELINE_TABLE_DEVICE)" \
+    -TableManifest "$(PIPELINE_TABLE_MANIFEST)" \
+    -RegionId "$(PIPELINE_REGION_ID)" \
+    -AllowPartial "$(PIPELINE_ALLOW_PARTIAL)"
+
+.PHONY: help layout ocr ocr-vietnamese ocr-text tables tables-flat pipeline
+
+help:
+	@$(HELPER) help
+
 layout:
-	powershell -NoProfile -ExecutionPolicy Bypass -File "$(CURDIR)\make.ps1" layout -InputPath "$(INPUT)" -OutputDir "$(OUTPUT_DIR)" -ImageDir "$(IMAGE_DIR)" -Dpi "$(DPI)" -Device "$(DEVICE)"
+	@$(HELPER) layout $(LAYOUT_ARGS)
 
 ocr:
-	powershell -NoProfile -ExecutionPolicy Bypass -File "$(CURDIR)\make.ps1" ocr -InputPath "$(INPUT)" -OutputDir "$(OUTPUT_DIR)" -ImageDir "$(IMAGE_DIR)" -Device "$(DEVICE)" -Model "$(MODEL)" -Manifest "$(MANIFEST)" -Direct "$(DIRECT)"
+	@$(HELPER) ocr $(OCR_ARGS)
 
 ocr-vietnamese:
-	powershell -NoProfile -ExecutionPolicy Bypass -File "$(CURDIR)\make.ps1" ocr-vietnamese -InputPath "$(INPUT)" -OutputDir "$(OUTPUT_DIR)" -ImageDir "$(IMAGE_DIR)" -Device "$(DEVICE)" -Manifest "$(MANIFEST)" -Direct "$(DIRECT)"
+	@$(HELPER) ocr-vietnamese $(OCR_VIETNAMESE_ARGS)
 
 ocr-text:
-	powershell -NoProfile -ExecutionPolicy Bypass -File "$(CURDIR)\make.ps1" ocr-text -InputPath "$(INPUT)" -OutputPath "$(OUTPUT)"
+	@$(HELPER) ocr-text $(OCR_TEXT_ARGS)
 
 tables:
-	powershell -NoProfile -ExecutionPolicy Bypass -File "$(CURDIR)\make.ps1" tables -InputPath "$(TABLE_LAYOUT_JSON)" -OcrJson "$(TABLE_OCR_JSON)" -Manifest "$(TABLE_MANIFEST)" -OutputDir "$(TABLE_OUTPUT_DIR)" -Model "$(TABLE_MODEL)" -Device "$(TABLE_DEVICE)" -RegionId "$(TABLE_REGION_ID)"
+	@$(HELPER) tables $(TABLE_ARGS)
 
 tables-flat:
-	powershell -NoProfile -ExecutionPolicy Bypass -File "$(CURDIR)\make.ps1" tables-flat -InputPath "$(TABLE_INPUT)" -OutputPath "$(TABLE_FLAT_OUTPUT)"
+	@$(HELPER) tables-flat $(TABLE_FLAT_ARGS)
 
 pipeline:
-	powershell -NoProfile -ExecutionPolicy Bypass -File "$(CURDIR)\make.ps1" pipeline -InputPath "$(INPUT)" -Stages "$(PIPELINE_STAGES)" -LayoutJson "$(PIPELINE_LAYOUT_JSON)" -OcrJson "$(PIPELINE_OCR_JSON)" -TablesJson "$(PIPELINE_TABLES_JSON)" -ChunksJson "$(PIPELINE_CHUNKS_JSON)" -EnvFile "$(PIPELINE_ENV_FILE)" -LogFile "$(PIPELINE_LOG_FILE)" -Collection "$(PIPELINE_COLLECTION)" -LayoutOutputDir "$(PIPELINE_LAYOUT_OUTPUT_DIR)" -LayoutImageDir "$(PIPELINE_LAYOUT_IMAGE_DIR)" -LayoutDpi "$(PIPELINE_LAYOUT_DPI)" -LayoutDevice "$(PIPELINE_LAYOUT_DEVICE)" -OcrOutputDir "$(PIPELINE_OCR_OUTPUT_DIR)" -OcrImageDir "$(PIPELINE_OCR_IMAGE_DIR)" -OcrDevice "$(PIPELINE_OCR_DEVICE)" -OcrModel "$(PIPELINE_OCR_MODEL)" -OcrManifest "$(PIPELINE_OCR_MANIFEST)" -Direct "$(PIPELINE_DIRECT_OCR)" -TableOutputDir "$(PIPELINE_TABLE_OUTPUT_DIR)" -TableModel "$(PIPELINE_TABLE_MODEL)" -TableDevice "$(PIPELINE_TABLE_DEVICE)" -TableManifest "$(PIPELINE_TABLE_MANIFEST)" -RegionId "$(PIPELINE_REGION_ID)" -AllowPartial "$(PIPELINE_ALLOW_PARTIAL)"
+	@$(HELPER) pipeline $(PIPELINE_ARGS)

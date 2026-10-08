@@ -44,3 +44,13 @@ class RAGResponse(BaseModel):
     answer: str
     citations: list[Citation] = Field(default_factory=list)
     candidates: list[SearchCandidate] = Field(default_factory=list)
+
+class QueryRequest(BaseModel):
+    """Khuôn mẫu dữ liệu gửi lên từ người dùng."""
+    query: str = Field(..., min_length=1, description="Câu hỏi của người dùng")
+
+class ChatResponse(BaseModel):
+    """Khuôn mẫu dữ liệu kết quả trả về cho Frontend (Dùng cho non-streaming nếu cần)."""
+    query: str
+    answer: str
+    citations: list[Citation] = Field(default_factory=list)

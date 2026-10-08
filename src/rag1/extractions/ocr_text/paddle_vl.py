@@ -1,4 +1,4 @@
-"""PaddleOCR-VL adapter for parsing complete proposal crops."""
+"""PaddleOCR-VL adapter for parsing page images and proposal crops."""
 
 from __future__ import annotations
 
@@ -23,6 +23,9 @@ class PaddleResult(Protocol):
     @property
     def json(self) -> Mapping[str, Any]: ...
 
+    @property
+    def markdown(self) -> Mapping[str, Any]: ...
+
 
 class PaddleVlModel(Protocol):
     def predict(self, input: str) -> Iterable[PaddleResult]: ...
@@ -41,7 +44,7 @@ def _create_model(*, device: str) -> PaddleVlModel:
 
 
 class PaddleOcrVlAdapter:
-    """Create one VL pipeline and parse each proposal crop in reading order."""
+    """Create one VL pipeline and parse each input image in reading order."""
 
     def __init__(
         self,
@@ -54,6 +57,7 @@ class PaddleOcrVlAdapter:
         self.device = device.strip()
         self._model_factory = model_factory or _create_model
         self._model: PaddleVlModel | None = None
+        self._last_result: PaddleResult | None = None
 
     def initialize(self) -> None:
         if self._model is None:
@@ -62,6 +66,7 @@ class PaddleOcrVlAdapter:
     def parse_region(self, image_path: str) -> list[RecognizedBlock]:
         self.initialize()
         assert self._model is not None
+        self._last_result = None
         started_at = perf_counter()
         logger.info(
             "PaddleOCR-VL predict started: input=%s device=%s pipeline_version=%s",
@@ -85,8 +90,9 @@ class PaddleOcrVlAdapter:
             perf_counter() - started_at,
         )
         if len(results) != 1:
-            raise ValueError("PaddleOCR-VL must return exactly one result per crop")
-        result = results[0].json
+            raise ValueError("PaddleOCR-VL must return exactly one result per image")
+        self._last_result = results[0]
+        result = self._last_result.json
         if not isinstance(result, Mapping):
             raise ValueError("PaddleOCR-VL result must be a mapping")
         payload = result.get("res", result)
@@ -114,6 +120,19 @@ class PaddleOcrVlAdapter:
             )
         logger.info("PaddleOCR-VL parsed blocks: input=%s blocks=%d", image_path, len(blocks))
         return blocks
+
+    def last_markdown(self) -> Mapping[str, Any]:
+        """Return the native Markdown from the most recent successful prediction."""
+        if self._last_result is None:
+            raise RuntimeError("PaddleOCR-VL has no prediction result for Markdown")
+        markdown = self._last_result.markdown
+        if not isinstance(markdown, Mapping):
+            raise ValueError("PaddleOCR-VL Markdown result must be a mapping")
+        if not isinstance(markdown.get("markdown_texts"), str):
+            raise ValueError("PaddleOCR-VL Markdown result must contain markdown_texts")
+        if not isinstance(markdown.get("markdown_images"), Mapping):
+            raise ValueError("PaddleOCR-VL Markdown result must contain markdown_images")
+        return markdown
 
 
 def _as_bbox(value: Any) -> list[float]:

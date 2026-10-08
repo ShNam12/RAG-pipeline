@@ -63,10 +63,10 @@ class FakeVlAdapter:
 
     def parse_region(self, image_path):
         self.parsed.append(Path(image_path))
-        if "region-00001" in image_path:
+        if "region-00002" not in image_path:
             return [
                 RecognizedBlock(
-                    bbox=[1, 2, 11, 12],
+                    bbox=[11, 22, 21, 32],
                     label="text",
                     content="Doanh thu Q3",
                 )
@@ -189,6 +189,9 @@ class OcrPipelineTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
             layout_path, _ = self.create_layout_and_page(root)
+            layout = json.loads(layout_path.read_text(encoding="utf-8"))
+            layout["regions"][1]["location"]["bbox"] = [10.25, 70.75, 90.5, 120.25]
+            layout_path.write_text(json.dumps(layout), encoding="utf-8")
             adapter = FakeVlAdapter()
 
             output_path = run_ocr(
@@ -249,6 +252,7 @@ class OcrPipelineTests(unittest.TestCase):
             output_path = run_ocr(
                 page_path,
                 direct=True,
+                model="paddleocr-vl",
                 output_dir=root / "ocr",
                 adapter=adapter,
             )
@@ -384,7 +388,7 @@ class OcrPipelineTests(unittest.TestCase):
 
         self.assertEqual(rectified.size, (20, 10))
 
-    def test_degenerate_detection_is_a_line_error_and_does_not_discard_region(self):
+    def test_degenerate_detection_is_a_line_error_and_preserves_failed_region(self):
         class DegenerateAdapter(FakeAdapter):
             def detect(self, image_path):
                 self.detected.append(Path(image_path))
@@ -405,7 +409,7 @@ class OcrPipelineTests(unittest.TestCase):
 
             result = OcrDocument.model_validate_json(output_path.read_text(encoding="utf-8"))
 
-        self.assertEqual(result.regions[0].status, "complete")
+        self.assertEqual(result.regions[0].status, "failed")
         self.assertEqual(result.regions[0].lines, [])
         self.assertEqual(result.errors[0].stage, "line_1_rectification")
 

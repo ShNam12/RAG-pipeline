@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Iterator, Mapping
 from contextlib import contextmanager
 import json
 import logging
@@ -11,9 +11,9 @@ import os
 from pathlib import Path
 import tempfile
 from time import perf_counter
-from typing import Literal, cast
+from typing import Any, Literal, cast
 
-from PIL import Image
+from PIL import Image, ImageDraw
 
 from rag1.extractions.layouts.contracts import (
     DocumentFormat,
@@ -41,7 +41,7 @@ from rag1.extractions.ocr_text.layout_input import (
     load_layout_document,
     load_upstream_manifest,
 )
-from rag1.extractions.ocr_text.adapters import OcrAdapter, RegionOcrAdapter
+from rag1.extractions.ocr_text.adapters import OcrAdapter, RecognizedBlock, RegionOcrAdapter
 from rag1.extractions.ocr_text.paddle import (
     PaddleOcrV6Adapter,
     TEXT_RECOGNITION_MODEL_DIR,
@@ -78,6 +78,41 @@ def _log_phase(name: str) -> Iterator[None]:
             name,
             perf_counter() - started_at,
         )
+
+
+def _assign_page_blocks(
+    blocks: list[RecognizedBlock], proposals: list[Region], page_size: tuple[int, int]
+) -> tuple[dict[str, list[RecognizedBlock]], list[RecognizedBlock]]:
+    """Assign each page block once, keeping unmatched blocks for a page region."""
+    assigned: dict[str, list[RecognizedBlock]] = {}
+    unmatched: list[RecognizedBlock] = []
+    tables = [region for region in proposals if region.kind is RegionKind.TABLE]
+    non_tables = [region for region in proposals if region.kind is not RegionKind.TABLE]
+    for block in blocks:
+        x0, y0, x1, y1 = block.bbox
+        if x0 < 0 or y0 < 0 or x1 > page_size[0] or y1 > page_size[1]:
+            raise ValueError("PaddleOCR-VL page block falls outside the page image")
+        center_x, center_y = (x0 + x1) / 2, (y0 + y1) / 2
+        if any(
+            region.location.bbox[0] <= center_x <= region.location.bbox[2]
+            and region.location.bbox[1] <= center_y <= region.location.bbox[3]
+            for region in tables
+        ):
+            continue
+        candidates: list[tuple[int, int, Region]] = []
+        for index, region in enumerate(non_tables):
+            location = region.location
+            assert isinstance(location, VisualLocation)
+            left, top = math.floor(location.bbox[0]), math.floor(location.bbox[1])
+            right, bottom = math.ceil(location.bbox[2]), math.ceil(location.bbox[3])
+            if left <= x0 and top <= y0 and x1 <= right and y1 <= bottom:
+                candidates.append(((right - left) * (bottom - top), index, region))
+        if candidates:
+            region = min(candidates, key=lambda item: (item[0], item[1]))[2]
+            assigned.setdefault(region.id, []).append(block)
+        else:
+            unmatched.append(block)
+    return assigned, unmatched
 
 
 def run_ocr(
@@ -174,7 +209,9 @@ def run_ocr(
         "Phase completed: load OCR input (%.2f seconds)",
         perf_counter() - input_started_at,
     )
-    processable_kinds = {RegionKind.TEXT, RegionKind.TABLE}
+    processable_kinds = (
+        set(RegionKind) if model == "paddleocr-vl" else {RegionKind.TEXT, RegionKind.TABLE}
+    )
     processable_regions = [
         region for region in layout.regions if region.kind in processable_kinds
     ]
@@ -228,6 +265,8 @@ def run_ocr(
     )
 
     result_dir = document_output_path(output_dir, layout.source)
+    formatted_path = result_dir / "ocr.formatted.md"
+    formatted_path.unlink(missing_ok=True)
     crop_dir = result_dir / "crops"
     region_crop_dir = crop_dir / "regions"
     line_crop_dir = crop_dir / "lines"
@@ -256,6 +295,61 @@ def run_ocr(
 
     output_regions: list[OcrRegion] = []
     errors: list[OcrError] = []
+    formatted_pages: dict[int, str] = {}
+    page_blocks: dict[str, list[RecognizedBlock]] = {}
+    unmatched_blocks: dict[int, list[RecognizedBlock]] = {}
+    page_inputs: dict[int, Path] = {}
+    vl_page_failures: dict[int, Exception] = {}
+    if model == "paddleocr-vl" and not direct:
+        region_adapter = cast(RegionOcrAdapter, ocr_adapter)
+        for page_number, proposals in sorted(page_proposals.items()):
+            non_tables = [region for region in proposals if region.kind is not RegionKind.TABLE]
+            if not non_tables or page_number in page_image_errors:
+                continue
+            page_path = page_images[page_number]
+            try:
+                if initialization_error is not None:
+                    raise initialization_error
+                with Image.open(page_path) as opened:
+                    page_image = opened.convert("RGB")
+                table_proposals = [
+                    region for region in proposals if region.kind is RegionKind.TABLE
+                ]
+                input_path = page_path
+                if table_proposals:
+                    masked = page_image.copy()
+                    draw = ImageDraw.Draw(masked)
+                    for region in table_proposals:
+                        location = region.location
+                        assert isinstance(location, VisualLocation)
+                        x0, y0, x1, y1 = location.bbox
+                        draw.rectangle(
+                            (math.floor(x0), math.floor(y0),
+                             math.ceil(x1) - 1, math.ceil(y1) - 1),
+                            fill="white",
+                        )
+                    masked_dir = result_dir / "pages"
+                    masked_dir.mkdir(parents=True, exist_ok=True)
+                    input_path = masked_dir / f"page-{page_number:04d}-non-table.png"
+                    masked.save(input_path, format="PNG")
+                page_inputs[page_number] = input_path
+                with _log_phase(f"PaddleOCR-VL page {page_number} non-table inference"):
+                    parsed = region_adapter.parse_region(str(input_path))
+                assigned, unmatched = _assign_page_blocks(
+                    parsed, proposals, page_image.size
+                )
+                page_blocks.update(assigned)
+                unmatched_blocks[page_number] = unmatched
+            except Exception as error:
+                vl_page_failures[page_number] = error
+                errors.append(OcrError(
+                    stage="page_detection_or_recognition",
+                    page_number=page_number,
+                    region_id=None,
+                    exception_type=type(error).__name__,
+                    message=str(error),
+                ))
+                logger.warning("Page %d non-table OCR failed: %s", page_number, error)
     page_failures = direct_page_failures + [
         PageFailure.from_exception(page_number, error)
         for page_number, error in sorted(page_image_errors.items())
@@ -334,20 +428,49 @@ def run_ocr(
                 height=crop_height,
                 path=crop_ref,
             )
+            if (
+                model == "paddleocr-vl" and not direct
+                and proposal.kind is not RegionKind.TABLE
+                and location.page_number in vl_page_failures
+            ):
+                output_regions.append(_failed_region(
+                    proposal, location.bbox, page_bbox,
+                    crop_width, crop_height, crop_ref, table,
+                ))
+                continue
             if initialization_error is not None:
                 raise initialization_error
             model_input_path = str(page_image_path if direct else crop_path)
             if model == "paddleocr-vl":
                 region_adapter = cast(RegionOcrAdapter, ocr_adapter)
                 blocks: list[OcrBlock] = []
-                for block in region_adapter.parse_region(model_input_path):
+                page_mode = not direct and proposal.kind is not RegionKind.TABLE
+                recognized = (
+                    page_blocks.get(proposal.id, [])
+                    if page_mode else region_adapter.parse_region(model_input_path)
+                )
+                if direct and isinstance(ocr_adapter, PaddleOcrVlAdapter):
+                    try:
+                        formatted_pages[location.page_number] = _save_native_markdown_page(
+                            ocr_adapter.last_markdown(), result_dir, location.page_number
+                        )
+                    except Exception as error:
+                        errors.append(_formatted_markdown_error(location.page_number, error))
+                        logger.warning("Page %d formatted Markdown failed: %s", location.page_number, error)
+                for block in recognized:
                     x0, y0, x1, y1 = block.bbox
                     blocks.append(
                         OcrBlock(
                             label=block.label,
                             content=block.content,
-                            region_bbox=block.bbox,
-                            page_bbox=[x0 + left, y0 + top, x1 + left, y1 + top],
+                            region_bbox=(
+                                [x0 - left, y0 - top, x1 - left, y1 - top]
+                                if page_mode else block.bbox
+                            ),
+                            page_bbox=(
+                                block.bbox if page_mode
+                                else [x0 + left, y0 + top, x1 + left, y1 + top]
+                            ),
                         )
                     )
                 paragraph = (
@@ -473,10 +596,82 @@ def run_ocr(
                 perf_counter() - region_started_at,
             )
 
+    used_ids = {region.proposal.id for region in output_regions}
+    for page_number, blocks in sorted(unmatched_blocks.items()):
+        if not blocks:
+            continue
+        location = page_proposals[page_number][0].location
+        assert isinstance(location, VisualLocation)
+        width, height = int(location.page_width), int(location.page_height)
+        fallback_id = f"p{page_number:04d}-ocr-unassigned"
+        suffix = 2
+        while fallback_id in used_ids:
+            fallback_id = f"p{page_number:04d}-ocr-unassigned-{suffix}"
+            suffix += 1
+        used_ids.add(fallback_id)
+        for page in page_metadata:
+            if page.page_number == page_number and page.region_ids is not None:
+                page.region_ids.append(fallback_id)
+                break
+        fallback_path = region_crop_dir / f"page-{page_number:04d}-unassigned.png"
+        with Image.open(page_inputs[page_number]) as opened:
+            opened.convert("RGB").save(fallback_path, format="PNG")
+        fallback = OcrRegion(
+            proposal=Region(
+                id=fallback_id,
+                kind=RegionKind.OTHER,
+                raw_label="unassigned_ocr",
+                location=VisualLocation(
+                    page_number=page_number,
+                    bbox=[0, 0, width, height],
+                    page_width=width,
+                    page_height=height,
+                ),
+            ),
+            status="complete",
+            crop=OcrCrop(
+                proposal_bbox=[0, 0, width, height],
+                page_bbox=[0, 0, width, height],
+                page_origin=[0, 0],
+                width=width,
+                height=height,
+                path=fallback_path.relative_to(result_dir).as_posix(),
+            ),
+            blocks=[OcrBlock(
+                label=block.label,
+                content=block.content,
+                region_bbox=block.bbox,
+                page_bbox=block.bbox,
+            ) for block in blocks],
+            text="\n".join(block.content for block in blocks),
+        )
+        insert_at = max(
+            index for index, region in enumerate(output_regions)
+            if isinstance(region.proposal.location, VisualLocation)
+            and region.proposal.location.page_number == page_number
+        ) + 1
+        output_regions.insert(insert_at, fallback)
+
     logger.info(
         "Phase completed: process OCR regions (%.2f seconds)",
         perf_counter() - regions_started_at,
     )
+
+    if model == "paddleocr-vl" and not direct and isinstance(ocr_adapter, PaddleOcrVlAdapter):
+        for page_number, page_path in sorted(page_images.items()):
+            if page_number in page_image_errors:
+                continue
+            try:
+                if initialization_error is not None:
+                    raise initialization_error
+                with _log_phase(f"PaddleOCR-VL page {page_number} formatted Markdown inference"):
+                    ocr_adapter.parse_region(str(page_path))
+                formatted_pages[page_number] = _save_native_markdown_page(
+                    ocr_adapter.last_markdown(), result_dir, page_number
+                )
+            except Exception as error:
+                errors.append(_formatted_markdown_error(page_number, error))
+                logger.warning("Page %d formatted Markdown failed: %s", page_number, error)
 
     has_errors = bool(errors or page_failures or layout.errors)
     has_successful_processing = any(
@@ -518,11 +713,20 @@ def run_ocr(
             if model == "paddleocr-v6" and not direct:
                 exclude["model"] = True
             exclude["regions"] = {"__all__": {"blocks"}}
-        _write_json_atomically(
+        _write_text_atomically(
             output_path,
             document.model_dump_json(indent=2, exclude=exclude or None) + "\n",
         )
         write_ocr_text(document, result_dir / "ocr.md")
+        if formatted_pages:
+            formatted_text = "\n\n".join(
+                formatted_pages[page_number].strip()
+                for page_number in sorted(formatted_pages)
+                if formatted_pages[page_number].strip()
+            )
+            _write_text_atomically(
+                formatted_path, formatted_text + "\n" if formatted_text else ""
+            )
     logger.info(
         "OCR status: %s; %d region(s), %d error(s); artifacts: %s",
         status.value,
@@ -692,7 +896,41 @@ def _error(stage: str, page_number: int, proposal: Region, error: Exception) -> 
     )
 
 
-def _write_json_atomically(path: Path, content: str) -> None:
+def _formatted_markdown_error(page_number: int, error: Exception) -> OcrError:
+    return OcrError(
+        stage="formatted_markdown",
+        page_number=page_number,
+        region_id=None,
+        exception_type=type(error).__name__,
+        message=str(error),
+    )
+
+
+def _save_native_markdown_page(
+    markdown: Mapping[str, Any], result_dir: Path, page_number: int
+) -> str:
+    """Save a VL page's image assets and point its native Markdown at them."""
+    text = markdown["markdown_texts"]
+    images = markdown["markdown_images"]
+    assert isinstance(text, str)
+    assert isinstance(images, Mapping)
+    replacements: dict[str, str] = {}
+    for index, (source, image) in enumerate(images.items(), start=1):
+        if not isinstance(source, str) or not source:
+            raise ValueError("PaddleOCR-VL Markdown image path must be a non-empty string")
+        if not isinstance(image, Image.Image):
+            raise ValueError("PaddleOCR-VL Markdown image must be a Pillow image")
+        relative_path = Path("formatted-images") / f"page-{page_number:04d}" / f"image-{index:04d}.png"
+        image_path = result_dir / relative_path
+        image_path.parent.mkdir(parents=True, exist_ok=True)
+        image.save(image_path, format="PNG")
+        replacements[source] = relative_path.as_posix()
+    for source in sorted(replacements, key=len, reverse=True):
+        text = text.replace(source, replacements[source])
+    return text
+
+
+def _write_text_atomically(path: Path, content: str) -> None:
     temporary_path: Path | None = None
     try:
         with tempfile.NamedTemporaryFile(

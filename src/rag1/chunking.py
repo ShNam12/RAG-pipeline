@@ -25,7 +25,7 @@ def _region_text(region: OcrRegion) -> str:
         if region.blocks:
             return "\n".join(block.content for block in region.blocks)
         return "\n".join(line.text for line in region.lines if line.text is not None)
-    if region.proposal.kind is RegionKind.TEXT:
+    if region.proposal.kind in {RegionKind.TEXT, RegionKind.PICTURE, RegionKind.OTHER}:
         return region.text or ""
     return ""
 

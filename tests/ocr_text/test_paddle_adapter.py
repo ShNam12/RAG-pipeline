@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 
 from rag1.extractions.ocr_text.paddle import (
     TEXT_DETECTION_MODEL,
-    TEXT_RECOGNITION_MODEL,
+    TEXT_RECOGNITION_MODEL_DIR,
     DetectedText,
     PaddleOcrV6Adapter,
     _create_detector,
@@ -26,7 +26,7 @@ class FakeModel:
 
     def predict(self, *, input, batch_size):
         self.inputs.append((input, batch_size))
-        return iter(self.results)
+        return iter([self.results[len(self.inputs) - 1]])
 
 
 class PaddleAdapterTests(unittest.TestCase):
@@ -51,7 +51,7 @@ class PaddleAdapterTests(unittest.TestCase):
             _create_recognizer(device="cpu")
 
         paddleocr.TextRecognition.assert_called_once_with(
-            model_name=TEXT_RECOGNITION_MODEL,
+            model_dir=TEXT_RECOGNITION_MODEL_DIR,
             device="cpu",
             enable_mkldnn=False,
         )

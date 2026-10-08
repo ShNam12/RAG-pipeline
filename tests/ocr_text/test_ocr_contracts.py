@@ -40,7 +40,7 @@ def proposal(region_id, kind=RegionKind.TEXT, confidence=0.94):
     )
 
 
-def crop(path=None):
+def crop(path="crops/regions/region-00001.png"):
     return OcrCrop(
         proposal_bbox=[10.25, 20.75, 90.5, 120.25],
         page_bbox=[10, 20, 91, 121],

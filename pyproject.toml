@@ -19,6 +19,7 @@ dependencies = [
     "pyyaml>=6.0,<7.0",
     "qdrant-client>=1.19.1,<2",
     "sentence-transformers>=6.1,<7",
+    "openai>=1.20.0",
     "setuptools<82",
     "torch>=2.0",
     "vietocr>=0.3.13,<0.4",

@@ -54,6 +54,10 @@ class PipelineScriptTests(unittest.TestCase):
 
         commands = [call.args[1] for call in stage.call_args_list]
         self.assertEqual([call.args[0] for call in stage.call_args_list], list(run_pipeline.STAGES))
+        self.assertEqual(
+            commands[0][:4],
+            ["uv", "run", "--env-file", (self.root / ".env").resolve().as_posix()],
+        )
         self.assertEqual(commands[0][-2:], ["layout", str(source)])
         self.assertIn("--model", commands[1])
         self.assertIn("paddleocr-vl", commands[1])
@@ -121,6 +125,17 @@ class PipelineScriptTests(unittest.TestCase):
         self.assertIn("Bảng tài sản", log.getvalue())
         self.assertIn("command:", log.getvalue())
         self.assertIn("exit=0", log.getvalue())
+
+    def test_log_preserves_unicode_when_console_is_ascii(self) -> None:
+        console_bytes = io.BytesIO()
+        console = io.TextIOWrapper(console_bytes, encoding="ascii")
+        log = io.StringIO()
+
+        with patch.object(run_pipeline.sys, "stdout", console):
+            run_pipeline._log(log, "B\u1ea3ng")
+
+        self.assertIn("B\\u1ea3ng", console_bytes.getvalue().decode("ascii"))
+        self.assertIn("B\u1ea3ng", log.getvalue())
 
 
 if __name__ == "__main__":

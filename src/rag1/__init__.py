@@ -316,6 +316,9 @@ def main(argv: Sequence[str] | None = None) -> None:
             parser.error(str(error))
         print(f"OCR JSON: {output_path}")
         print(f"OCR Markdown: {output_path.with_name('ocr.md')}")
+        formatted_path = output_path.with_name("ocr.formatted.md")
+        if arguments.model == "paddleocr-vl" and formatted_path.is_file():
+            print(f"OCR formatted Markdown: {formatted_path}")
         output_document = OcrDocument.model_validate_json(
             output_path.read_text(encoding="utf-8")
         )

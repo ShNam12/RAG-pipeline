@@ -84,7 +84,10 @@ def _required(path: Path | None, description: str) -> Path:
 def _log(log: TextIO, message: str) -> None:
     timestamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
     line = f"{timestamp} {message}"
-    print(line, flush=True)
+    try:
+        print(line, flush=True)
+    except UnicodeEncodeError:
+        print(line.encode("ascii", "backslashreplace").decode("ascii"), flush=True)
     print(line, file=log, flush=True)
 
 
@@ -181,7 +184,7 @@ def run_pipeline(args: argparse.Namespace, log: TextIO) -> None:
         _status(chunks, allow_partial=args.allow_partial)
 
     uv = ["uv", "run"]
-    _optional(uv, "--env-file", env_file)
+    _optional(uv, "--env-file", env_file.as_posix() if env_file is not None else None)
     _log(log, f"Selected stages: {', '.join(stages)}")
 
     if "layout" in stages:

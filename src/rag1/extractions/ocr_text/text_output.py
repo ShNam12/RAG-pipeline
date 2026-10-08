@@ -22,7 +22,7 @@ def render_ocr_text(document: OcrDocument) -> str:
                 content = "\n".join(
                     line.text for line in region.lines if line.text is not None
                 )
-        elif region.proposal.kind is RegionKind.TEXT:
+        elif region.proposal.kind in {RegionKind.TEXT, RegionKind.PICTURE, RegionKind.OTHER}:
             content = region.text or ""
         else:
             continue

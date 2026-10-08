@@ -38,7 +38,7 @@ class RecognizedBlock:
 
 
 class RegionOcrAdapter(Protocol):
-    """Parse complete proposal crops into ordered document elements."""
+    """Parse complete page images or proposal crops into ordered document elements."""
 
     def initialize(self) -> None: ...
 

@@ -30,7 +30,7 @@ The image directory must stay inside the document output directory and cannot us
 
 `scripts/run_pipeline.py` runs selected stages in this order: `layout`, `ocr`, `tables`, `chunk`, `index`.
 The `layout` stage detects regions and saves clean page images.
-The `ocr` stage uses PaddleOCR-VL on layout proposals.
+The `ocr` stage runs PaddleOCR-VL once per page for non-table proposals and separately on each table crop.
 The `tables` stage reconstructs visual data tables with the `tabular` dependency extra.
 The `chunk` stage creates section-aware OCR chunks, and `index` embeds both child chunks and nonempty reconstructed table cells before uploading them to Qdrant.
 
@@ -74,11 +74,11 @@ Reconstructed cell vectors are indexed only when `tables` runs or an existing `t
 
 ### Choose an OCR model
 
-`rag1 ocr` defaults to PaddleOCR-VL document parsing for layout proposals or direct page images.
+`rag1 ocr` defaults to PaddleOCR-VL document parsing for layout pages or direct page images.
 Run the default model:
 
 ```powershell
-uv run rag1 ocr "data/layouts/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/pages/page-0001.png" --direct --device cpu --output-dir data/ocr
+uv run rag1 ocr "data/extraction/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/pages/page-0001.png" --direct --device cpu --output-dir data/ocr
 ```
 
 The first use may download PaddleOCR-VL model weights.
@@ -104,16 +104,16 @@ The first VL run downloads model weights into the PaddleX cache and may take sev
 
 ### OCR with layout proposals
 
-Pass a `layout.json` file to OCR its proposed text and table regions:
+Pass a `layout.json` file to OCR its pages using layout proposals:
 
 ```powershell
 uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/layout.json" --device cpu
 ```
 
-You can also pass a `region/` artifact directory containing `layout.json`, `manifest.json`, and clean page images:
+You can also pass an artifact directory containing `layout.json`, `manifest.json`, and clean `pages/` images:
 
 ```powershell
-uv run rag1 ocr "data/extraction/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391/region"
+uv run rag1 ocr "data/extraction/Bao_cao_tai_chinh_hop_nhat_Q3.2025-8763ca14c391"
 ```
 
 For a layout file, the command searches its directory, then sibling `pages/`, then sibling `region/` for clean `page-NNNN.png` images.
@@ -121,19 +121,27 @@ When given an artifact directory, it uses that directory's images and automatica
 `_bbox.png` debug images are ignored.
 When supplied, the manifest source must match `layout.json`, and its page region references must resolve to proposals on the same page.
 Available DPI, rotation, dimensions, image paths, and region references are retained in OCR page metadata; missing metadata fields remain null.
+For PaddleOCR-VL, the layout path masks table boxes and makes one inference call per page for text, picture, and other proposals.
+Recognized blocks are assigned to a containing proposal when possible; blocks outside proposals are retained in an `unassigned_ocr` page region.
+Each table crop is still parsed separately so the table reconstruction stage receives its OCR text.
+The page-level output and table results are written together to `ocr.json` and `ocr.md` when the run finishes.
+PaddleOCR-VL also runs one additional inference on each original, unmasked page and writes its native formatted output to `ocr.formatted.md`.
+That file includes the model's headings, tables, formulas, and image references, with images saved under `formatted-images/` beside it.
+This extra pass increases runtime by one VL prediction per page and its text can differ from the positioned OCR evidence in `ocr.json` and `ocr.md`.
 
 ### OCR directly from page images
 
 Use `--direct` to bypass layout proposals and OCR a clean image file or every `page-NNNN.png` image in a directory:
 
 ```powershell
-uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/region/page-0001.png" --direct
-uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/region" --direct --device cpu
+uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/pages/page-0001.png" --direct
+uv run rag1 ocr "data/extraction/<document-name>-<path-hash>/pages" --direct --device cpu
 ```
 
 Direct mode accepts one PNG, JPEG, TIFF, BMP, or WebP image, or a directory of clean `page-NNNN.png` images.
 It ignores `_bbox.png` debug images in directories and does not accept PDF files.
 It sends each original full-page image to the selected OCR model without reading `layout.json` or running the separate layout extraction command.
+With PaddleOCR-VL, the same direct-mode prediction also supplies `ocr.formatted.md`, so direct mode does not need an additional pass for that artifact.
 The OCR output creates one generated full-page scope per image so the existing `ocr.json` fields remain usable.
 It records `input_mode: "direct"`, `source_format: "image"`, null upstream layout metadata, and absolute input image paths in page metadata.
 Unreadable images are recorded as page failures while other pages continue.
@@ -152,7 +160,8 @@ With `--model paddleocr-v6`, PP-OCRv6_small_det detects text polygons inside tha
 Line records retain the detector and recognizer confidence separately, polygon coordinates relative to the proposal crop, corresponding page coordinates, and a relative line crop path.
 Text proposal `text` is the recognized lines joined in detector order with newline separators, while every line's recognized text is retained verbatim.
 Table proposals retain their image crop and any recognized lines, have `text: null`, and carry `table.structure_status: "pending"` with `table.structure: null` for a later table reconstruction stage.
-The VL path parses each proposal crop or full page into ordered `blocks` with a label, content, input-relative bbox, and page-relative bbox.
+In layout mode, the VL path parses masked pages for non-table content and separate table crops into ordered `blocks` with a label, content, region-relative bbox, and page-relative bbox.
+In direct mode, it parses each original full-page image without layout proposals or table masking.
 VL and Vietnamese V6 output record their selected `model` value; legacy `paddleocr-v6` layout JSON retains its existing shape.
 VL blocks do not invent detector or recognizer confidence scores or line crop images.
 Text proposal `text` joins the VL block content in reading order, and table block content is included in `ocr.md` while table proposal `text` remains null.

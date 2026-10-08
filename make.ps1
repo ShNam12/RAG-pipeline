@@ -110,6 +110,9 @@ try {
     if ($Task -eq "tables") {
         $UvArguments += @("--extra", "tabular")
     }
+    elseif ($Task -eq "ocr" -and $Model -eq "paddleocr-vl") {
+        $UvArguments += @("--extra", "vl")
+    }
     $UvArguments += @("rag1", $Task, $InputPath)
 
     if ($Task -eq "layout") {

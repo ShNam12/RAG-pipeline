@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiến trúc RAG Pipeline</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-hover: rgba(255, 255, 255, 0.06);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --tech-bg: rgba(59, 130, 246, 0.1);
+            --tech-text: #60a5fa;
+            --code-bg: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Glassmorphism Diagram Container */
+        .diagram-container {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 4rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+        }
+
+        /* Grid for Stages */
+        .stages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .stage-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stage-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stage-card:hover {
+            background: var(--card-hover);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .stage-card:hover::before {
+            opacity: 1;
+        }
+
+        .stage-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .stage-number {
+            background: var(--accent);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 1rem;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .stage-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .info-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tech-tag {
+            background: var(--tech-bg);
+            color: var(--tech-text);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .code-path {
+            background: var(--code-bg);
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #e2e8f0;
+            word-break: break-all;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logic-desc {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            .stages-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Kiến trúc RAG Pipeline</h1>
+        <p class="subtitle">Trực quan hóa luồng dữ liệu từ truy vấn của người dùng đến phản hồi cuối cùng, bao gồm Logic, Code và Công nghệ.</p>
+    </header>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+            %%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#1e293b', 'primaryTextColor': '#f1f5f9', 'primaryBorderColor': '#3b82f6', 'lineColor': '#64748b', 'secondaryColor': '#0f172a', 'tertiaryColor': '#0b0f19'}}}%%
+            graph TD
+                User([👤 Người dùng]) -->|1. Gửi Query| API[⚡ FastAPI (chat_endpoint)]
+                
+                API --> RAG[⚙️ RAGService]
+                
+                subgraph Phase1 [Giai đoạn 1: Chuẩn bị]
+                    RAG --> Embed[🧠 Embedder]
+                    Embed -.->|Tạo Vector| QueryVec[(Vector)]
+                end
+                
+                subgraph Phase2 [Giai đoạn 2: Truy xuất (Retrieval)]
+                    QueryVec --> QSearch[🔍 QdrantSearcher]
+                    QSearch -->|Lọc must_not level=2| TextChunk[📄 Text Chunks]
+                    QSearch -->|Lọc level=2| TableChunk[📊 Table Chunks]
+                end
+                
+                subgraph Phase3 [Giai đoạn 3: Hợp nhất (Fusion)]
+                    TextChunk --> RRF[🔄 Reciprocal Rank Fusion]
+                    TableChunk --> RRF
+                end
+                
+                subgraph Phase4 [Giai đoạn 4: Tinh chỉnh (Reranking)]
+                    RRF --> Rerank[🎯 Cross-Encoder Reranker]
+                end
+                
+                subgraph Phase5 [Giai đoạn 5: Sinh ngôn ngữ (Generation)]
+                    Rerank --> Context[📝 Context Formatter]
+                    Context --> LLM[🤖 LLM Service]
+                end
+                
+                LLM -.->|2. Stream Tokens & Metrics| API
+                API -.->|SSE Response| User
+
+                classDef default fill:#1e293b,stroke:#3b82f6,stroke-width:1px,color:#f1f5f9;
+                classDef subgraph_style fill:transparent,stroke:#334155,stroke-width:2px,stroke-dasharray: 5 5;
+                class Phase1,Phase2,Phase3,Phase4,Phase5 subgraph_style;
+        </div>
+    </div>
+
+    <div class="stages-grid">
+        <!-- Stage 1 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <div class="stage-number">1</div>
+                <h2 class="stage-title">Tiếp nhận & API</h2>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Logic</div>
+                <div class="logic-desc">Mở kết nối Server-Sent Events (SSE) với người dùng. Nhận câu hỏi, gọi RAGService và stream token trả về. Gói metadata đánh giá (latency, top 10 docs) vào cuối luồng.</div>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Tech Stack</div>
+                <div class="tech-tags">
+                    <span class="tech-tag">FastAPI</span>
+                    <span class="tech-tag">StreamingResponse</span>
+                    <span class="tech-tag">Python Async</span>
+                </div>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Code Location</div>
+                <div class="code-path">src/rag1/retrival/routers/chat.py</div>
+            </div>
+        </div>
+
+        <!-- Stage 2 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <div class="stage-number">2</div>
+                <h2 class="stage-title">Điều phối & Nhúng (Embedding)</h2>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Logic</div>
+                <div class="logic-desc">RAGService đóng vai trò nhạc trưởng. Đo đạc độ trễ (latency). Nhúng (embed) câu truy vấn của người dùng thành vector để chuẩn bị tìm kiếm trong không gian vector.</div>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Tech Stack</div>
+                <div class="tech-tags">
+                    <span class="tech-tag">thanhtantran/Vietnamese_Embedding</span>
+                    <span class="tech-tag">Time Profiling</span>
+                </div>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Code Location</div>
+                <div class="code-path">src/rag1/retrival/services/rag_service.py<br>src/rag1/retrival/embedder.py</div>
+            </div>
+        </div>
+
+        <!-- Stage 3 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <div class="stage-number">3</div>
+                <h2 class="stage-title">Truy xuất đa luồng (Retrieval)</h2>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Logic</div>
+                <div class="logic-desc">Sử dụng Qdrant để tìm kiếm HNSW song song hoặc tuần tự: một luồng lấy text thông thường (<code>must_not level=2</code>) và một luồng lấy bảng biểu (<code>level=2</code>). Chuyển JSON về object <code>SearchCandidate</code>.</div>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Tech Stack</div>
+                <div class="tech-tags">
+                    <span class="tech-tag">QdrantClient</span>
+                    <span class="tech-tag">HNSW Vector Search</span>
+                    <span class="tech-tag">Pydantic</span>
+                </div>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Code Location</div>
+                <div class="code-path">src/rag1/retrival/searcher.py</div>
+            </div>
+        </div>
+
+        <!-- Stage 4 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <div class="stage-number">4</div>
+                <h2 class="stage-title">Gộp kết quả (RRF Fusion)</h2>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Logic</div>
+                <div class="logic-desc">Sử dụng thuật toán Reciprocal Rank Fusion (k=60) để gộp danh sách chunk văn bản và chunk bảng. Loại bỏ trùng lặp (dedup_key theo source_id và text). Chuẩn hóa điểm mà không phụ thuộc vào Cosine thuần.</div>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Tech Stack</div>
+                <div class="tech-tags">
+                    <span class="tech-tag">RRF Algorithm</span>
+                    <span class="tech-tag">Set/Hash Maps</span>
+                </div>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Code Location</div>
+                <div class="code-path">src/rag1/retrival/fusion.py</div>
+            </div>
+        </div>
+
+        <!-- Stage 5 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <div class="stage-number">5</div>
+                <h2 class="stage-title">Xếp hạng lại (Reranking)</h2>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Logic</div>
+                <div class="logic-desc">Dùng mô hình Cross-Encoder để chấm điểm lại mức độ liên quan giữa Query và Candidate. Load model dạng lazy (tránh ngốn RAM lúc khởi động). Có cơ chế fallback: nếu sập VRAM, vẫn trả về kết quả RRF trước đó.</div>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Tech Stack</div>
+                <div class="tech-tags">
+                    <span class="tech-tag">BGE-M3 CrossEncoder</span>
+                    <span class="tech-tag">PyTorch / GPU</span>
+                    <span class="tech-tag">Fault Tolerance</span>
+                </div>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Code Location</div>
+                <div class="code-path">src/rag1/retrival/reranker.py</div>
+            </div>
+        </div>
+
+        <!-- Stage 6 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <div class="stage-number">6</div>
+                <h2 class="stage-title">Tổng hợp & Stream (LLM)</h2>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Logic</div>
+                <div class="logic-desc">Đưa Top K chunks vào prompt. Xử lý format đặc biệt cho bảng (Markdown/HTML). Gửi prompt đến LLM, nhận response dạng stream. Thu thập tổng thời gian và điểm số gửi trả lại Client.</div>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Tech Stack</div>
+                <div class="tech-tags">
+                    <span class="tech-tag">OpenAI/vLLM</span>
+                    <span class="tech-tag">Prompt Engineering</span>
+                    <span class="tech-tag">Generator Patterns</span>
+                </div>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Code Location</div>
+                <div class="code-path">src/rag1/retrival/services/llm_service.py<br>src/rag1/retrival/prompt_builder.py</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true });
+</script>
+</body>
+</html>

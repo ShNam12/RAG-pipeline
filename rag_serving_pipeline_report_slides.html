@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Báo cáo kỹ thuật — RAG Serving Pipeline</title>
+<style>
+:root{--bg:#07111f;--panel:#101f33;--panel2:#142941;--ink:#edf5ff;--muted:#a8bbd2;--cyan:#55d6e8;--blue:#6d9eff;--green:#73e0b0;--line:#29415d;--orange:#ffca78}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#030914;color:var(--ink);font-family:Inter,"Segoe UI",Arial,sans-serif;overflow:hidden}
+.deck{height:100%;width:100%;display:flex;align-items:center;justify-content:center}
+.slide{display:none;position:relative;width:min(100vw,177.78vh);height:min(100vh,56.25vw);aspect-ratio:16/9;padding:5.1% 6.2%;overflow:hidden;background:radial-gradient(ellipse at 90% 5%,#173b5a 0,transparent 34%),linear-gradient(135deg,#07111f 0%,#0a1728 55%,#0b1c30 100%)}
+.slide.active{display:flex;flex-direction:column}
+.slide:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 70%,rgba(85,214,232,.035));}
+.topline{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:clamp(10px,.85vw,14px);letter-spacing:.12em;text-transform:uppercase;margin-bottom:2.4%}
+.brand{display:flex;gap:9px;align-items:center}.brandmark{width:10px;height:10px;border-radius:3px;background:var(--cyan);box-shadow:0 0 18px #55d6e888}
+h1,h2,h3,p{margin-top:0}h1{font-size:clamp(32px,4.2vw,68px);line-height:1.05;letter-spacing:-.04em;margin-bottom:2.2%}h2{font-size:clamp(25px,2.7vw,44px);line-height:1.12;letter-spacing:-.03em;margin-bottom:1.8%}h3{font-size:clamp(14px,1.35vw,22px);margin-bottom:10px}
+p,li{font-size:clamp(12px,1.15vw,18px);line-height:1.48;color:var(--muted)}.lead{font-size:clamp(16px,1.55vw,25px);max-width:78%;line-height:1.45}
+.kicker{color:var(--cyan);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:clamp(11px,.95vw,15px);margin-bottom:16px}
+.accent{color:var(--cyan)}.blue{color:var(--blue)}.green{color:var(--green)}.orange{color:var(--orange)}
+.footer{position:absolute;bottom:3.1%;left:6.2%;right:6.2%;display:flex;justify-content:space-between;color:#7890aa;font-size:clamp(9px,.75vw,12px);z-index:2}
+.grid{display:grid;gap:16px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:linear-gradient(145deg,rgba(20,41,65,.92),rgba(12,28,46,.92));border:1px solid var(--line);border-radius:16px;padding:clamp(13px,1.55vw,24px);min-width:0}
+.card p{margin-bottom:0}.card .num{font-size:clamp(25px,3vw,48px);font-weight:750;letter-spacing:-.04em;color:var(--cyan);line-height:1.05;margin:7px 0 10px}
+.tag{display:inline-flex;padding:6px 10px;border-radius:999px;border:1px solid #2c5a72;color:var(--cyan);font-size:clamp(10px,.8vw,13px);margin:0 6px 8px 0}
+.bullet{list-style:none;padding:0;margin:0}.bullet li{padding:8px 0 8px 25px;position:relative;border-bottom:1px solid rgba(41,65,93,.55)}.bullet li:last-child{border-bottom:0}.bullet li:before{content:"";position:absolute;left:2px;top:17px;width:7px;height:7px;border-radius:2px;background:var(--cyan)}
+.flow{display:flex;align-items:stretch;gap:9px;margin:18px 0}.node{flex:1;background:#112941;border:1px solid #2d5470;border-radius:12px;padding:13px 10px;text-align:center;display:flex;flex-direction:column;justify-content:center;min-width:0}.node b{font-size:clamp(11px,1vw,16px);margin-bottom:6px}.node small{color:var(--muted);font-size:clamp(9px,.78vw,12px);line-height:1.35}.arrow{align-self:center;color:var(--cyan);font-size:clamp(16px,1.6vw,25px)}
+.mini{font-size:clamp(10px,.88vw,14px);color:var(--muted)}.label{color:#7e9ab6;text-transform:uppercase;font-size:clamp(9px,.75vw,12px);letter-spacing:.1em}
+table{border-collapse:collapse;width:100%;font-size:clamp(10px,.95vw,15px);line-height:1.4}th{text-align:left;color:var(--cyan);font-weight:700;background:#122840}td,th{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}td{color:var(--muted)}td strong{color:var(--ink)}.pill{display:inline-block;border-radius:7px;padding:4px 7px;background:#183a4a;color:var(--green);font-size:.9em}
+.code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#071321;border:1px solid #213c55;border-radius:10px;padding:14px;color:#bfeeff;font-size:clamp(10px,.88vw,14px);line-height:1.6;white-space:pre-wrap}
+.bigquote{font-size:clamp(20px,2.2vw,36px);line-height:1.3;color:var(--ink);max-width:900px;letter-spacing:-.02em}
+.cover{justify-content:center}.cover .orb{position:absolute;width:38vw;height:38vw;border:1px solid #28506b;border-radius:50%;right:-5%;top:8%;opacity:.5}.cover .orb:before,.cover .orb:after{content:"";position:absolute;border:1px solid #28506b;border-radius:50%;inset:12%}.cover .orb:after{inset:28%;border-color:#55d6e855}.cover .hero{position:absolute;right:9%;top:26%;width:25%;height:48%;display:flex;align-items:center;justify-content:center}
+.cover .hero svg{width:100%;height:auto;filter:drop-shadow(0 0 24px #55d6e822)}
+.controls{position:fixed;bottom:14px;right:18px;display:flex;gap:8px;z-index:10}
+.controls button{background:#10243a;color:#dceeff;border:1px solid #31506b;border-radius:9px;padding:8px 13px;cursor:pointer;font-size:14px}.controls button:hover{background:#1a3a55}
+.progress{position:fixed;bottom:0;left:0;height:3px;background:var(--cyan);width:0;z-index:12;transition:width .2s}
+.counter{position:fixed;bottom:20px;left:20px;color:#6f89a5;font-size:12px;z-index:10}
+@media print{html,body{overflow:visible;background:#fff}.deck{display:block;height:auto}.slide{display:flex!important;width:13.333in;height:7.5in;page-break-after:always;break-after:page;-webkit-print-color-adjust:exact;print-color-adjust:exact}.controls,.progress,.counter{display:none}}
+</style>
+</head>
+<body>
+<div class="deck">
+<section class="slide active cover">
+  <div class="orb"></div>
+  <div class="topline"><div class="brand"><span class="brandmark"></span> SYSTEM ENGINEERING REPORT</div><div>10 / 2026</div></div>
+  <div class="kicker">Backend · AI Pipeline · Retrieval-Augmented Generation</div>
+  <h1>RAG Serving<br><span class="accent">Pipeline</span></h1>
+  <p class="lead">Trợ lý hỏi đáp báo cáo tài chính<br>và tài liệu doanh nghiệp</p>
+  <div style="margin-top:3.2%"><span class="tag">Multi-Index Retrieval</span><span class="tag">RRF + Cross-Encoder</span><span class="tag">Streaming & Citations</span></div>
+  <div class="hero">
+    <svg viewBox="0 0 320 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="76" y="34" width="168" height="224" rx="18" stroke="#55D6E8" stroke-width="2"/>
+      <path d="M110 78H208M110 102H190M110 126H205" stroke="#6D9EFF" stroke-width="7" stroke-linecap="round"/>
+      <rect x="104" y="151" width="112" height="72" rx="9" stroke="#73E0B0" stroke-width="2"/>
+      <path d="M104 174H216M141 151V223M178 151V223M104 198H216" stroke="#73E0B0" stroke-opacity=".7"/>
+      <circle cx="238" cy="242" r="42" fill="#102941" stroke="#55D6E8" stroke-width="3"/>
+      <path d="M267 272L294 299" stroke="#55D6E8" stroke-width="11" stroke-linecap="round"/>
+      <path d="M222 242L234 254L256 228" stroke="#73E0B0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="76" cy="292" r="8" fill="#55D6E8"/><circle cx="130" cy="315" r="5" fill="#6D9EFF"/><circle cx="181" cy="292" r="7" fill="#73E0B0"/>
+      <path d="M76 292L130 315L181 292" stroke="#426A88" stroke-width="2" stroke-dasharray="5 6"/>
+    </svg>
+  </div>
+  <div class="footer"><span>BÁO CÁO KỸ THUẬT & GIẢI PHÁP HỆ THỐNG</span><span>01</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 01 / BÀI TOÁN</div><div>OVERVIEW</div></div>
+  <h2>Vì sao RAG truyền thống<br><span class="accent">chưa đủ cho tài liệu tài chính?</span></h2>
+  <p class="lead">Câu trả lời phải đúng ngữ nghĩa, đúng số liệu và có thể kiểm chứng ngược về tài liệu gốc.</p>
+  <div class="grid g3" style="margin-top:2.5%">
+    <div class="card"><div class="label">Thách thức 01</div><h3>Văn bản phân cấp</h3><p>Tiêu đề, mục, tiểu mục và điều khoản có quan hệ phụ thuộc. Chunking cố định dễ làm mất ngữ cảnh.</p></div>
+    <div class="card"><div class="label">Thách thức 02</div><h3>Bảng số liệu phức tạp</h3><p>Header, dòng, đơn vị và giá trị có liên hệ chặt chẽ; chia nhỏ bảng có thể làm sai ý nghĩa con số.</p></div>
+    <div class="card"><div class="label">Thách thức 03</div><h3>Độ tin cậy & nguồn</h3><p>Ngữ cảnh thiếu khiến LLM có thể suy diễn; thiếu số trang làm người dùng khó xác minh.</p></div>
+  </div>
+  <div class="card" style="margin-top:2%;display:flex;align-items:center;gap:18px"><div style="font-size:28px">↗</div><div><h3 style="margin-bottom:5px">Mục tiêu thiết kế</h3><p>Truy xuất riêng văn bản và bảng biểu, hợp nhất ứng viên, xếp hạng lại, tái tạo ngữ cảnh và buộc câu trả lời gắn với nguồn.</p></div></div>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>02</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 02 / GIẢI PHÁP</div><div>PROPOSED ARCHITECTURE</div></div>
+  <h2>Multi-Index Hybrid RAG</h2>
+  <p class="mini">Hai nhánh truy xuất chuyên biệt, một pipeline hợp nhất và một đầu ra có căn cứ.</p>
+  <div class="flow">
+    <div class="node"><b>Query</b><small>Câu hỏi người dùng</small></div><div class="arrow">→</div>
+    <div class="node"><b>Embedding</b><small>Vector hóa câu hỏi</small></div><div class="arrow">→</div>
+    <div class="node"><b>Qdrant Search</b><small>Text index + Table index</small></div><div class="arrow">→</div>
+    <div class="node"><b>RRF Fusion</b><small>Hợp nhất thứ hạng</small></div>
+  </div>
+  <div class="flow">
+    <div class="node" style="border-color:#387c79"><b>Cross-Encoder</b><small>Rerank ứng viên</small></div><div class="arrow">→</div>
+    <div class="node" style="border-color:#387c79"><b>Context Builder</b><small>Khôi phục bảng + metadata</small></div><div class="arrow">→</div>
+    <div class="node" style="border-color:#387c79"><b>Local LLM</b><small>Streaming generation</small></div><div class="arrow">→</div>
+    <div class="node" style="border-color:#387c79"><b>Answer + Citations</b><small>Nội dung và nguồn</small></div>
+  </div>
+  <div class="grid g2" style="margin-top:2%">
+    <div class="card"><h3 class="accent">text_index</h3><p>Đoạn văn bản theo cấu trúc tài liệu; lọc theo cấp độ nội dung phù hợp.</p></div>
+    <div class="card"><h3 class="green">table_index</h3><p>Bảng biểu và số liệu có cấu trúc; giữ quan hệ giữa tiêu đề, hàng, cột và giá trị.</p></div>
+  </div>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>03</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 03 / TECH STACK</div><div>DESIGN CHOICES</div></div>
+  <h2>Ngăn xếp công nghệ & vai trò</h2>
+  <div class="grid g2" style="margin-top:1%">
+    <div class="card"><h3><span class="accent">Qdrant</span> · Vector Database</h3><p>Named vectors, payload filtering và lưu metadata/ngữ cảnh đi kèm vector.</p></div>
+    <div class="card"><h3><span class="accent">Vietnamese Embedding</span></h3><p>Biểu diễn ngữ nghĩa truy vấn và tài liệu trong không gian vector.</p></div>
+    <div class="card"><h3><span class="accent">RRF + BGE Reranker</span></h3><p>RRF hợp nhất thứ hạng khác nguồn; Cross-Encoder đánh giá sâu từng cặp query–document.</p></div>
+    <div class="card"><h3><span class="accent">FastAPI + AsyncOpenAI</span></h3><p>Backend bất đồng bộ, giao tiếp API tương thích OpenAI và truyền phản hồi theo luồng.</p></div>
+    <div class="card"><h3><span class="accent">Local LLM</span></h3><p>Chạy qua LM Studio hoặc Docker; phù hợp định hướng xử lý dữ liệu nội bộ tại chỗ.</p></div>
+    <div class="card"><h3><span class="accent">Streamlit</span></h3><p>Giao diện demo, hiển thị câu trả lời streaming và thông tin đánh giá pipeline.</p></div>
+  </div>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>04</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 04 / PIPELINE DEEP DIVE</div><div>RETRIEVAL → RERANK</div></div>
+  <h2>Truy xuất tốt không chỉ là tìm vector gần nhất</h2>
+  <div class="grid g2" style="margin-top:1%">
+    <div class="card">
+      <div class="label">01 · Candidate retrieval</div><h3>Truy vấn song song</h3>
+      <div class="code">text_index  → Top 15 đoạn văn
+table_index → Top 10 bảng biểu
+metric      → Cosine</div>
+      <p style="margin-top:12px">Mỗi nhánh dùng bộ lọc payload riêng, giúp phù hợp với kiểu dữ liệu cần tìm.</p>
+    </div>
+    <div class="card">
+      <div class="label">02 · Rank fusion</div><h3>Reciprocal Rank Fusion</h3>
+      <div class="code">RRF(d) = Σ 1 / (k + rankᵢ(d))
+k = 60</div>
+      <p style="margin-top:12px">Kết hợp theo thứ hạng thay vì cộng trực tiếp điểm cosine vốn có thể khác thang đo.</p>
+    </div>
+    <div class="card">
+      <div class="label">03 · Reranking</div><h3>Cross-Encoder</h3>
+      <p>Chấm điểm trực tiếp từng cặp câu hỏi–ứng viên; chọn <strong style="color:var(--ink)">Top 3–5</strong> ngữ cảnh phù hợp nhất trước khi sinh.</p>
+    </div>
+    <div class="card">
+      <div class="label">04 · Resilience</div><h3>Graceful degradation</h3>
+      <p>Nếu reranker không khả dụng, có thể giữ thứ tự theo điểm RRF. Cần ghi log trạng thái fallback để không nhầm với rerank thành công.</p>
+    </div>
+  </div>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>05</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 05 / CONTEXT & GENERATION</div><div>GROUNDING</div></div>
+  <h2>Tái tạo ngữ cảnh, sinh câu trả lời có nguồn</h2>
+  <div class="grid g2" style="margin-top:1%">
+    <div>
+      <div class="card" style="margin-bottom:14px"><h3 class="accent">Context Reconstruction</h3><ul class="bullet"><li>JSON headers + rows → Markdown table.</li><li>Metadata nguồn: tên tài liệu, trang, tiêu đề mục.</li><li>OCR text thô → nội dung có cấu trúc dễ đọc.</li></ul></div>
+      <div class="card"><h3 class="green">Grounding rules</h3><ul class="bullet"><li>Chỉ trả lời dựa trên context được cung cấp.</li><li>Không đủ căn cứ thì nêu rõ tài liệu chưa đề cập.</li><li>Gắn trích dẫn ngay tại nội dung liên quan.</li></ul></div>
+    </div>
+    <div class="card">
+      <div class="label">Ví dụ cấu trúc context</div>
+      <div class="code">[TÀI LIỆU 1]
+Tài liệu: Báo cáo tài chính
+Trang: 4
+Mục: Doanh thu
+
+[ BẢNG 1 ]
+Tài liệu: Báo cáo thường niên
+Trang: 15
+Bảng: Cân đối kế toán</div>
+      <div style="height:14px"></div>
+      <div class="label">Response path</div>
+      <div class="flow" style="margin:10px 0 0;flex-direction:column">
+        <div class="node"><b>Prompt Builder</b><small>Đóng gói context + quy tắc trích dẫn</small></div><div class="arrow">↓</div>
+        <div class="node"><b>AsyncOpenAI · stream=True</b><small>Nhận từng mảnh nội dung</small></div><div class="arrow">↓</div>
+        <div class="node"><b>FastAPI StreamingResponse</b><small>Streamlit hiển thị qua st.write_stream</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>06</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 06 / CONFIGURATION</div><div>PROJECT METRICS</div></div>
+  <h2>Thông số kỹ thuật trọng tâm</h2>
+  <div class="grid g4" style="margin:2% 0">
+    <div class="card"><div class="label">Text retrieval</div><div class="num">15</div><p>Ứng viên văn bản</p></div>
+    <div class="card"><div class="label">Table retrieval</div><div class="num">10</div><p>Ứng viên bảng biểu</p></div>
+    <div class="card"><div class="label">RRF constant</div><div class="num">60</div><p>Hệ số làm dịu</p></div>
+    <div class="card"><div class="label">Final context</div><div class="num">3–5</div><p>Ứng viên đưa vào prompt</p></div>
+  </div>
+  <table>
+    <thead><tr><th>Nhóm</th><th>Tham số</th><th>Giá trị thiết kế</th><th>Ý nghĩa</th></tr></thead>
+    <tbody>
+      <tr><td>Retrieval</td><td>Distance metric</td><td><strong>Cosine</strong></td><td>Đo độ tương đồng hướng vector.</td></tr>
+      <tr><td>Reranking</td><td>Model</td><td><strong>bge-reranker-v2-m3</strong></td><td>Chấm điểm liên quan query–document.</td></tr>
+      <tr><td>Generation</td><td>Temperature / max tokens</td><td><strong>0.1 / 1024</strong></td><td>Giảm biến thiên đầu ra, giới hạn độ dài.</td></tr>
+      <tr><td>Streaming</td><td>Response mode</td><td><strong>SSE / StreamingResponse</strong></td><td>Hiển thị từng phần nội dung khi sinh.</td></tr>
+    </tbody>
+  </table>
+  <p class="mini" style="margin-top:12px">Các số latency như vector search 15–30 ms, reranker 150–300 ms và TTFT dưới 1 giây là mục tiêu/ước lượng nêu trong báo cáo; cần xác nhận bằng benchmark trên cấu hình triển khai thực tế.</p>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>07</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 07 / MODULE DESIGN</div><div>BACKEND STRUCTURE</div></div>
+  <h2>Thiết kế module theo trách nhiệm đơn nhất</h2>
+  <div class="grid g2" style="margin-top:1%">
+    <div class="code">src/rag1/retrival/
+├── api_main.py
+├── routers/
+│   ├── chat.py
+│   └── health.py
+├── services/
+│   ├── rag_service.py
+│   └── llm_service.py
+├── config.py
+├── schemas.py
+├── embedder.py
+├── searcher.py
+├── fusion.py
+├── reranker.py
+├── table_formatter.py
+├── prompt_builder.py
+├── pipeline.py
+└── seed_mock.py</div>
+    <div>
+      <div class="card" style="margin-bottom:14px"><h3 class="accent">Điểm điều phối</h3><p><strong style="color:var(--ink)">rag_service.py</strong> quản lý trình tự xử lý từ embedding đến context và generation.</p></div>
+      <div class="card" style="margin-bottom:14px"><h3 class="accent">Ranh giới module</h3><p>Searcher, fusion, reranker, formatter và prompt builder có thể kiểm thử độc lập theo hợp đồng dữ liệu.</p></div>
+      <div class="card"><h3 class="green">Kiểm thử tích hợp</h3><p><strong style="color:var(--ink)">seed_mock.py</strong> cung cấp dữ liệu giả lập để xác minh serving pipeline khi chưa có crawler hoàn chỉnh.</p></div>
+    </div>
+  </div>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>08</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 08 / DEMO PLAYBOOK</div><div>5–7 MINUTES</div></div>
+  <h2>Kịch bản demo trực tiếp</h2>
+  <div class="grid g3" style="margin-top:1.5%">
+    <div class="card"><div class="num">01</div><h3>Khởi động</h3><div class="code">uv run python -m rag1.retrival.api_main</div><p style="margin-top:10px">Xác nhận warm-up embedder và API sẵn sàng trên cổng 8000.</p></div>
+    <div class="card"><div class="num">02</div><h3>Hỏi đáp</h3><p><strong style="color:var(--ink)">Câu hỏi văn bản:</strong><br>“Ai là Trưởng ban kiểm soát trong báo cáo?”</p><p><strong style="color:var(--ink)">Câu hỏi số liệu:</strong><br>“Doanh thu thuần và lợi nhuận năm 2024 là bao nhiêu?”</p></div>
+    <div class="card"><div class="num">03</div><h3>Quan sát kết quả</h3><p>Streaming câu trả lời, trích dẫn tài liệu/trang, thời gian từng công đoạn và bảng xếp hạng ứng viên.</p><div class="tag" style="margin-top:8px">Swagger: /docs</div></div>
+  </div>
+  <div class="card" style="margin-top:2.5%">
+    <h3 class="orange">Thông điệp khi trình bày</h3>
+    <p class="bigquote">“Hệ thống không chỉ tìm đoạn gần giống câu hỏi; nó hợp nhất nhiều nguồn, xếp hạng lại ngữ cảnh và đưa ra câu trả lời có thể truy vết về tài liệu.”</p>
+  </div>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>09</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 09 / STATUS & ROADMAP</div><div>CONCLUSION</div></div>
+  <h2>Kết quả, giới hạn và hướng phát triển</h2>
+  <div class="grid g3" style="margin-top:1.5%">
+    <div class="card"><h3 class="green">Giá trị hiện tại</h3><ul class="bullet"><li>Phân tách chỉ mục văn bản và bảng biểu.</li><li>Hợp nhất RRF, rerank và dựng lại context.</li><li>Streaming phản hồi, thiết kế nguồn trích dẫn.</li><li>Module hóa backend, có dữ liệu mock để kiểm thử.</li></ul></div>
+    <div class="card"><h3 class="orange">Cần xác minh</h3><ul class="bullet"><li>Benchmark latency trên máy triển khai.</li><li>Độ chính xác số liệu và citation trên bộ test chuẩn.</li><li>Độ ổn định fallback khi thiếu tài nguyên.</li><li>Kiểm tra bảo mật, log và dữ liệu nhạy cảm.</li></ul></div>
+    <div class="card"><h3 class="accent">Roadmap</h3><ul class="bullet"><li>Memory cho hội thoại nhiều lượt.</li><li>Upload PDF trực tiếp từ giao diện.</li><li>Đánh giá thêm LLM 7B–14B khi có GPU.</li><li>Quan sát chất lượng retrieval bằng bộ benchmark.</li></ul></div>
+  </div>
+  <div style="margin-top:auto;padding-top:3%">
+    <div class="kicker">KEY TAKEAWAY</div>
+    <p class="bigquote">Một serving pipeline đáng tin cậy cần tối ưu đồng thời <span class="accent">retrieval</span>, <span class="green">cấu trúc ngữ cảnh</span> và <span class="orange">khả năng kiểm chứng</span> — không chỉ riêng mô hình sinh.</p>
+  </div>
+  <div class="footer"><span>RAG SERVING PIPELINE · THANK YOU</span><span>10</span></div>
+</section>
+</div>
+<div class="counter" id="counter">01 / 10</div>
+<div class="controls"><button id="prev" aria-label="Slide trước">← Trước</button><button id="next" aria-label="Slide tiếp">Tiếp →</button><button onclick="window.print()">In / PDF</button></div>
+<div class="progress" id="progress"></div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let current=0;
+function show(i){current=(i+slides.length)%slides.length;slides.forEach((s,n)=>s.classList.toggle('active',n===current));document.getElementById('counter').textContent=String(current+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');document.getElementById('progress').style.width=((current+1)/slides.length*100)+'%'}
+document.getElementById('prev').addEventListener('click',()=>show(current-1));
+document.getElementById('next').addEventListener('click',()=>show(current+1));
+document.addEventListener('keydown',e=>{if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();show(current+1)}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(current-1)}if(e.key==='Home')show(0);if(e.key==='End')show(slides.length-1)});
+let touchX=null;document.addEventListener('touchstart',e=>touchX=e.changedTouches[0].screenX,{passive:true});document.addEventListener('touchend',e=>{if(touchX===null)return;const dx=e.changedTouches[0].screenX-touchX;if(Math.abs(dx)>60)show(current+(dx<0?1:-1));touchX=null},{passive:true});
+show(0);
+</script>
+</body>
+</html>

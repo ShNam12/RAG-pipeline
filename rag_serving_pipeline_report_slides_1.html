@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Báo cáo kỹ thuật — RAG Serving Pipeline</title>
+<link rel="stylesheet" href="rag_serving_pipeline_report_slides.css">
+</head>
+<body>
+<div class="deck">
+<section class="slide active cover">
+  <div class="orb"></div>
+  <div class="topline"><div class="brand"><span class="brandmark"></span> SYSTEM ENGINEERING REPORT</div><div>10 / 2026</div></div>
+  <div class="kicker">Backend · AI Pipeline · Retrieval-Augmented Generation</div>
+  <h1>RAG Serving<br><span class="accent">Pipeline</span></h1>
+  <p class="lead">Trợ lý hỏi đáp báo cáo tài chính<br>và tài liệu doanh nghiệp</p>
+  <div style="margin-top:3.2%"><span class="tag">Multi-Index Retrieval</span><span class="tag">RRF + Cross-Encoder</span><span class="tag">Streaming & Citations</span></div>
+  <div class="hero">
+    <svg viewBox="0 0 320 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="76" y="34" width="168" height="224" rx="18" stroke="#55D6E8" stroke-width="2"/>
+      <path d="M110 78H208M110 102H190M110 126H205" stroke="#6D9EFF" stroke-width="7" stroke-linecap="round"/>
+      <rect x="104" y="151" width="112" height="72" rx="9" stroke="#73E0B0" stroke-width="2"/>
+      <path d="M104 174H216M141 151V223M178 151V223M104 198H216" stroke="#73E0B0" stroke-opacity=".7"/>
+      <circle cx="238" cy="242" r="42" fill="#102941" stroke="#55D6E8" stroke-width="3"/>
+      <path d="M267 272L294 299" stroke="#55D6E8" stroke-width="11" stroke-linecap="round"/>
+      <path d="M222 242L234 254L256 228" stroke="#73E0B0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="76" cy="292" r="8" fill="#55D6E8"/><circle cx="130" cy="315" r="5" fill="#6D9EFF"/><circle cx="181" cy="292" r="7" fill="#73E0B0"/>
+      <path d="M76 292L130 315L181 292" stroke="#426A88" stroke-width="2" stroke-dasharray="5 6"/>
+    </svg>
+  </div>
+  <div class="footer"><span>BÁO CÁO KỸ THUẬT & GIẢI PHÁP HỆ THỐNG</span><span>01</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 01 / BÀI TOÁN</div><div>OVERVIEW</div></div>
+  <h2>Vì sao RAG truyền thống<br><span class="accent">chưa đủ cho tài liệu tài chính?</span></h2>
+  <p class="lead">Câu trả lời phải đúng ngữ nghĩa, đúng số liệu và có thể kiểm chứng ngược về tài liệu gốc.</p>
+  <div class="grid g3" style="margin-top:2.5%">
+    <div class="card"><div class="label">Thách thức 01</div><h3>Văn bản phân cấp</h3><p>Tiêu đề, mục, tiểu mục và điều khoản có quan hệ phụ thuộc. Chunking cố định dễ làm mất ngữ cảnh.</p></div>
+    <div class="card"><div class="label">Thách thức 02</div><h3>Bảng số liệu phức tạp</h3><p>Header, dòng, đơn vị và giá trị có liên hệ chặt chẽ; chia nhỏ bảng có thể làm sai ý nghĩa con số.</p></div>
+    <div class="card"><div class="label">Thách thức 03</div><h3>Độ tin cậy & nguồn</h3><p>Ngữ cảnh thiếu khiến LLM có thể suy diễn; thiếu số trang làm người dùng khó xác minh.</p></div>
+  </div>
+  <div class="card" style="margin-top:2%;display:flex;align-items:center;gap:18px"><div style="font-size:28px">↗</div><div><h3 style="margin-bottom:5px">Mục tiêu thiết kế</h3><p>Truy xuất riêng văn bản và bảng biểu, hợp nhất ứng viên, xếp hạng lại, tái tạo ngữ cảnh và buộc câu trả lời gắn với nguồn.</p></div></div>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>02</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 02 / GIẢI PHÁP</div><div>PROPOSED ARCHITECTURE</div></div>
+  <h2>Multi-Index Hybrid RAG</h2>
+  <p class="mini">Hai nhánh truy xuất chuyên biệt, một pipeline hợp nhất và một đầu ra có căn cứ.</p>
+  <div class="flow">
+    <div class="node"><b>Query</b><small>Câu hỏi người dùng</small></div><div class="arrow">→</div>
+    <div class="node"><b>Embedding</b><small>Vector hóa câu hỏi</small></div><div class="arrow">→</div>
+    <div class="node"><b>Qdrant Search</b><small>Text index + Table index</small></div><div class="arrow">→</div>
+    <div class="node"><b>RRF Fusion</b><small>Hợp nhất thứ hạng</small></div>
+  </div>
+  <div class="flow">
+    <div class="node" style="border-color:#387c79"><b>Cross-Encoder</b><small>Rerank ứng viên</small></div><div class="arrow">→</div>
+    <div class="node" style="border-color:#387c79"><b>Context Builder</b><small>Khôi phục bảng + metadata</small></div><div class="arrow">→</div>
+    <div class="node" style="border-color:#387c79"><b>Local LLM</b><small>Streaming generation</small></div><div class="arrow">→</div>
+    <div class="node" style="border-color:#387c79"><b>Answer + Citations</b><small>Nội dung và nguồn</small></div>
+  </div>
+  <div class="grid g2" style="margin-top:2%">
+    <div class="card"><h3 class="accent">text_index</h3><p>Đoạn văn bản theo cấu trúc tài liệu; lọc theo cấp độ nội dung phù hợp.</p></div>
+    <div class="card"><h3 class="green">table_index</h3><p>Bảng biểu và số liệu có cấu trúc; giữ quan hệ giữa tiêu đề, hàng, cột và giá trị.</p></div>
+  </div>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>03</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 03 / TECH STACK</div><div>DESIGN CHOICES</div></div>
+  <h2>Ngăn xếp công nghệ & vai trò</h2>
+  <div class="grid g2" style="margin-top:1%">
+    <div class="card"><h3><span class="accent">Qdrant</span> · Vector Database</h3><p>Named vectors, payload filtering và lưu metadata/ngữ cảnh đi kèm vector.</p></div>
+    <div class="card"><h3><span class="accent">Vietnamese Embedding</span></h3><p>Biểu diễn ngữ nghĩa truy vấn và tài liệu trong không gian vector.</p></div>
+    <div class="card"><h3><span class="accent">RRF + BGE Reranker</span></h3><p>RRF hợp nhất thứ hạng khác nguồn; Cross-Encoder đánh giá sâu từng cặp query–document.</p></div>
+    <div class="card"><h3><span class="accent">FastAPI + AsyncOpenAI</span></h3><p>Backend bất đồng bộ, giao tiếp API tương thích OpenAI và truyền phản hồi theo luồng.</p></div>
+    <div class="card"><h3><span class="accent">Local LLM</span></h3><p>Chạy qua LM Studio hoặc Docker; phù hợp định hướng xử lý dữ liệu nội bộ tại chỗ.</p></div>
+    <div class="card"><h3><span class="accent">Streamlit</span></h3><p>Giao diện demo, hiển thị câu trả lời streaming và thông tin đánh giá pipeline.</p></div>
+  </div>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>04</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 04 / EXTRACTION</div><div>LAYOUT PROPOSALS</div></div>
+  <h2>Layout: trang, vùng và crop</h2>
+  <p class="mini">Phát hiện vùng trước khi OCR; crop vùng được tạo ở bước OCR từ tọa độ layout.</p>
+  <div class="extraction-flow" aria-label="PDF, render trang PNG, phát hiện layout, tạo region proposals, crop vùng cho OCR">
+    <div class="node"><b>PDF</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>Render trang PNG</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>PP-DocLayout_plus-L</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>Region proposals</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>Crop vùng cho OCR</b></div>
+  </div>
+  <div class="extraction-contracts">
+    <div class="card"><div class="label">Model</div><h3 class="accent">PP-DocLayout_plus-L</h3><p>Nhận diện nhãn vùng, độ tin cậy và hộp giới hạn trên từng trang.</p></div>
+    <div class="card"><div class="label">Input contract</div><h3>PDF nguồn</h3><p>Trang được render thành <code>pages/page-NNNN.png</code> ở DPI cấu hình; detector nhận ảnh trang sạch.</p></div>
+    <div class="card"><div class="label">Output contract</div><h3>Layout + manifest</h3><p><code>layout.json</code> lưu region ID, kind/role, raw label, score và bbox pixel gốc trên trái. <code>manifest.json</code> liên kết trang với ảnh; <code>bbox/</code> chỉ để xem debug.</p></div>
+  </div>
+  <div class="footer"><span>DOCUMENT EXTRACTION / LAYOUT</span><span>05</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 05 / EXTRACTION</div><div>TEXT DETECTION</div></div>
+  <h2>OCR: phát hiện dòng trong từng vùng</h2>
+  <p class="mini">Chế độ theo layout xử lý các proposal text và table; tọa độ được giữ cả ở mức crop và trang.</p>
+  <div class="extraction-flow" aria-label="Layout và ảnh trang, crop vùng text hoặc table, phát hiện dòng, nhận polygon và score, rectify dòng">
+    <div class="node"><b>layout.json + pages</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>Crop text/table</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>PP-OCRv6_small_det</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>dt_polys + dt_scores</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>Rectify dòng</b></div>
+  </div>
+  <div class="extraction-contracts">
+    <div class="card"><div class="label">Model</div><h3 class="accent">PP-OCRv6_small_det</h3><p>Model phát hiện được cấu hình cho nhánh PP-OCRv6.</p></div>
+    <div class="card"><div class="label">Input contract</div><h3>Proposal + ảnh trang</h3><p><code>layout.json</code> và ảnh <code>page-NNNN.png</code> phải khớp kích thước pixel. OCR cắt từng vùng text/table trước khi detect.</p></div>
+    <div class="card"><div class="label">Output contract</div><h3>Polygon dòng</h3><p>Detector trả <code>dt_polys</code> và <code>dt_scores</code> tương ứng 1:1. Pipeline lưu ảnh vùng/dòng trong <code>crops/</code> và đưa polygon cùng score vào <code>ocr.json</code> sau nhận dạng.</p></div>
+  </div>
+  <div class="footer"><span>DOCUMENT EXTRACTION / DETECTION</span><span>06</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 06 / EXTRACTION</div><div>VIETNAMESE RECOGNITION</div></div>
+  <h2>OCR: nhận dạng tiếng Việt theo dòng</h2>
+  <p class="mini">Mỗi polygon được nắn thẳng thành ảnh dòng trước khi đọc chữ.</p>
+  <div class="extraction-flow" aria-label="Polygon dòng, ảnh dòng đã rectify, nhận dạng tiếng Việt, nhận text và score, ghi OCR artifacts">
+    <div class="node"><b>Polygon dòng</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>Ảnh dòng đã rectify</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>Vietnamese recognizer</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>rec_text + rec_score</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>ocr.json + ocr.md</b></div>
+  </div>
+  <div class="extraction-contracts">
+    <div class="card"><div class="label">Model</div><h3 class="accent">pp-ocrv6-medium-rec-vietnamese</h3><p>Nạp từ thư mục model cục bộ trong cấu hình OCR.</p></div>
+    <div class="card"><div class="label">Input contract</div><h3>Ảnh dòng</h3><p>Ảnh PNG đã rectify từ polygon detector; mỗi ảnh được nhận dạng thành đúng một kết quả dòng.</p></div>
+    <div class="card"><div class="label">Output contract</div><h3>Chữ + provenance</h3><p><code>ocr.json</code> giữ text, detection/recognition confidence, region/page quad và crop path. <code>ocr.md</code> là bản text theo thứ tự proposal.</p></div>
+  </div>
+  <div class="footer"><span>DOCUMENT EXTRACTION / RECOGNITION</span><span>07</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 07 / EXTRACTION</div><div>TABLE RECONSTRUCTION</div></div>
+  <h2>Khôi phục cấu trúc bảng với SLANet_plus</h2>
+  <p class="mini">Cấu trúc ô từ model được ghép với chữ và vị trí OCR; fallback hình học được ghi rõ trong kết quả.</p>
+  <div class="extraction-flow" aria-label="Table proposal và ảnh trang, crop bảng, nhận dạng cấu trúc SLANet, tạo grid, gắn text OCR, ghi tables JSON">
+    <div class="node"><b>Table proposal + page</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>Crop bảng</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>SLANet_plus</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>Grid hàng/cột</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>Gắn text OCR</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>tables.json</b></div>
+  </div>
+  <div class="extraction-contracts">
+    <div class="card"><div class="label">Model</div><h3 class="accent">PaddlePaddle/SLANet_plus_safetensors</h3><p>Trả token cấu trúc bảng và <code>structure_score</code>.</p></div>
+    <div class="card"><div class="label">Input contract</div><h3>Layout + OCR + manifest</h3><p>Chỉ chọn proposal nhãn <code>table</code>; crop từ ảnh trang sạch và ghép các OCR line/block có tâm nằm trong vùng bảng.</p></div>
+    <div class="card"><div class="label">Output contract</div><h3>Ba artifact bảng</h3><p><code>tables.json</code> lưu hàng/ô, span, OCR refs, method, status và warnings. Cùng nguồn sinh <code>tables.html</code> và <code>tables.flat.json</code>.</p></div>
+  </div>
+  <div class="footer"><span>DOCUMENT EXTRACTION / TABLES</span><span>08</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 08 / INDEX PREPARATION</div><div>CHUNKING + EMBEDDING</div></div>
+  <h2>Section, chunk phân cấp và embedding</h2>
+  <p class="mini">Phân mục dựa trên nhãn proposal trong OCR JSON; vector chỉ tạo cho child chunk và các ô bảng có text khi được cung cấp.</p>
+  <div class="extraction-flow" aria-label="OCR JSON, section theo nhãn title, phân cấp LlamaIndex, child chunk cùng heading, Vietnamese Embedding, vector Qdrant">
+    <div class="node"><b>ocr.json</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>Section theo nhãn title</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>LlamaIndex hierarchy 0/1/2</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>Child + heading</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>Vietnamese Embedding</b></div><span class="extraction-arrow" aria-hidden="true"></span>
+    <div class="node"><b>Qdrant text vector</b></div>
+  </div>
+  <div class="extraction-contracts">
+    <div class="card"><div class="label">Model / parser</div><h3 class="accent">HierarchicalNodeParser</h3><p>Section detection theo rule trên layout labels; embedding dùng <code>thanhtantran/Vietnamese_Embedding</code>.</p></div>
+    <div class="card"><div class="label">Input contract</div><h3>Structured OCR</h3><p><code>ocr.json</code> cung cấp region text, nhãn, trang và region ID. Loại header/footer/page number và vùng failed/skipped; title bắt đầu section mới.</p></div>
+    <div class="card"><div class="label">Output contract</div><h3>Chunks + vector</h3><p><code>chunks.json</code> lưu section và node level 0/1/2 với parent ID, page/region refs. Indexer thêm heading vào child input, tạo vector <code>text</code> 1024 chiều và payload Qdrant; root/parent chỉ lưu payload.</p></div>
+  </div>
+  <div class="footer"><span>DOCUMENT EXTRACTION / INDEXING</span><span>09</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 09 / PIPELINE DEEP DIVE</div><div>RETRIEVAL → RERANK</div></div>
+  <h2>Truy xuất tốt không chỉ là tìm vector gần nhất</h2>
+  <div class="grid g2" style="margin-top:1%">
+    <div class="card">
+      <div class="label">01 · Candidate retrieval</div><h3>Truy vấn song song</h3>
+      <div class="code">text_index  → Top 15 đoạn văn
+table_index → Top 10 bảng biểu
+metric      → Cosine</div>
+      <p style="margin-top:12px">Mỗi nhánh dùng bộ lọc payload riêng, giúp phù hợp với kiểu dữ liệu cần tìm.</p>
+    </div>
+    <div class="card">
+      <div class="label">02 · Rank fusion</div><h3>Reciprocal Rank Fusion</h3>
+      <div class="code">RRF(d) = Σ 1 / (k + rankᵢ(d))
+k = 60</div>
+      <p style="margin-top:12px">Kết hợp theo thứ hạng thay vì cộng trực tiếp điểm cosine vốn có thể khác thang đo.</p>
+    </div>
+    <div class="card">
+      <div class="label">03 · Reranking</div><h3>Cross-Encoder</h3>
+      <p>Chấm điểm trực tiếp từng cặp câu hỏi–ứng viên; chọn <strong style="color:var(--ink)">Top 3–5</strong> ngữ cảnh phù hợp nhất trước khi sinh.</p>
+    </div>
+    <div class="card">
+      <div class="label">04 · Resilience</div><h3>Graceful degradation</h3>
+      <p>Nếu reranker không khả dụng, có thể giữ thứ tự theo điểm RRF. Cần ghi log trạng thái fallback để không nhầm với rerank thành công.</p>
+    </div>
+  </div>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>10</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 10 / CONTEXT & GENERATION</div><div>GROUNDING</div></div>
+  <h2>Tái tạo ngữ cảnh, sinh câu trả lời có nguồn</h2>
+  <div class="grid g2" style="margin-top:1%">
+    <div>
+      <div class="card" style="margin-bottom:14px"><h3 class="accent">Context Reconstruction</h3><ul class="bullet"><li>JSON headers + rows → Markdown table.</li><li>Metadata nguồn: tên tài liệu, trang, tiêu đề mục.</li><li>OCR text thô → nội dung có cấu trúc dễ đọc.</li></ul></div>
+      <div class="card"><h3 class="green">Grounding rules</h3><ul class="bullet"><li>Chỉ trả lời dựa trên context được cung cấp.</li><li>Không đủ căn cứ thì nêu rõ tài liệu chưa đề cập.</li><li>Gắn trích dẫn ngay tại nội dung liên quan.</li></ul></div>
+    </div>
+    <div class="card">
+      <div class="label">Ví dụ cấu trúc context</div>
+      <div class="code">[TÀI LIỆU 1]
+Tài liệu: Báo cáo tài chính
+Trang: 4
+Mục: Doanh thu
+
+[ BẢNG 1 ]
+Tài liệu: Báo cáo thường niên
+Trang: 15
+Bảng: Cân đối kế toán</div>
+      <div style="height:14px"></div>
+      <div class="label">Response path</div>
+      <div class="flow" style="margin:10px 0 0;flex-direction:column">
+        <div class="node"><b>Prompt Builder</b><small>Đóng gói context + quy tắc trích dẫn</small></div><div class="arrow">↓</div>
+        <div class="node"><b>AsyncOpenAI · stream=True</b><small>Nhận từng mảnh nội dung</small></div><div class="arrow">↓</div>
+        <div class="node"><b>FastAPI StreamingResponse</b><small>Streamlit hiển thị qua st.write_stream</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>11</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 11 / CONFIGURATION</div><div>PROJECT METRICS</div></div>
+  <h2>Thông số kỹ thuật trọng tâm</h2>
+  <div class="grid g4" style="margin:2% 0">
+    <div class="card"><div class="label">Text retrieval</div><div class="num">15</div><p>Ứng viên văn bản</p></div>
+    <div class="card"><div class="label">Table retrieval</div><div class="num">10</div><p>Ứng viên bảng biểu</p></div>
+    <div class="card"><div class="label">RRF constant</div><div class="num">60</div><p>Hệ số làm dịu</p></div>
+    <div class="card"><div class="label">Final context</div><div class="num">3–5</div><p>Ứng viên đưa vào prompt</p></div>
+  </div>
+  <table>
+    <thead><tr><th>Nhóm</th><th>Tham số</th><th>Giá trị thiết kế</th><th>Ý nghĩa</th></tr></thead>
+    <tbody>
+      <tr><td>Retrieval</td><td>Distance metric</td><td><strong>Cosine</strong></td><td>Đo độ tương đồng hướng vector.</td></tr>
+      <tr><td>Reranking</td><td>Model</td><td><strong>bge-reranker-v2-m3</strong></td><td>Chấm điểm liên quan query–document.</td></tr>
+      <tr><td>Generation</td><td>Temperature / max tokens</td><td><strong>0.1 / 1024</strong></td><td>Giảm biến thiên đầu ra, giới hạn độ dài.</td></tr>
+      <tr><td>Streaming</td><td>Response mode</td><td><strong>SSE / StreamingResponse</strong></td><td>Hiển thị từng phần nội dung khi sinh.</td></tr>
+    </tbody>
+  </table>
+  <p class="mini" style="margin-top:12px">Các số latency như vector search 15–30 ms, reranker 150–300 ms và TTFT dưới 1 giây là mục tiêu/ước lượng nêu trong báo cáo; cần xác nhận bằng benchmark trên cấu hình triển khai thực tế.</p>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>12</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 12 / MODULE DESIGN</div><div>BACKEND STRUCTURE</div></div>
+  <h2>Thiết kế module theo trách nhiệm đơn nhất</h2>
+  <div class="grid g2" style="margin-top:1%">
+    <div class="code">src/rag1/retrival/
+├── api_main.py
+├── routers/
+│   ├── chat.py
+│   └── health.py
+├── services/
+│   ├── rag_service.py
+│   └── llm_service.py
+├── config.py
+├── schemas.py
+├── embedder.py
+├── searcher.py
+├── fusion.py
+├── reranker.py
+├── table_formatter.py
+├── prompt_builder.py
+├── pipeline.py
+└── seed_mock.py</div>
+    <div>
+      <div class="card" style="margin-bottom:14px"><h3 class="accent">Điểm điều phối</h3><p><strong style="color:var(--ink)">rag_service.py</strong> quản lý trình tự xử lý từ embedding đến context và generation.</p></div>
+      <div class="card" style="margin-bottom:14px"><h3 class="accent">Ranh giới module</h3><p>Searcher, fusion, reranker, formatter và prompt builder có thể kiểm thử độc lập theo hợp đồng dữ liệu.</p></div>
+      <div class="card"><h3 class="green">Kiểm thử tích hợp</h3><p><strong style="color:var(--ink)">seed_mock.py</strong> cung cấp dữ liệu giả lập để xác minh serving pipeline khi chưa có crawler hoàn chỉnh.</p></div>
+    </div>
+  </div>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>13</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 13 / DEMO PLAYBOOK</div><div>5–7 MINUTES</div></div>
+  <h2>Kịch bản demo trực tiếp</h2>
+  <div class="grid g3" style="margin-top:1.5%">
+    <div class="card"><div class="num">01</div><h3>Khởi động</h3><div class="code">uv run python -m rag1.retrival.api_main</div><p style="margin-top:10px">Xác nhận warm-up embedder và API sẵn sàng trên cổng 8000.</p></div>
+    <div class="card"><div class="num">02</div><h3>Hỏi đáp</h3><p><strong style="color:var(--ink)">Câu hỏi văn bản:</strong><br>“Ai là Trưởng ban kiểm soát trong báo cáo?”</p><p><strong style="color:var(--ink)">Câu hỏi số liệu:</strong><br>“Doanh thu thuần và lợi nhuận năm 2024 là bao nhiêu?”</p></div>
+    <div class="card"><div class="num">03</div><h3>Quan sát kết quả</h3><p>Streaming câu trả lời, trích dẫn tài liệu/trang, thời gian từng công đoạn và bảng xếp hạng ứng viên.</p><div class="tag" style="margin-top:8px">Swagger: /docs</div></div>
+  </div>
+  <div class="card" style="margin-top:2.5%">
+    <h3 class="orange">Thông điệp khi trình bày</h3>
+    <p class="bigquote">“Hệ thống không chỉ tìm đoạn gần giống câu hỏi; nó hợp nhất nhiều nguồn, xếp hạng lại ngữ cảnh và đưa ra câu trả lời có thể truy vết về tài liệu.”</p>
+  </div>
+  <div class="footer"><span>RAG SERVING PIPELINE</span><span>14</span></div>
+</section>
+
+<section class="slide">
+  <div class="topline"><div class="brand"><span class="brandmark"></span> 14 / STATUS & ROADMAP</div><div>CONCLUSION</div></div>
+  <h2>Kết quả, giới hạn và hướng phát triển</h2>
+  <div class="grid g3" style="margin-top:1.5%">
+    <div class="card"><h3 class="green">Giá trị hiện tại</h3><ul class="bullet"><li>Phân tách chỉ mục văn bản và bảng biểu.</li><li>Hợp nhất RRF, rerank và dựng lại context.</li><li>Streaming phản hồi, thiết kế nguồn trích dẫn.</li><li>Module hóa backend, có dữ liệu mock để kiểm thử.</li></ul></div>
+    <div class="card"><h3 class="orange">Cần xác minh</h3><ul class="bullet"><li>Benchmark latency trên máy triển khai.</li><li>Độ chính xác số liệu và citation trên bộ test chuẩn.</li><li>Độ ổn định fallback khi thiếu tài nguyên.</li><li>Kiểm tra bảo mật, log và dữ liệu nhạy cảm.</li></ul></div>
+    <div class="card"><h3 class="accent">Roadmap</h3><ul class="bullet"><li>Memory cho hội thoại nhiều lượt.</li><li>Upload PDF trực tiếp từ giao diện.</li><li>Đánh giá thêm LLM 7B–14B khi có GPU.</li><li>Quan sát chất lượng retrieval bằng bộ benchmark.</li></ul></div>
+  </div>
+  <div style="margin-top:auto;padding-top:3%">
+    <div class="kicker">KEY TAKEAWAY</div>
+    <p class="bigquote">Một serving pipeline đáng tin cậy cần tối ưu đồng thời <span class="accent">retrieval</span>, <span class="green">cấu trúc ngữ cảnh</span> và <span class="orange">khả năng kiểm chứng</span> — không chỉ riêng mô hình sinh.</p>
+  </div>
+  <div class="footer"><span>RAG SERVING PIPELINE · THANK YOU</span><span>15</span></div>
+</section>
+</div>
+<div class="counter" id="counter">01 / 15</div>
+<div class="controls"><button id="prev" aria-label="Slide trước">← Trước</button><button id="next" aria-label="Slide tiếp">Tiếp →</button><button onclick="window.print()">In / PDF</button></div>
+<div class="progress" id="progress"></div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let current=0;
+function show(i){current=(i+slides.length)%slides.length;slides.forEach((s,n)=>s.classList.toggle('active',n===current));document.getElementById('counter').textContent=String(current+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');document.getElementById('progress').style.width=((current+1)/slides.length*100)+'%'}
+document.getElementById('prev').addEventListener('click',()=>show(current-1));
+document.getElementById('next').addEventListener('click',()=>show(current+1));
+document.addEventListener('keydown',e=>{if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();show(current+1)}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(current-1)}if(e.key==='Home')show(0);if(e.key==='End')show(slides.length-1)});
+let touchX=null;document.addEventListener('touchstart',e=>touchX=e.changedTouches[0].screenX,{passive:true});document.addEventListener('touchend',e=>{if(touchX===null)return;const dx=e.changedTouches[0].screenX-touchX;if(Math.abs(dx)>60)show(current+(dx<0?1:-1));touchX=null},{passive:true});
+show(0);
+</script>
+</body>
+</html>
